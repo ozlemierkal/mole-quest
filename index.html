@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
 <meta name="theme-color" content="#24130d" />
-<title>Mole Quest — v5.1.1 Level 6 Fix</title>
+<title>Mole Quest — v5.1.2 Level 6 Redesign</title>
 <style>
   :root{
     --cream:#efe4d3;
@@ -119,8 +119,9 @@
   .player{background-image:url('mole-tile.png');background-size:126% 126%;background-position:50% 53%;z-index:3;animation:playerStep .16s ease-out;filter:drop-shadow(0 2px 3px rgba(0,0,0,.55))}
   .enemy{background-image:url('enemy-tile.png');background-size:145% 145%;background-position:50% 96%;filter:saturate(.60) brightness(.72)}
   .enemy.alert{background-size:100% 100%;background-position:center;filter:none;animation:enemyWiggle .48s ease-in-out infinite alternate;box-shadow:inset 0 0 12px rgba(199,108,108,.33);z-index:2}
-  .exit{background-image:url('exit-tile.png');filter:saturate(.70) brightness(.74)}
-  .exit.open{filter:saturate(1.08) brightness(1.06);box-shadow:inset 0 0 14px rgba(255,217,113,.50),0 0 12px rgba(255,217,113,.35);z-index:2;animation:exitGlow .9s ease-in-out infinite alternate}
+  .exit{background-image:url('exit-tile.png');background-size:122% 122%;filter:saturate(.92) brightness(.86) contrast(1.08);box-shadow:inset 0 0 0 2px rgba(247,223,161,.30),0 0 0 1px rgba(87,58,24,.50),0 0 12px rgba(255,202,92,.10);z-index:2}
+  .exit::before{content:"";position:absolute;inset:8%;border-radius:12px;box-shadow:inset 0 0 0 1px rgba(255,236,190,.20)}
+  .exit.open{filter:saturate(1.12) brightness(1.12) contrast(1.08);box-shadow:inset 0 0 18px rgba(255,223,129,.56),0 0 18px rgba(255,206,88,.42),0 0 0 2px rgba(255,238,194,.28);z-index:2;animation:exitGlow .9s ease-in-out infinite alternate}
   @keyframes gemPulse{0%,100%{filter:brightness(.96);transform:scale(1)}50%{filter:brightness(1.15);transform:scale(1.035)}}
   @keyframes keyPulse{0%{filter:brightness(.96);transform:scale(.97)}100%{filter:brightness(1.12);transform:scale(1.03)}}
   @keyframes rockDrop{0%{transform:translateY(-32%)}100%{transform:translateY(0)}}
@@ -210,7 +211,7 @@
     <button id="testAddHints">+10 HINT</button>
   </div>
   <div class="economy-note">Prototype economy • 5 can • 20 dakikada 1 can • 3 başlangıç hinti</div>
-  <div class="build">v5.1.1 • Level 6 Fix • Pressure Plate + More Motion</div>
+  <div class="build">v5.1.2 • Level 6 Redesign • Better Exit + More Motion</div>
 </div>
 
 <div class="win" id="win">
@@ -252,7 +253,7 @@ const W=10,H=14;
 const MAX_LIVES=5;
 const REFILL_MS=20*60*1000;
 const START_HINTS=3;
-const STORAGE_PREFIX='mq_v511_';
+const STORAGE_PREFIX='mq_v512_';
 function readStore(key,fallback){try{const v=localStorage.getItem(STORAGE_PREFIX+key);return v===null?fallback:Number(v)}catch(e){return fallback}}
 function writeStore(key,value){try{localStorage.setItem(STORAGE_PREFIX+key,String(value))}catch(e){}}
 let lives=Math.max(0,Math.min(MAX_LIVES,readStore('lives',MAX_LIVES)));
@@ -385,27 +386,27 @@ const levels=[
   }
   ,{
     id:'1–6',
-    intro:'Level 6: Kayayı basınç plakasına oturt, geçidi açık tut ve sağ koridordaki devriye böceğini geç.',
-    hint:'Level 6: Geçit sadece basınç plakası aktifken açılır. İlk kayanın yeri bunun için hazır.',
-    hints:['Basınç plakası üstünde kaya durursa geçit açık kalır. İlk iş üstteki kayayı plakanın üstüne indirmek olsun.','Kaya plakanın üstüne oturduğunda artık düşmez. Sonra orta geçitten sağ bölgeye sız.','Sağ tarafta devriye gezen mor böceğin ritmini izle; güvenli anda kristalleri toplayıp çıkışa git.'],
+    intro:'Level 6: İlk kayayı basınç plakasına indir. Sonra daha uzun devriye hattındaki böceği zamanlayarak kristalleri topla.',
+    hint:'Level 6: İlk hedef basınç plakasını kalıcı olarak etkinleştirmek. Sonra sağ-alt odadaki devriye bölgesine geç.',
+    hints:['Üstteki ilk kaya doğrudan basınç plakası için tasarlandı. Altını kontrollü kaz ve yana çekil.','Basınç plakası etkin kalınca kapı açık kalır. Sonra alttaki açık koridorda gezen böceğin ritmini izle.','Ek kaya ve açık koridor sadece süs değil: yol baskısı yaratıyor. Önce güvenli kristalleri, sonra riskli olanları al.'],
     enemyMode:'patrol',
     requiresKey:false,
     requiresSwitch:false,
     requiresPlate:true,
     map:[
       "##########",
-      "#GddR#ddG#",
-      "#dddd#ddd#",
-      "#dPdd#d.d#",
-      "#dddT#dGd#",
-      "#ddd.A..E#",
-      "#Gddd#d.d#",
-      "#dddd#.X.#",
-      "#dddR#dGd#",
-      "#d...#...#",
-      "#Gddd#ddd#",
-      "#dddd#ddG#",
-      "#dddd#ddd#",
+      "#GddRdddG#",
+      "#ddddddd.#",
+      "#dPdd..Gd#",
+      "#dddTA...#",
+      "#Gdd###.E#",
+      "#ddd...dd#",
+      "####..X..#",
+      "#dGR..d..#",
+      "#d.ddd.Gd#",
+      "#Gdddd..d#",
+      "#dddRdddG#",
+      "#dddddddd#",
       "##########"
     ]
   }
