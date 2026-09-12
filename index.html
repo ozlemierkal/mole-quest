@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
 <meta name="theme-color" content="#24130d" />
-<title>Mole Quest — v5.0.1 Visual Revision + Level 4 Fix</title>
+<title>Mole Quest — v5.1 Level 6</title>
 <style>
   :root{
     --cream:#efe4d3;
@@ -107,6 +107,10 @@
   .switch::after{content:"";position:absolute;z-index:3;width:24%;height:24%;left:38%;top:26%;border-radius:50%;background:radial-gradient(circle at 35% 30%,#f4d49a,#bb7d29 58%,#6a4212 60%);box-shadow:0 0 10px rgba(240,180,61,.35)}
   .switch.active::before{background:linear-gradient(180deg,#526f59,#2f4c37);border-color:#7fac87}
   .switch.active::after{background:radial-gradient(circle at 35% 30%,#d7ffd9,#62c878 58%,#256335 60%);box-shadow:0 0 13px rgba(109,229,132,.45)}
+  .plate{background-image:url('tunnel-tile.png')}
+  .plate::before{content:"";position:absolute;z-index:2;left:15%;right:15%;bottom:22%;height:20%;border-radius:999px;background:linear-gradient(180deg,#888b8f,#51545a);border:2px solid #a2a5a8;box-shadow:inset 0 -3px 0 rgba(31,33,36,.85),0 2px 4px rgba(0,0,0,.6)}
+  .plate::after{content:"";position:absolute;z-index:2;left:32%;right:32%;top:20%;height:18%;border-radius:999px;background:linear-gradient(180deg,#46484d,#24262a);opacity:.6}
+  .plate.active::before{background:linear-gradient(180deg,#98a46e,#55683f);border-color:#c7d894;box-shadow:inset 0 -3px 0 rgba(41,58,30,.88),0 0 10px rgba(184,222,118,.22)}
   .gate{background-image:url('tunnel-tile.png')}
   .gate::before{content:"";position:absolute;z-index:2;inset:7% 13%;border-left:5px solid #7e8185;border-right:5px solid #7e8185;background:repeating-linear-gradient(90deg,transparent 0 15%,#93979a 15% 26%,transparent 26% 41%);box-shadow:inset 0 0 0 2px #35373a,0 0 8px rgba(0,0,0,.45)}
   .gate.open::before{opacity:.18;transform:translateY(-70%);transition:transform .2s ease,opacity .2s ease}
@@ -172,6 +176,7 @@
     <div class="pill">⭐ <span id="score">0</span></div>
     <div class="pill" id="keyPill" style="display:none">🔑 <span id="keyState">0/1</span></div>
     <div class="pill" id="switchPill" style="display:none">SWITCH <span id="switchState">OFF</span></div>
+    <div class="pill" id="platePill" style="display:none">PLATE <span id="plateState">OFF</span></div>
     <div class="pill">♥ <span id="lives">5</span>/5</div>
   </div>
 
@@ -200,11 +205,12 @@
     <button data-test-level="2">3</button>
     <button data-test-level="3">4</button>
     <button data-test-level="4">5</button>
+    <button data-test-level="5">6</button>
     <button id="testFillLives">CAN DOLDUR</button>
     <button id="testAddHints">+10 HINT</button>
   </div>
   <div class="economy-note">Prototype economy • 5 can • 20 dakikada 1 can • 3 başlangıç hinti</div>
-  <div class="build">v5.0.1 • Visual Revision • Levels 1–5 • Level 4 Fix</div>
+  <div class="build">v5.1 • Visual Revision • Levels 1–6 • Pressure Plate</div>
 </div>
 
 <div class="win" id="win">
@@ -246,7 +252,7 @@ const W=10,H=14;
 const MAX_LIVES=5;
 const REFILL_MS=20*60*1000;
 const START_HINTS=3;
-const STORAGE_PREFIX='mq_v50_';
+const STORAGE_PREFIX='mq_v51_';
 function readStore(key,fallback){try{const v=localStorage.getItem(STORAGE_PREFIX+key);return v===null?fallback:Number(v)}catch(e){return fallback}}
 function writeStore(key,value){try{localStorage.setItem(STORAGE_PREFIX+key,String(value))}catch(e){}}
 let lives=Math.max(0,Math.min(MAX_LIVES,readStore('lives',MAX_LIVES)));
@@ -377,16 +383,42 @@ const levels=[
       "##########"
     ]
   }
+  ,{
+    id:'1–6',
+    intro:'Level 6: Basınç plakası yalnızca üstünde ağırlık varken geçidi açık tutar. Kayayı doğru hatta düşür.',
+    hint:'Level 6: Geçit açık kalmak için ağırlık ister. Yukarıdaki kayayı plakanın üzerine indir; geçit bu sırada açık kalacaktır.',
+    hints:['Basınç plakası üstünde köstebek ya da kaya varken etkinleşir. Kalıcı çözüm için kayayı plakanın üstüne oturt.','İlk kaya plakanın tam üstünde. Altındaki toprağı güvenli şekilde temizleyip yana çekil.','Geçit açıldıktan sonra sağ bölgedeki kristalleri topla ve çıkışa ilerle.'],
+    enemyMode:'patrol',
+    requiresKey:false,
+    requiresSwitch:false,
+    requiresPlate:true,
+    map:[
+      "##########",
+      "#GddR#ddG#",
+      "#dddd#ddd#",
+      "#dPdd#ddd#",
+      "#dddT#ddd#",
+      "#ddd.Add.#",
+      "#Gddd#ddE#",
+      "#dddR#dGd#",
+      "#d..X#...#",
+      "#dddd#Gdd#",
+      "#Gddd#ddd#",
+      "#dddR#ddG#",
+      "#dddd#ddd#",
+      "##########"
+    ]
+  }
 ];
 
 let currentLevel=0;
-let map,px,py,startX,startY,gems,total,score=0,levelStartScore=0,open=false,locked=false,moveLock=false,enemyAlert=false,hasKey=false,switchOn=false;
+let map,px,py,startX,startY,gems,total,score=0,levelStartScore=0,open=false,locked=false,moveLock=false,enemyAlert=false,hasKey=false,switchOn=false,plateOn=false;
 let fallingRocks=new Set();
 let enemyTick=0,enemyDir=1;
 
 const board=document.getElementById('board');
 const gemEl=document.getElementById('gems'), totalEl=document.getElementById('total'), scoreEl=document.getElementById('score'), lifeEl=document.getElementById('lives');
-const keyPill=document.getElementById('keyPill'), keyState=document.getElementById('keyState'), switchPill=document.getElementById('switchPill'), switchState=document.getElementById('switchState');
+const keyPill=document.getElementById('keyPill'), keyState=document.getElementById('keyState'), switchPill=document.getElementById('switchPill'), switchState=document.getElementById('switchState'), platePill=document.getElementById('platePill'), plateState=document.getElementById('plateState');
 const statusEl=document.getElementById('status'), winEl=document.getElementById('win'), levelLabel=document.getElementById('levelLabel'), hintEl=document.getElementById('hint');
 const shellEl=document.getElementById('shell'), deathNote=document.getElementById('deathNote');
 const winTitle=document.getElementById('winTitle'), winText=document.getElementById('winText'), nextBtn=document.getElementById('nextLevel'), againBtn=document.getElementById('again');
@@ -402,7 +434,7 @@ function loadLevel(index,{freshRun=false,retry=false}={}){
   syncRefill();
   const level=levels[currentLevel];
   map=level.map.map(r=>r.split(''));
-  gems=0;total=0;open=false;locked=false;moveLock=false;enemyAlert=false;hasKey=false;switchOn=false;fallingRocks=new Set();enemyTick=0;enemyDir=1;
+  gems=0;total=0;open=false;locked=false;moveLock=false;enemyAlert=false;hasKey=false;switchOn=false;plateOn=false;fallingRocks=new Set();enemyTick=0;enemyDir=1;
   for(let y=0;y<H;y++)for(let x=0;x<W;x++){
     if(map[y][x]==='P'){px=x;py=y;startX=x;startY=y;map[y][x]='.'}
     if(map[y][x]==='G') total++;
@@ -412,9 +444,12 @@ function loadLevel(index,{freshRun=false,retry=false}={}){
   keyState.textContent=hasKey?'1/1':'0/1';
   switchPill.style.display=level.requiresSwitch?'block':'none';
   switchState.textContent=switchOn?'ON':'OFF';
+  platePill.style.display=level.requiresPlate?'block':'none';
+  plateState.textContent=plateOn?'ON':'OFF';
   levelLabel.textContent=level.id;
   hintEl.textContent=level.hint;
   statusEl.textContent=level.intro;
+  updatePlateState();
   render();
   if(lives<=0){locked=true;moveLock=true;showOutOfLives();}
 }
@@ -426,11 +461,13 @@ function render(){
     if(x===px&&y===py)c.classList.add('player');
     else if(t==='#')c.classList.add('wall');
     else if(t==='d')c.classList.add('dirt');
-    else if(t==='R'){c.classList.add('rock');if(fallingRocks.has(`${x},${y}`))c.classList.add('falling')}
+    else if(t==='R' || t==='Q'){c.classList.add('rock');if(fallingRocks.has(`${x},${y}`))c.classList.add('falling')}
     else if(t==='G')c.classList.add('gem');
     else if(t==='K')c.classList.add('key');
     else if(t==='S'){c.classList.add('switch');if(switchOn)c.classList.add('active')}
+    else if(t==='T'){c.classList.add('plate');if(plateOn)c.classList.add('active')}
     else if(t==='D'){c.classList.add('gate');if(switchOn)c.classList.add('open')}
+    else if(t==='A'){c.classList.add('gate');if(plateOn)c.classList.add('open')}
     else if(t==='B')c.classList.add('brittle')
     else if(t==='E'){c.classList.add('exit');if(open)c.classList.add('open')}
     else if(t==='X'){c.classList.add('enemy');if(enemyAlert)c.classList.add('alert')}
@@ -439,6 +476,26 @@ function render(){
   }
 }
 
+
+
+function updatePlateState(){
+  const level=levels[currentLevel]||{};
+  if(!level.requiresPlate){
+    plateOn=false;
+    if(plateState) plateState.textContent='OFF';
+    return;
+  }
+  let active=false;
+  for(let y=0;y<H;y++){
+    for(let x=0;x<W;x++){
+      if(map[y][x]==='Q'){ active=true; break; }
+    }
+    if(active) break;
+  }
+  if(map[py] && map[py][px]==='T') active=true;
+  plateOn=active;
+  if(plateState) plateState.textContent=plateOn?'ON':'OFF';
+}
 
 function persistEconomy(){writeStore('lives',lives);writeStore('nextLifeAt',nextLifeAt);writeStore('hints',hintCredits)}
 function fmtTime(ms){const sec=Math.max(0,Math.ceil(ms/1000));const m=Math.floor(sec/60),s=sec%60;return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`}
@@ -543,7 +600,8 @@ function completeLevel(){
   else if(currentLevel===1) winText.textContent='İkinci bölüm de tamam! Hareket eden mor böceği atlattın.';
   else if(currentLevel===2) winText.textContent='Altın anahtarı ve bütün kristalleri buldun. Üçüncü bölüm tamam.';
   else if(currentLevel===3) winText.textContent='Şalteri etkinleştirdin, metal geçidi açtın ve dördüncü bölümü tamamladın.';
-  else winText.textContent='Düşen kayayı kullanarak çatlak duvarı kırdın ve beşinci bölümü tamamladın.';
+  else if(currentLevel===4) winText.textContent='Düşen kayayı kullanarak çatlak duvarı kırdın ve beşinci bölümü tamamladın.';
+  else winText.textContent='Kayı basınç plakasının üstüne oturtup geçidi açık tuttun ve altıncı bölümü tamamladın.';
   nextBtn.textContent=isLast?'Baştan Oyna':'Sonraki Bölüm →';
   if(currentLevel===1) nextBtn.textContent='Sonraki Bölüm →';
   winEl.style.display='flex';
@@ -583,9 +641,10 @@ function move(dx,dy){
   const nx=px+dx,ny=py+dy;
   if(nx<0||ny<0||nx>=W||ny>=H)return false;
   const t=map[ny][nx];
-  if(t==='#'||t==='R')return false;
+  if(t==='#'||t==='R'||t==='Q')return false;
   if(t==='B'){statusEl.textContent='Bu duvar kazılamıyor. Onu kırmak için düşen bir kaya kullanmalısın.';return false}
   if(t==='D'&&!switchOn){statusEl.textContent='Metal geçit kapalı. Önce SWITCH noktasını etkinleştir.';return false}
+  if(t==='A'&&!plateOn){statusEl.textContent='Bu geçit yalnızca basınç plakası aktifken açılır.';return false}
   if(t==='X'){hurt('Mor taş böceğine yakalandın!');return false}
   if(t==='E'&&!open){statusEl.textContent=lockedExitMessage();return false}
 
@@ -608,12 +667,14 @@ function move(dx,dy){
     statusEl.textContent='Şalter etkin. Metal geçit açıldı. +200';
     openedNow=tryOpenExit()||openedNow;
   }
+  updatePlateState();
   if(t==='E'&&open){render();completeLevel();return true}
 
   rocksFall();
   if(locked)return true;
   enemyTurn();
   if(locked)return true;
+  updatePlateState();
   render();
   if(collected)showFx(nx,ny,'+100 ✨');
   if(collectedKey)showFx(nx,ny,'+250');
@@ -624,24 +685,25 @@ function move(dx,dy){
   return true;
 }
 
+
 function rocksFall(){
-  // Yerçekimi kuralı: kaya kesintisiz boşlukta tek turda en alta kadar iner.
-  // Açılmış metal geçit de boşluk sayılır. Level 5'te düşen kaya çatlak duvarı kırabilir.
   const nextFalling=new Set();
   let brokeWall=false;
 
   for(let y=H-2;y>=1;y--){
     for(let x=1;x<W-1;x++){
-      if(map[y][x]!=='R') continue;
+      const rockCell=map[y][x];
+      if(rockCell!=='R' && rockCell!=='Q') continue;
 
       const key=`${x},${y}`;
       const wasFalling=fallingRocks.has(key);
+      const fromPlate=(rockCell==='Q');
 
-      // Kayanın hemen altındaki toprağı yeni kazdıysan bir hamle kaçış payı ver.
       if(px===x && py===y+1 && !wasFalling) continue;
 
       let finalY=y;
       let hitPlayer=false;
+      let landedOnPlate=false;
 
       for(let ty=y+1; ty<H-1; ty++){
         if(px===x && py===ty){
@@ -651,12 +713,16 @@ function rocksFall(){
         }
 
         const cell=map[ty][x];
-        const openGate=(cell==='D' && switchOn);
+        const openGate=(cell==='D' && switchOn) || (cell==='A' && plateOn);
         if(cell==='.' || openGate){
           finalY=ty;
           continue;
         }
-
+        if(cell==='T' && (levels[currentLevel].requiresPlate || true)){
+          finalY=ty;
+          landedOnPlate=true;
+          break;
+        }
         if(cell==='B' && levels[currentLevel].hasBrittleWalls){
           map[ty][x]='.';
           finalY=ty;
@@ -668,12 +734,13 @@ function rocksFall(){
 
       if(finalY===y) continue;
 
-      map[y][x]='.';
-      map[finalY][x]='R';
+      map[y][x]=fromPlate?'T':'.';
+      map[finalY][x]=landedOnPlate?'Q':'R';
       nextFalling.add(`${x},${finalY}`);
 
       if(hitPlayer){
         fallingRocks=new Set();
+        updatePlateState();
         render();
         hurt('Düşen kayanın altında kaldın!');
         return true;
@@ -682,6 +749,7 @@ function rocksFall(){
   }
 
   fallingRocks=nextFalling;
+  updatePlateState();
   if(brokeWall&&!locked) statusEl.textContent='Çatlak duvar kırıldı. Geçiş açıldı.';
   return false;
 }
@@ -765,7 +833,7 @@ document.querySelectorAll('[data-test-level]').forEach(btn=>{
 });
 
 syncRefill();
-// İstersen adresin sonuna ?level=5 yazarak direkt Level 5 açılabilir.
+// İstersen adresin sonuna ?level=6 yazarak direkt Level 6 açılabilir.
 const params=new URLSearchParams(location.search);
 const requestedLevel=Number(params.get('level'));
 if(Number.isInteger(requestedLevel) && requestedLevel>=1 && requestedLevel<=levels.length){

@@ -1,3 +1,3 @@
-Mole Quest v5.0.1 — Visual Revision + Level 4 Fix
+Mole Quest v5.1
 
-Bu paket v5.0 görsel revizyonunu korur ve Level 4 başlangıç yerleşim hatasını düzeltir.
+Level 6 eklendi: Pressure Plate / basınç plakası mekaniği.
