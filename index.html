@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
 <meta name="theme-color" content="#24130d" />
-<title>Mole Quest — v4.4 Level 4</title>
+<title>Mole Quest — v4.5 Level 5</title>
 <style>
   :root{
     --cream:#fff3dd;
@@ -125,6 +125,19 @@
   }
   .gate.open::before{
     opacity:.26;transform:translateY(-70%);transition:transform .2s ease,opacity .2s ease;
+  }
+  .brittle{
+    background-image:url('wall-tile.png');
+    filter:brightness(.9) saturate(.8);
+  }
+  .brittle::before{
+    content:"";position:absolute;z-index:2;inset:8%;
+    background:
+      linear-gradient(62deg,transparent 45%,#27140d 46% 51%,transparent 52%) 48% 22%/55% 55% no-repeat,
+      linear-gradient(118deg,transparent 45%,#27140d 46% 51%,transparent 52%) 56% 58%/64% 58% no-repeat,
+      linear-gradient(20deg,transparent 44%,#160b08 45% 50%,transparent 51%) 38% 72%/55% 42% no-repeat;
+    opacity:.92;
+    filter:drop-shadow(0 1px 0 #d19a7355);
   }
   .player{
     background-image:url('mole-tile.png');
@@ -295,11 +308,12 @@
     <button data-test-level="1">2</button>
     <button data-test-level="2">3</button>
     <button data-test-level="3">4</button>
+    <button data-test-level="4">5</button>
     <button id="testFillLives">CAN DOLDUR</button>
     <button id="testAddHints">+10 HINT</button>
   </div>
   <div class="economy-note">Prototype economy: 5 can • 20 dakikada 1 can • başlangıçta 3 hint</div>
-  <div class="build">v4.4 • 4 Levels • Switch Gate</div>
+  <div class="build">v4.5 • 5 Levels • Gravity + Switch + Fracture Wall</div>
 </div>
 
 <div class="win" id="win">
@@ -347,7 +361,7 @@ function writeStore(key,value){try{localStorage.setItem(STORAGE_PREFIX+key,Strin
 let lives=Math.max(0,Math.min(MAX_LIVES,readStore('lives',MAX_LIVES)));
 let nextLifeAt=Math.max(0,readStore('nextLifeAt',0));
 let hintCredits=Math.max(0,readStore('hints',START_HINTS));
-let hintSteps=[0,0,0,0];
+let hintSteps=[0,0,0,0,0];
 const levels=[
   {
     id:'1–1',
@@ -445,6 +459,32 @@ const levels=[
       "#ddddGddd#",
       "##########"
     ]
+  },
+  {
+    id:'1–5',
+    intro:'Level 5: Çatlak duvarı kazamazsın. Üstteki kayayı doğru anda düşürerek duvarı kır ve diğer bölgeye geç.',
+    hint:'Level 5: Çatlak duvar yalnızca düşen kaya ile kırılır. Kayanın altındaki tek toprak karesini kaz, sonra yana çekil.',
+    hints:['Çatlak duvarın üstündeki kaya için önce kaçış yönünü hazırla.','Kayanın hemen altındaki toprağı kazdıktan sonra yana çekil; kaya şaft boyunca düşüp çatlak duvarı kırar.','Duvar kırılınca kaya daha aşağıya iner ve geçiş yolu açık kalır.'],
+    enemyMode:'patrol',
+    requiresKey:false,
+    requiresSwitch:false,
+    hasBrittleWalls:true,
+    map:[
+      "##########",
+      "#Gddd#ddG#",
+      "#dddd#ddd#",
+      "#Gdd.Rddd#",
+      "#Pdddd#dG#",
+      "#ddd#.#dd#",
+      "#ddd#.#dd#",
+      "#G...B..E#",
+      "#ddd#.#dd#",
+      "#ddd#.#X.#",
+      "#Gddd#ddG#",
+      "#dddR#ddd#",
+      "#ddddGddd#",
+      "##########"
+    ]
   }
 ];
 
@@ -500,6 +540,7 @@ function render(){
     else if(t==='K')c.classList.add('key');
     else if(t==='S'){c.classList.add('switch');if(switchOn)c.classList.add('active')}
     else if(t==='D'){c.classList.add('gate');if(switchOn)c.classList.add('open')}
+    else if(t==='B')c.classList.add('brittle')
     else if(t==='E'){c.classList.add('exit');if(open)c.classList.add('open')}
     else if(t==='X'){c.classList.add('enemy');if(enemyAlert)c.classList.add('alert')}
     else c.classList.add('empty');
@@ -571,7 +612,7 @@ function enemyTurn(){
     return false;
   }
 
-  // Level 2 ve 3: böcek yalnızca önceden açılmış tünelde devriye gezer.
+  // Hareketli böcek yalnızca önceden açılmış tünelde devriye gezer.
   // Her iki BAŞARILI oyuncu hamlesinde bir kare ilerler; toprağı kazamaz.
   enemyTick++;
   enemyAlert=(md<=2);
@@ -610,7 +651,8 @@ function completeLevel(){
   if(currentLevel===0) winText.textContent='Köstebek bütün kristalleri buldu ve çıkışa ulaştı.';
   else if(currentLevel===1) winText.textContent='İkinci bölüm de tamam! Hareket eden mor böceği atlattın.';
   else if(currentLevel===2) winText.textContent='Altın anahtarı ve bütün kristalleri buldun. Üçüncü bölüm tamam.';
-  else winText.textContent='Şalteri etkinleştirdin, metal geçidi açtın ve dördüncü bölümü tamamladın.';
+  else if(currentLevel===3) winText.textContent='Şalteri etkinleştirdin, metal geçidi açtın ve dördüncü bölümü tamamladın.';
+  else winText.textContent='Düşen kayayı kullanarak çatlak duvarı kırdın ve beşinci bölümü tamamladın.';
   nextBtn.textContent=isLast?'Baştan Oyna':'Sonraki Bölüm →';
   if(currentLevel===1) nextBtn.textContent='Sonraki Bölüm →';
   winEl.style.display='flex';
@@ -651,6 +693,7 @@ function move(dx,dy){
   if(nx<0||ny<0||nx>=W||ny>=H)return false;
   const t=map[ny][nx];
   if(t==='#'||t==='R')return false;
+  if(t==='B'){statusEl.textContent='Bu duvar kazılamıyor. Onu kırmak için düşen bir kaya kullanmalısın.';return false}
   if(t==='D'&&!switchOn){statusEl.textContent='Metal geçit kapalı. Önce SWITCH noktasını etkinleştir.';return false}
   if(t==='X'){hurt('Mor taş böceğine yakalandın!');return false}
   if(t==='E'&&!open){statusEl.textContent=lockedExitMessage();return false}
@@ -691,14 +734,11 @@ function move(dx,dy){
 }
 
 function rocksFall(){
-  // Gerçek yerçekimi: kayanın altında art arda boş kareler varsa,
-  // kaya TEK TURDA boşluk bitene kadar aşağı iner.
-  // Oyuncu kayanın hemen altındaki toprağı yeni kazdıysa bir kaçış hamlesi verilir;
-  // kenara çekildiği anda kaya bütün boşluğu tek seferde kat eder.
+  // Yerçekimi kuralı: kaya kesintisiz boşlukta tek turda en alta kadar iner.
+  // Açılmış metal geçit de boşluk sayılır. Level 5'te düşen kaya çatlak duvarı kırabilir.
   const nextFalling=new Set();
-  let movedAny=false;
+  let brokeWall=false;
 
-  // Alttan üste doğru ilerlemek aynı turda bir kayanın iki kez işlenmesini engeller.
   for(let y=H-2;y>=1;y--){
     for(let x=1;x<W-1;x++){
       if(map[y][x]!=='R') continue;
@@ -706,42 +746,52 @@ function rocksFall(){
       const key=`${x},${y}`;
       const wasFalling=fallingRocks.has(key);
 
-      // Kayanın hemen altında oyuncu varsa ilk anda kaçış payı ver.
+      // Kayanın hemen altındaki toprağı yeni kazdıysan bir hamle kaçış payı ver.
       if(px===x && py===y+1 && !wasFalling) continue;
 
       let finalY=y;
       let hitPlayer=false;
 
-      // Aşağıdaki tüm kesintisiz boşluğu tara.
       for(let ty=y+1; ty<H-1; ty++){
         if(px===x && py===ty){
           hitPlayer=true;
           finalY=ty;
           break;
         }
-        if(map[ty][x]!=='.') break;
-        finalY=ty;
+
+        const cell=map[ty][x];
+        const openGate=(cell==='D' && switchOn);
+        if(cell==='.' || openGate){
+          finalY=ty;
+          continue;
+        }
+
+        if(cell==='B' && levels[currentLevel].hasBrittleWalls){
+          map[ty][x]='.';
+          finalY=ty;
+          brokeWall=true;
+          continue;
+        }
+        break;
       }
 
       if(finalY===y) continue;
 
       map[y][x]='.';
       map[finalY][x]='R';
-      movedAny=true;
       nextFalling.add(`${x},${finalY}`);
 
-      // Oyuncu düşüş yolundaysa kaya gerçekten çarpmıştır.
       if(hitPlayer){
         fallingRocks=new Set();
         render();
-        hurt('Düşen kayanın altında kaldın! 🪨');
+        hurt('Düşen kayanın altında kaldın!');
         return true;
       }
     }
   }
 
   fallingRocks=nextFalling;
-  if(movedAny&&!locked) statusEl.textContent='Kaya boşluğun sonuna kadar düştü! 🪨';
+  if(brokeWall&&!locked) statusEl.textContent='Çatlak duvar kırıldı. Geçiş açıldı.';
   return false;
 }
 
@@ -824,7 +874,7 @@ document.querySelectorAll('[data-test-level]').forEach(btn=>{
 });
 
 syncRefill();
-// İstersen adresin sonuna ?level=4 yazarak da direkt Level 4 açılabilir.
+// İstersen adresin sonuna ?level=5 yazarak direkt Level 5 açılabilir.
 const params=new URLSearchParams(location.search);
 const requestedLevel=Number(params.get('level'));
 if(Number.isInteger(requestedLevel) && requestedLevel>=1 && requestedLevel<=levels.length){

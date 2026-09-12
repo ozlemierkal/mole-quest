@@ -1,10 +1,12 @@
-# Mole Quest v4.4 — Level 4
+# Mole Quest v4.5 — Level 5
 
-- Level 1–3 korunur.
-- Level 4 eklendi.
-- Yeni mekanik: SWITCH + metal geçit.
-- Switch etkinleşmeden D geçidinden geçilemez; bir kez açılınca açık kalır.
-- Level 4: hareketli böcek, gerçek kaya yerçekimi, kristaller ve switch rotası.
-- Can / Hint / Shop prototipi aynen korunur.
-- Test menüsünde 1–4 bölümleri doğrudan açılabilir.
-- URL ile `?level=4` doğrudan Level 4 açar.
+Bu paket Level 1–5'i içerir.
+
+## v4.5 değişiklikleri
+- Level 4: kaya düşüş debug mesajı kaldırıldı.
+- Level 4: SWITCH açılınca açık metal geçit yerçekiminde boşluk sayılır; üstündeki kaya hemen aşağı düşer.
+- Level 5: yeni çatlak duvar mekaniği. Çatlak duvar kazılamaz; düşen kaya ile kırılır.
+- Test menüsüne Level 5 eklendi.
+- Can / Hint / Shop prototipi korunuyor.
+
+Test: URL sonuna `?level=5` ekleyerek doğrudan Level 5 açılabilir.
