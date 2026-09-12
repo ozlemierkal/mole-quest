@@ -4,279 +4,170 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
 <meta name="theme-color" content="#24130d" />
-<title>Mole Quest — v4.5 Level 5</title>
+<title>Mole Quest — v5.0 Visual Revision</title>
 <style>
   :root{
-    --cream:#fff3dd;
-    --gold:#ffc857;
-    --wood:#5a3422;
-    --wood2:#2f1b13;
+    --cream:#efe4d3;
+    --soft:#c8b9a3;
+    --gold:#d8a457;
+    --gold2:#f1c97a;
+    --metal:#2d2c2f;
+    --metal2:#151518;
+    --stone:#423a33;
+    --stone2:#211b18;
+    --wood:#5c3b27;
+    --wood2:#2d1d14;
+    --glow:#74b7ff;
+    --danger:#c76c6c;
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
   html,body{min-height:100%;margin:0}
   body{
-    font-family:ui-rounded,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
     color:var(--cream);
     background:
-      radial-gradient(circle at 50% 0%,#61391f 0,transparent 35%),
-      linear-gradient(180deg,#28150e,#100906 75%);
+      radial-gradient(circle at 50% -10%, #473322 0%, rgba(71,51,34,.0) 35%),
+      radial-gradient(circle at 18% 28%, rgba(80,120,180,.12) 0%, rgba(80,120,180,0) 22%),
+      radial-gradient(circle at 82% 18%, rgba(80,120,180,.10) 0%, rgba(80,120,180,0) 20%),
+      linear-gradient(180deg,#120f11,#070608 72%);
     display:flex;justify-content:center;
   }
   .app{
-    width:min(100vw,560px);
+    width:min(100vw,620px);
     padding:calc(env(safe-area-inset-top) + 10px) 12px calc(env(safe-area-inset-bottom) + 16px);
-  }
-  .topbar{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap}
-  .brand{
-    margin-right:auto;
-    display:flex;align-items:center;gap:8px;
-    padding:9px 13px;border-radius:17px;
-    background:linear-gradient(#72482d,#3d2317);
-    border:2px solid #986b49;
-    box-shadow:inset 0 2px 0 #c18e68aa,0 8px 20px #0006;
-    font-weight:1000;color:var(--gold);letter-spacing:.4px;
-    text-shadow:0 2px 0 #684018;
-  }
-  .brand span{font-size:21px}
-  .pill{
-    min-width:72px;text-align:center;
-    padding:9px 10px;border-radius:16px;
-    background:linear-gradient(#69432c,#3a2117);
-    border:2px solid #8e6042;
-    box-shadow:inset 0 2px 0 #b88b6a66;
-    font-weight:900;
-  }
-  .shell{
     position:relative;
-    padding:9px;
-    border-radius:24px;
-    background:linear-gradient(180deg,#6b432b,#362017);
-    border:3px solid #916446;
-    box-shadow:inset 0 0 0 2px #2e1a12,0 18px 34px #0009;
+  }
+  .app::before{
+    content:"";position:fixed;inset:0;pointer-events:none;opacity:.16;
+    background:
+      radial-gradient(circle at 50% 12%, rgba(255,210,140,.18), transparent 22%),
+      linear-gradient(90deg, transparent 0 6%, rgba(255,255,255,.02) 6% 7%, transparent 7% 13%, rgba(255,255,255,.015) 13% 14%, transparent 14% 86%, rgba(255,255,255,.015) 86% 87%, transparent 87% 93%, rgba(255,255,255,.02) 93% 94%, transparent 94% 100%);
+    mix-blend-mode:screen;
+  }
+  .topbar{display:grid;grid-template-columns:1.2fr repeat(5, minmax(74px,1fr));gap:8px;margin-bottom:10px;align-items:stretch}
+  .brand{
+    display:flex;align-items:center;justify-content:center;gap:8px;padding:10px 14px;
+    border-radius:18px;
+    background:linear-gradient(180deg,#6c4a2c,#3a2618 55%, #2b1c13);
+    border:1px solid #8d6646;
+    box-shadow:inset 0 1px 0 rgba(255,220,170,.35),0 10px 22px rgba(0,0,0,.35);
+    font-weight:1000;letter-spacing:.04em;color:#f1d49a;text-transform:uppercase;
+    font-size:18px;
+  }
+  .brand::before{content:"";width:18px;height:18px;display:block;background:linear-gradient(180deg,#f1d49a,#b57934);clip-path:polygon(0 50%,40% 0,54% 0,100% 40%,76% 64%,76% 100%,58% 100%,58% 72%,0 72%);opacity:.9}
+  .pill{
+    min-width:72px;text-align:center;padding:8px 8px;border-radius:16px;
+    background:linear-gradient(180deg,#313136,#1f2023 58%,#16161a);
+    border:1px solid #56535a;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 8px 20px rgba(0,0,0,.25);
+    font-weight:900;color:#f5ead8;
+    display:flex;align-items:center;justify-content:center;gap:4px;
+  }
+  .pill#switchPill{font-size:12px;letter-spacing:.05em}
+  .utilitybar{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center;margin:0 0 10px}
+  .utilitybar button,.shop-item button,.shop-footer button,.card button,.controls button,.devbar button,button{
+    appearance:none;border:0;color:#f3eadc;font-weight:900;touch-action:manipulation;
+  }
+  .utilitybar button{
+    width:auto;height:44px;padding:0 16px;border-radius:14px;font-size:12px;letter-spacing:.08em;
+    background:linear-gradient(180deg,#3b3a3f,#232328 65%, #17181b);
+    border:1px solid #5b5961;box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 4px 12px rgba(0,0,0,.26);
+  }
+  .utilitybar .timer{
+    min-height:44px;display:flex;align-items:center;justify-content:center;border-radius:14px;
+    background:linear-gradient(180deg,#17171a,#0f0f12);
+    border:1px solid #333137;color:#d9c9bb;font-size:12px;font-weight:800;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.06);
+  }
+  .utilitybar .count{color:#f0c57a;font-weight:1000}
+  .shell{
+    position:relative;padding:10px;border-radius:24px;
+    background:linear-gradient(180deg,#5e412d,#32231a 30%, #241914 100%);
+    border:1px solid #8c684a;
+    box-shadow:inset 0 0 0 1px rgba(255,230,200,.08), 0 18px 42px rgba(0,0,0,.45);
   }
   #board{
-    display:grid;
-    grid-template-columns:repeat(10,1fr);
-    gap:2px;
-    aspect-ratio:10/14;
-    overflow:hidden;
-    border-radius:16px;
-    background:#160d09;
-    touch-action:none;
-    position:relative;
+    display:grid;grid-template-columns:repeat(10,1fr);gap:1px;aspect-ratio:10/14;
+    overflow:hidden;border-radius:16px;
+    background:#0f0c0d;touch-action:none;position:relative;
   }
-  .cell{
-    position:relative;overflow:hidden;
-    background:#1c110c center/cover no-repeat;
-  }
-  .cell::after{
-    content:"";position:absolute;inset:0;
-    box-shadow:inset 0 0 0 1px #00000030;
-    pointer-events:none;
-  }
-  .wall{background-image:url('wall-tile.png')}
-  .dirt{background-image:url('dirt-tile.png')}
-  .empty{background-image:url('tunnel-tile.png')}
-  .rock{background-image:url('rock-tile.png')}
-  .rock.falling{animation:rockDrop .18s ease-out;filter:brightness(1.08)}
-  .gem{background-image:url('gem-tile.png');animation:gemPulse 1.45s ease-in-out infinite}
-  .key{
-    background-image:url('tunnel-tile.png');
-    animation:keyPulse 1.15s ease-in-out infinite alternate;
-  }
-  .key::before{
-    content:"";position:absolute;z-index:2;
-    width:34%;height:34%;left:14%;top:31%;
-    border:5px solid #ffd45f;border-radius:50%;
-    box-shadow:0 0 10px #ffd45faa,inset 0 0 5px #fff3af;
-  }
-  .key::after{
-    content:"";position:absolute;z-index:2;
-    width:50%;height:22%;left:43%;top:42%;
-    background:linear-gradient(180deg,#ffe48a,#e6a927);
-    clip-path:polygon(0 28%,68% 28%,68% 0,81% 0,81% 28%,100% 28%,100% 72%,85% 72%,85% 100%,72% 100%,72% 72%,0 72%);
-    border-radius:999px;
-    box-shadow:0 0 9px #ffd45f99;
-  }
-
-  .switch{
-    background-image:url('tunnel-tile.png');
-  }
-  .switch::before{
-    content:"";position:absolute;z-index:2;left:18%;right:18%;bottom:19%;height:28%;
-    border-radius:8px;background:linear-gradient(180deg,#8b8d90,#4b4d50);
-    border:2px solid #b9b9b9;box-shadow:inset 0 -4px 0 #2e3032,0 2px 4px #0008;
-  }
-  .switch::after{
-    content:"";position:absolute;z-index:3;width:26%;height:26%;left:37%;top:26%;
-    border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffe7a0,#d79321 58%,#7d4c12 60%);
-    box-shadow:0 0 10px #f0b43d99;
-  }
+  .cell{position:relative;overflow:hidden;background:#1c110c center/cover no-repeat}
+  .cell::after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 0 1px rgba(0,0,0,.18);pointer-events:none}
+  .wall{background-image:url('wall-tile.png');filter:brightness(.75) saturate(.78)}
+  .dirt{background-image:url('dirt-tile.png');filter:saturate(.88) brightness(.90)}
+  .empty{background-image:url('tunnel-tile.png');filter:brightness(.88)}
+  .rock{background-image:url('rock-tile.png');filter:saturate(.78) brightness(.95)}
+  .rock.falling{animation:rockDrop .18s ease-out;filter:brightness(1.04)}
+  .gem{background-image:url('gem-tile.png');animation:gemPulse 1.8s ease-in-out infinite;filter:saturate(.9) brightness(.95)}
+  .key{background-image:url('tunnel-tile.png');animation:keyPulse 1.3s ease-in-out infinite alternate}
+  .key::before{content:"";position:absolute;z-index:2;width:34%;height:34%;left:14%;top:31%;border:4px solid #e7bb5b;border-radius:50%;box-shadow:0 0 10px rgba(231,187,91,.35),inset 0 0 5px rgba(255,243,175,.4)}
+  .key::after{content:"";position:absolute;z-index:2;width:50%;height:22%;left:43%;top:42%;background:linear-gradient(180deg,#eecf84,#c88c2e);clip-path:polygon(0 28%,68% 28%,68% 0,81% 0,81% 28%,100% 28%,100% 72%,85% 72%,85% 100%,72% 100%,72% 72%,0 72%);border-radius:999px;box-shadow:0 0 9px rgba(231,187,91,.28)}
+  .switch{background-image:url('tunnel-tile.png')}
+  .switch::before{content:"";position:absolute;z-index:2;left:18%;right:18%;bottom:19%;height:28%;border-radius:8px;background:linear-gradient(180deg,#75787a,#434548);border:2px solid #9c9fa1;box-shadow:inset 0 -4px 0 #2e3032,0 2px 4px #0008}
+  .switch::after{content:"";position:absolute;z-index:3;width:24%;height:24%;left:38%;top:26%;border-radius:50%;background:radial-gradient(circle at 35% 30%,#f4d49a,#bb7d29 58%,#6a4212 60%);box-shadow:0 0 10px rgba(240,180,61,.35)}
   .switch.active::before{background:linear-gradient(180deg,#526f59,#2f4c37);border-color:#7fac87}
-  .switch.active::after{background:radial-gradient(circle at 35% 30%,#d7ffd9,#62c878 58%,#256335 60%);box-shadow:0 0 13px #6de584aa}
-  .gate{
-    background-image:url('tunnel-tile.png');
-  }
-  .gate::before{
-    content:"";position:absolute;z-index:2;inset:7% 13%;
-    border-left:6px solid #86898b;border-right:6px solid #86898b;
-    background:repeating-linear-gradient(90deg,transparent 0 15%,#9da0a2 15% 26%,transparent 26% 41%);
-    box-shadow:inset 0 0 0 2px #3b3d3f,0 0 8px #0008;
-  }
-  .gate.open::before{
-    opacity:.26;transform:translateY(-70%);transition:transform .2s ease,opacity .2s ease;
-  }
-  .brittle{
-    background-image:url('wall-tile.png');
-    filter:brightness(.9) saturate(.8);
-  }
-  .brittle::before{
-    content:"";position:absolute;z-index:2;inset:8%;
-    background:
-      linear-gradient(62deg,transparent 45%,#27140d 46% 51%,transparent 52%) 48% 22%/55% 55% no-repeat,
-      linear-gradient(118deg,transparent 45%,#27140d 46% 51%,transparent 52%) 56% 58%/64% 58% no-repeat,
-      linear-gradient(20deg,transparent 44%,#160b08 45% 50%,transparent 51%) 38% 72%/55% 42% no-repeat;
-    opacity:.92;
-    filter:drop-shadow(0 1px 0 #d19a7355);
-  }
-  .player{
-    background-image:url('mole-tile.png');
-    background-size:128% 128%;
-    background-position:50% 53%;
-    z-index:3;
-    animation:playerStep .16s ease-out;
-    filter:drop-shadow(0 2px 3px #0008);
-  }
-  .enemy{
-    background-image:url('enemy-tile.png');
-    background-size:145% 145%;
-    background-position:50% 96%;
-    filter:saturate(.72) brightness(.78);
-  }
-  .enemy.alert{
-    background-size:100% 100%;
-    background-position:center;
-    filter:none;
-    animation:enemyWiggle .48s ease-in-out infinite alternate;
-    box-shadow:inset 0 0 14px #ff6f6f66;
-    z-index:2;
-  }
-  .exit{background-image:url('exit-tile.png');filter:saturate(.72) brightness(.72)}
-  .exit.open{
-    filter:saturate(1.15) brightness(1.12);
-    box-shadow:inset 0 0 18px #ffd971bb,0 0 16px #ffd971aa;
-    z-index:2;
-    animation:exitGlow .8s ease-in-out infinite alternate;
-  }
-  @keyframes gemPulse{0%,100%{filter:brightness(1);transform:scale(1)}50%{filter:brightness(1.25);transform:scale(1.05)}}
-  @keyframes keyPulse{0%{filter:brightness(1);transform:scale(.96)}100%{filter:brightness(1.28);transform:scale(1.05)}}
+  .switch.active::after{background:radial-gradient(circle at 35% 30%,#d7ffd9,#62c878 58%,#256335 60%);box-shadow:0 0 13px rgba(109,229,132,.45)}
+  .gate{background-image:url('tunnel-tile.png')}
+  .gate::before{content:"";position:absolute;z-index:2;inset:7% 13%;border-left:5px solid #7e8185;border-right:5px solid #7e8185;background:repeating-linear-gradient(90deg,transparent 0 15%,#93979a 15% 26%,transparent 26% 41%);box-shadow:inset 0 0 0 2px #35373a,0 0 8px rgba(0,0,0,.45)}
+  .gate.open::before{opacity:.18;transform:translateY(-70%);transition:transform .2s ease,opacity .2s ease}
+  .brittle{background-image:url('wall-tile.png');filter:brightness(.78) saturate(.6)}
+  .brittle::before{content:"";position:absolute;z-index:2;inset:8%;background:linear-gradient(62deg,transparent 45%,#27140d 46% 51%,transparent 52%) 48% 22%/55% 55% no-repeat,linear-gradient(118deg,transparent 45%,#27140d 46% 51%,transparent 52%) 56% 58%/64% 58% no-repeat,linear-gradient(20deg,transparent 44%,#160b08 45% 50%,transparent 51%) 38% 72%/55% 42% no-repeat;opacity:.92;filter:drop-shadow(0 1px 0 rgba(209,154,115,.25))}
+  .player{background-image:url('mole-tile.png');background-size:126% 126%;background-position:50% 53%;z-index:3;animation:playerStep .16s ease-out;filter:drop-shadow(0 2px 3px rgba(0,0,0,.55))}
+  .enemy{background-image:url('enemy-tile.png');background-size:145% 145%;background-position:50% 96%;filter:saturate(.60) brightness(.72)}
+  .enemy.alert{background-size:100% 100%;background-position:center;filter:none;animation:enemyWiggle .48s ease-in-out infinite alternate;box-shadow:inset 0 0 12px rgba(199,108,108,.33);z-index:2}
+  .exit{background-image:url('exit-tile.png');filter:saturate(.70) brightness(.74)}
+  .exit.open{filter:saturate(1.08) brightness(1.06);box-shadow:inset 0 0 14px rgba(255,217,113,.50),0 0 12px rgba(255,217,113,.35);z-index:2;animation:exitGlow .9s ease-in-out infinite alternate}
+  @keyframes gemPulse{0%,100%{filter:brightness(.96);transform:scale(1)}50%{filter:brightness(1.15);transform:scale(1.035)}}
+  @keyframes keyPulse{0%{filter:brightness(.96);transform:scale(.97)}100%{filter:brightness(1.12);transform:scale(1.03)}}
   @keyframes rockDrop{0%{transform:translateY(-32%)}100%{transform:translateY(0)}}
-  @keyframes playerStep{0%{background-size:108% 108%;filter:brightness(1.28) drop-shadow(0 2px 3px #0008)}100%{background-size:128% 128%;filter:brightness(1) drop-shadow(0 2px 3px #0008)}}
+  @keyframes playerStep{0%{background-size:112% 112%;filter:brightness(1.12) drop-shadow(0 2px 3px rgba(0,0,0,.55))}100%{background-size:126% 126%;filter:brightness(1) drop-shadow(0 2px 3px rgba(0,0,0,.55))}}
   @keyframes enemyWiggle{0%{transform:translateX(-1px) rotate(-1deg)}100%{transform:translateX(1px) rotate(1deg)}}
-  @keyframes exitGlow{0%{filter:saturate(1.05) brightness(1.02)}100%{filter:saturate(1.3) brightness(1.32);box-shadow:inset 0 0 24px #ffe28ddd,0 0 22px #ffd15fbb}}
-  .score-fx,.exit-fx{
-    position:absolute;
-    z-index:15;
-    transform:translate(-50%,-50%);
-    pointer-events:none;
-    font-weight:1000;
-    text-shadow:0 2px 4px #000,0 0 12px currentColor;
-    animation:floatFx .72s ease-out forwards;
-  }
-  .score-fx{color:#fff5a6;font-size:17px}
-  .exit-fx{color:#ffe28a;font-size:19px;white-space:nowrap}
-  @keyframes floatFx{0%{opacity:0;transform:translate(-50%,-35%) scale(.72)}22%{opacity:1;transform:translate(-50%,-58%) scale(1.08)}100%{opacity:0;transform:translate(-50%,-125%) scale(.95)}}
+  @keyframes exitGlow{0%{filter:saturate(1.02) brightness(.98)}100%{filter:saturate(1.18) brightness(1.18);box-shadow:inset 0 0 18px rgba(255,226,141,.55),0 0 18px rgba(255,209,95,.32)}}
+  .score-fx,.exit-fx{position:absolute;z-index:15;transform:translate(-50%,-50%);pointer-events:none;font-weight:1000;text-shadow:0 2px 4px rgba(0,0,0,.8),0 0 12px currentColor;animation:floatFx .72s ease-out forwards}
+  .score-fx{color:#f0cf8a;font-size:16px}.exit-fx{color:#f3d99b;font-size:18px;white-space:nowrap}
+  @keyframes floatFx{0%{opacity:0;transform:translate(-50%,-35%) scale(.72)}22%{opacity:1;transform:translate(-50%,-58%) scale(1.05)}100%{opacity:0;transform:translate(-50%,-125%) scale(.95)}}
   .hud{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:10px}
-  .status,.level{
-    border-radius:15px;background:linear-gradient(#47291c,#29170f);
-    border:2px solid #6f482f;box-shadow:inset 0 2px 0 #98705a55;
-  }
-  .status{padding:11px 13px;font-size:14px;font-weight:750;line-height:1.25}
-  .level{padding:11px 13px;min-width:88px;text-align:center;font-weight:950;color:#ffd47b}
+  .status,.level{border-radius:15px;background:linear-gradient(180deg,#231d1a,#161214);border:1px solid #4a4038;box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}
+  .status{padding:12px 14px;font-size:13px;font-weight:700;line-height:1.35;color:#d5c6b4}
+  .level{padding:11px 13px;min-width:94px;text-align:center;font-weight:900;color:#ebc474;display:flex;align-items:center;justify-content:center;letter-spacing:.04em}
   .controls{display:grid;grid-template-columns:repeat(3,78px);gap:8px;justify-content:center;margin-top:14px}
-  button{
-    appearance:none;border:0;height:66px;border-radius:20px;
-    background:linear-gradient(#80604c,#51382c);
-    color:#fff4e8;font-size:27px;font-weight:1000;
-    box-shadow:inset 0 2px 0 #d1aa8d66,0 6px 0 #281a13,0 10px 16px #0005;
-    touch-action:manipulation;
-  }
-  button:active{transform:translateY(4px);box-shadow:inset 0 2px 0 #d1aa8d66,0 2px 0 #281a13}
+  button{height:66px;border-radius:18px;background:linear-gradient(180deg,#3e3a37,#292623 70%, #1c1a18);font-size:26px;box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 4px 12px rgba(0,0,0,.24);border:1px solid #615c57}
+  button:active{transform:translateY(2px);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 2px 6px rgba(0,0,0,.28)}
   .ghost{visibility:hidden}
-  .hint{text-align:center;font-size:12px;opacity:.8;margin-top:10px}
-  .death-note{
-    position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.92);
-    z-index:12;padding:14px 18px;border-radius:18px;
-    background:#2b160fe8;border:2px solid #ffad7a;color:#fff4e8;
-    font-weight:1000;font-size:18px;box-shadow:0 14px 34px #000a,0 0 22px #ff885566;
-    opacity:0;pointer-events:none;transition:opacity .12s ease,transform .12s ease;
-  }
+  .hint{text-align:center;font-size:12px;opacity:.72;margin-top:10px;color:#bba994;line-height:1.35}
+  .death-note{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.92);z-index:12;padding:14px 18px;border-radius:18px;background:rgba(33,21,18,.92);border:1px solid #8f6b56;color:#fff4e8;font-weight:1000;font-size:17px;box-shadow:0 14px 34px rgba(0,0,0,.65),0 0 18px rgba(255,136,85,.18);opacity:0;pointer-events:none;transition:opacity .12s ease,transform .12s ease}
   .death-note.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
   .shell.hurt{animation:shellShake .24s ease-in-out 1}
   @keyframes shellShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
-  .win{
-    position:fixed;inset:0;display:none;align-items:center;justify-content:center;
-    padding:22px;background:#000b;z-index:20;
-  }
-  .card{
-    width:min(360px,92vw);overflow:hidden;text-align:center;
-    background:linear-gradient(#57331f,#2b1810);
-    border:3px solid #8a5b3c;border-radius:24px;box-shadow:0 24px 54px #000b;
-  }
-  .hero{height:190px;background:url('hero-character.jpg') 18% 34%/140% auto no-repeat;border-bottom:2px solid #8a5b3c}
-  .card-body{padding:18px}
-  .card h2{margin:0 0 8px;color:#ffd15f;font-size:30px}.card p{margin:0 0 16px;color:#f3dfcc}
+  .win{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:22px;background:rgba(0,0,0,.65);backdrop-filter:blur(3px);z-index:20}
+  .card{width:min(370px,92vw);overflow:hidden;text-align:center;background:linear-gradient(180deg,#2d2521,#171215);border:1px solid #78614b;border-radius:24px;box-shadow:0 24px 54px rgba(0,0,0,.6)}
+  .hero{height:190px;background:url('hero-character.jpg') 18% 34%/140% auto no-repeat;border-bottom:1px solid #5f4b39;filter:saturate(.92) brightness(.98)}
+  .card-body{padding:20px 18px 18px}.card h2{margin:0 0 8px;color:#e8c175;font-size:30px;letter-spacing:.02em}.card p{margin:0 0 16px;color:#d6c4b4;line-height:1.42}
   .modal-actions{display:grid;gap:9px}
-  .card button{width:100%;height:56px;font-size:18px}
-  .card button.secondary{height:48px;background:linear-gradient(#5d4639,#3d2a21);font-size:15px;opacity:.95}
-  .build{font-size:10px;text-align:center;opacity:.55;letter-spacing:.4px;margin-top:6px}
-
-  .devbar{
-    margin-top:10px;padding:9px 10px;border-radius:14px;
-    background:#24130dcc;border:1px dashed #9a6c4d;
-    display:flex;align-items:center;justify-content:center;gap:7px;flex-wrap:wrap;
-    font-size:11px;color:#e9d7c5;
-  }
-  .devbar strong{color:#ffd27a;letter-spacing:.3px}
-  .devbar button{
-    width:auto;height:34px;min-width:42px;padding:0 10px;border-radius:10px;
-    font-size:12px;background:linear-gradient(#6b4b39,#463025);
-    box-shadow:inset 0 1px 0 #d1aa8d55,0 3px 0 #281a13;
-  }
-  .devbar button:active{transform:translateY(2px);box-shadow:inset 0 1px 0 #d1aa8d55,0 1px 0 #281a13}
-  @media(max-height:780px){
-    .app{padding-top:calc(env(safe-area-inset-top) + 4px)}
-    .topbar{margin-bottom:6px}.hud{margin-top:6px}.controls{margin-top:8px;grid-template-columns:repeat(3,70px)}
-    button{height:56px}.hint{display:none}
-  }
-
-  .utilitybar{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center;margin:0 0 10px}
-  .utilitybar button{width:auto;height:42px;padding:0 14px;border-radius:13px;font-size:12px;letter-spacing:.7px;background:linear-gradient(#5c493d,#34271f);box-shadow:inset 0 1px 0 #d1aa8d55,0 3px 0 #211711}
-  .utilitybar .timer{min-height:42px;display:flex;align-items:center;justify-content:center;border-radius:13px;background:#21140fbb;border:1px solid #614637;color:#d9c9bb;font-size:12px;font-weight:800}
-  .utilitybar .count{color:#ffd27a;font-weight:1000}
-  .economy-note{font-size:11px;opacity:.68;text-align:center;line-height:1.35;margin-top:6px}
-  .modal-overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:22px;background:#000c;z-index:35}
+  .card button{width:100%;height:54px;font-size:17px;background:linear-gradient(180deg,#4a433d,#2d2926 70%, #1d1b19);border:1px solid #69615a}
+  .card button.secondary{height:46px;background:linear-gradient(180deg,#35302d,#211e1d);font-size:14px;opacity:.95}
+  .build{font-size:10px;text-align:center;opacity:.55;letter-spacing:.08em;margin-top:8px}
+  .devbar{margin-top:10px;padding:9px 10px;border-radius:14px;background:rgba(19,15,16,.78);border:1px dashed #5d4d41;display:flex;align-items:center;justify-content:center;gap:7px;flex-wrap:wrap;font-size:11px;color:#ccbcac}
+  .devbar strong{color:#e4bc6f;letter-spacing:.06em}.devbar button{width:auto;height:34px;min-width:42px;padding:0 10px;border-radius:10px;font-size:12px;background:linear-gradient(180deg,#403a37,#272321);border:1px solid #5d5852;box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 2px 8px rgba(0,0,0,.2)}
+  .devbar button:active{transform:translateY(2px)}
+  .economy-note{font-size:11px;opacity:.58;text-align:center;line-height:1.35;margin-top:6px;color:#ac9d90}
+  .modal-overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:22px;background:rgba(0,0,0,.75);z-index:35}
   #shopModal{z-index:40}
-  .shop-card{width:min(390px,94vw);max-height:88vh;overflow:auto;background:linear-gradient(180deg,#3c2b22,#1e1511);border:2px solid #725440;border-radius:22px;padding:18px;box-shadow:0 24px 60px #000d}
-  .shop-card h2{margin:0 0 4px;font-size:24px;color:#f5d28e;letter-spacing:.5px}
-  .shop-card .sub{margin:0 0 14px;font-size:12px;color:#cbb8a8;line-height:1.4}
-  .shop-item{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:12px 0;border-top:1px solid #ffffff12}
-  .shop-item:first-of-type{border-top:0}
-  .shop-item strong{display:block;font-size:14px;color:#f5eadf;margin-bottom:3px}
-  .shop-item span{display:block;font-size:11px;color:#bfae9f;line-height:1.35}
-  .shop-item button{width:auto;height:42px;padding:0 12px;border-radius:12px;font-size:12px;background:linear-gradient(#725844,#49372b)}
-  .shop-footer{display:grid;gap:8px;margin-top:12px}
-  .shop-footer button{height:48px;font-size:14px}
-  .shop-footer .secondary{background:linear-gradient(#514239,#332820)}
-  .life-card{text-align:center}.life-card .big-heart{font-size:44px;line-height:1;margin:6px 0 10px}.life-card .wait{font-size:20px;font-weight:1000;color:#f2cf8c;margin:10px 0}.life-card button:disabled{opacity:.4;filter:grayscale(.6)}
-  .hint-flash{animation:hintFlash .72s ease-in-out 2}@keyframes hintFlash{0%,100%{box-shadow:inset 0 0 0 0 #f4cd7a00}50%{box-shadow:inset 0 0 0 3px #f4cd7aaa,0 0 22px #f4cd7a66}}
-
+  .shop-card{width:min(390px,94vw);max-height:88vh;overflow:auto;background:linear-gradient(180deg,#252124,#161317);border:1px solid #5f5044;border-radius:22px;padding:18px;box-shadow:0 24px 60px rgba(0,0,0,.72)}
+  .shop-card h2{margin:0 0 4px;font-size:24px;color:#e5be74;letter-spacing:.04em}.shop-card .sub{margin:0 0 14px;font-size:12px;color:#b9aa9c;line-height:1.4}
+  .shop-item{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:12px 0;border-top:1px solid rgba(255,255,255,.07)}
+  .shop-item:first-of-type{border-top:0}.shop-item strong{display:block;font-size:14px;color:#f1e6d9;margin-bottom:3px}.shop-item span{display:block;font-size:11px;color:#b6a799;line-height:1.35}.shop-item button{width:auto;height:42px;padding:0 12px;border-radius:12px;font-size:12px;background:linear-gradient(180deg,#403a37,#292624 70%, #1a1817);border:1px solid #635b53}
+  .shop-footer{display:grid;gap:8px;margin-top:12px}.shop-footer button{height:48px;font-size:14px}.shop-footer .secondary{background:linear-gradient(180deg,#312d2a,#201d1b)}
+  .life-card{text-align:center}.life-card .big-heart{font-size:44px;line-height:1;margin:6px 0 10px}.life-card .wait{font-size:20px;font-weight:1000;color:#e6bd74;margin:10px 0}.life-card button:disabled{opacity:.4;filter:grayscale(.6)}
+  .hint-flash{animation:hintFlash .72s ease-in-out 2}@keyframes hintFlash{0%,100%{box-shadow:inset 0 0 0 0 rgba(244,205,122,0)}50%{box-shadow:inset 0 0 0 3px rgba(244,205,122,.4),0 0 22px rgba(244,205,122,.18)}}
+  @media(max-width:560px){.topbar{grid-template-columns:1fr repeat(3,1fr);}.brand{grid-column:1/-1}.pill{min-height:42px;font-size:14px}.controls{grid-template-columns:repeat(3,72px)}button{height:60px}}
+  @media(max-height:780px){.app{padding-top:calc(env(safe-area-inset-top) + 4px)}.topbar,.utilitybar{margin-bottom:8px}.hud{margin-top:6px}.controls{margin-top:8px;grid-template-columns:repeat(3,68px)}button{height:56px}.hint{display:none}}
 </style>
 </head>
 <body>
 <div class="app">
   <div class="topbar">
-    <div class="brand">⛏️ <span>MOLE QUEST</span></div>
+    <div class="brand"><span>MOLE QUEST</span></div>
     <div class="pill">💎 <span id="gems">0</span>/<span id="total">0</span></div>
     <div class="pill">⭐ <span id="score">0</span></div>
     <div class="pill" id="keyPill" style="display:none">🔑 <span id="keyState">0/1</span></div>
@@ -293,7 +184,7 @@
   <div class="shell" id="shell"><div id="board"></div><div class="death-note" id="deathNote">💥 Bir can gitti!</div></div>
 
   <div class="hud">
-    <div class="status" id="status">Kristalleri topla. Hepsini bulunca çıkış açılacak.</div>
+    <div class="status" id="status">Tüm kristalleri topla. Çıkış ancak hedefler tamamlandığında açılır.</div>
     <div class="level" id="levelLabel">1–1</div>
   </div>
 
@@ -301,7 +192,7 @@
     <span class="ghost"></span><button data-dir="up">▲</button><span class="ghost"></span>
     <button data-dir="left">◀</button><button data-dir="down">▼</button><button data-dir="right">▶</button>
   </div>
-  <div class="hint" id="hint">Her dokunuş = 1 kare. Kayanın altını kazıp çekilince kaya düşer; hareket halindeki kayanın altında kalma.</div>
+  <div class="hint" id="hint">Her dokunuş 1 kare hareket ettirir. Altı boşalan kaya boşluğun sonuna kadar düşer; düşüş hattında kalma.</div>
   <div class="devbar">
     <strong>TEST • Bölüme Git:</strong>
     <button data-test-level="0">1</button>
@@ -312,15 +203,15 @@
     <button id="testFillLives">CAN DOLDUR</button>
     <button id="testAddHints">+10 HINT</button>
   </div>
-  <div class="economy-note">Prototype economy: 5 can • 20 dakikada 1 can • başlangıçta 3 hint</div>
-  <div class="build">v4.5 • 5 Levels • Gravity + Switch + Fracture Wall</div>
+  <div class="economy-note">Prototype economy • 5 can • 20 dakikada 1 can • 3 başlangıç hinti</div>
+  <div class="build">v5.0 • Visual Revision • Levels 1–5</div>
 </div>
 
 <div class="win" id="win">
   <div class="card">
     <div class="hero"></div>
     <div class="card-body">
-      <h2 id="winTitle">Level Complete! ✨</h2>
+      <h2 id="winTitle">Level Complete</h2>
       <p id="winText">Köstebek bütün kristalleri buldu ve çıkışa ulaştı.</p>
       <div class="modal-actions">
         <button id="nextLevel">Sonraki Bölüm →</button>
@@ -343,7 +234,7 @@
 </div>
 <div class="modal-overlay" id="outLivesModal">
   <div class="shop-card life-card">
-    <div class="big-heart">♥</div><h2>CAN BİTTİ</h2>
+    <div class="big-heart">♥</div><h2>CANLAR TÜKENDİ</h2>
     <p class="sub">Bir can yenilenince devam edebilirsin veya Shop'tan canlarını doldurabilirsin.</p>
     <div class="wait" id="outLifeTimer">--:--</div>
     <div class="shop-footer"><button id="continueAfterLife" disabled>Devam Et</button><button class="secondary" id="openShopFromLives">Shop</button></div>
@@ -355,7 +246,7 @@ const W=10,H=14;
 const MAX_LIVES=5;
 const REFILL_MS=20*60*1000;
 const START_HINTS=3;
-const STORAGE_PREFIX='mq_v43_';
+const STORAGE_PREFIX='mq_v50_';
 function readStore(key,fallback){try{const v=localStorage.getItem(STORAGE_PREFIX+key);return v===null?fallback:Number(v)}catch(e){return fallback}}
 function writeStore(key,value){try{localStorage.setItem(STORAGE_PREFIX+key,String(value))}catch(e){}}
 let lives=Math.max(0,Math.min(MAX_LIVES,readStore('lives',MAX_LIVES)));
@@ -365,8 +256,8 @@ let hintSteps=[0,0,0,0,0];
 const levels=[
   {
     id:'1–1',
-    intro:'Kristalleri topla. Hepsini bulunca çıkış açılacak.',
-    hint:'Her dokunuş = 1 kare. Kayanın altını kazıp çekilince kaya düşer; hareket halindeki kayanın altında kalma.',
+    intro:'Tüm kristalleri topla. Çıkış ancak hedefler tamamlandığında açılır.',
+    hint:'Her dokunuş 1 kare hareket ettirir. Altı boşalan kaya boşluğun sonuna kadar düşer; düşüş hattında kalma.',
     hints:['Kayaların altını boşaltmadan önce bir kaçış yönü bırak.','Bir kayanın altındaki kesintisiz boşluk açılırsa kaya boşluğun sonuna kadar iner.'],
     enemyMode:'static',
     requiresKey:false,
