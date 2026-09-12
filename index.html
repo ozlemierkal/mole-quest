@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
 <meta name="theme-color" content="#24130d" />
-<title>Mole Quest — Visual Prototype</title>
+<title>Mole Quest — v3.4</title>
 <style>
   :root{
     --cream:#fff3dd;
@@ -78,6 +78,7 @@
   .dirt{background-image:url('dirt-tile.png')}
   .empty{background-image:url('tunnel-tile.png')}
   .rock{background-image:url('rock-tile.png')}
+  .rock.falling{animation:rockDrop .18s ease-out;filter:brightness(1.08)}
   .gem{background-image:url('gem-tile.png');animation:gemPulse 1.45s ease-in-out infinite}
   .player{
     background-image:url('mole-tile.png');
@@ -109,6 +110,7 @@
     animation:exitGlow .8s ease-in-out infinite alternate;
   }
   @keyframes gemPulse{0%,100%{filter:brightness(1);transform:scale(1)}50%{filter:brightness(1.25);transform:scale(1.05)}}
+  @keyframes rockDrop{0%{transform:translateY(-32%)}100%{transform:translateY(0)}}
   @keyframes playerStep{0%{background-size:108% 108%;filter:brightness(1.28) drop-shadow(0 2px 3px #0008)}100%{background-size:128% 128%;filter:brightness(1) drop-shadow(0 2px 3px #0008)}}
   @keyframes enemyWiggle{0%{transform:translateX(-1px) rotate(-1deg)}100%{transform:translateX(1px) rotate(1deg)}}
   @keyframes exitGlow{0%{filter:saturate(1.05) brightness(1.02)}100%{filter:saturate(1.3) brightness(1.32);box-shadow:inset 0 0 24px #ffe28ddd,0 0 22px #ffd15fbb}}
@@ -192,7 +194,7 @@
     <span class="ghost"></span><button data-dir="up">▲</button><span class="ghost"></span>
     <button data-dir="left">◀</button><button data-dir="down">▼</button><button data-dir="right">▶</button>
   </div>
-  <div class="hint">Her dokunuş = 1 kare. Yön tuşlarını kullan.</div>
+  <div class="hint">Her dokunuş = 1 kare. Kayanın altını kazıp çekilince kaya düşer; hareket halindeki kayanın altında kalma.</div>
 </div>
 
 <div class="win" id="win">
@@ -224,15 +226,16 @@ const initial=[
 "#dddddddd#",
 "##########"
 ];
-let map,px,py,gems,total,score=0,lives=3,open=false,locked=false,moveLock=false,enemyAlert=false;
+let map,px,py,startX,startY,gems,total,score=0,lives=3,open=false,locked=false,moveLock=false,enemyAlert=false;
+let fallingRocks=new Set();
 const board=document.getElementById('board');
 const gemEl=document.getElementById('gems'), totalEl=document.getElementById('total'), scoreEl=document.getElementById('score'), lifeEl=document.getElementById('lives'), statusEl=document.getElementById('status'), winEl=document.getElementById('win');
 const shellEl=document.getElementById('shell'), deathNote=document.getElementById('deathNote');
 
 function reset(full=false){
-  map=initial.map(r=>r.split(''));gems=0;score=0;open=false;enemyAlert=false;locked=false;if(full)lives=3;total=0;
+  map=initial.map(r=>r.split(''));gems=0;score=0;open=false;enemyAlert=false;locked=false;fallingRocks=new Set();if(full)lives=3;total=0;
   for(let y=0;y<H;y++)for(let x=0;x<W;x++){
-    if(map[y][x]==='P'){px=x;py=y;map[y][x]='.'}
+    if(map[y][x]==='P'){px=x;py=y;startX=x;startY=y;map[y][x]='.'}
     if(map[y][x]==='G')total++;
   }
   gemEl.textContent=gems;totalEl.textContent=total;scoreEl.textContent=score;lifeEl.textContent=lives;
@@ -245,7 +248,7 @@ function render(){
     if(x===px&&y===py)c.classList.add('player');
     else if(t==='#')c.classList.add('wall');
     else if(t==='d')c.classList.add('dirt');
-    else if(t==='R')c.classList.add('rock');
+    else if(t==='R'){c.classList.add('rock');if(fallingRocks.has(`${x},${y}`))c.classList.add('falling')} 
     else if(t==='G')c.classList.add('gem');
     else if(t==='E'){c.classList.add('exit');if(open)c.classList.add('open')}
     else if(t==='X'){c.classList.add('enemy');if(enemyAlert)c.classList.add('alert')}
@@ -268,50 +271,14 @@ function enemyLocation(){
   return null;
 }
 
-function clearSight(ex,ey,tx,ty){
-  if(ex!==tx && ey!==ty)return false;
-  const dist=Math.abs(ex-tx)+Math.abs(ey-ty);
-  if(dist>4)return false;
-  const sx=Math.sign(tx-ex), sy=Math.sign(ty-ey);
-  let x=ex+sx, y=ey+sy;
-  while(x!==tx || y!==ty){
-    const t=map[y][x];
-    if(t==='#' || t==='d' || t==='R')return false;
-    x+=sx;y+=sy;
-  }
-  return true;
-}
-
 function enemyTurn(){
+  // Level 1: böcek sabit durur. Sadece yanına gelince uyarı verir.
   const e=enemyLocation();
   if(!e){enemyAlert=false;return false}
   const md=Math.abs(px-e.x)+Math.abs(py-e.y);
-  const sees=(md===1)||clearSight(e.x,e.y,px,py);
-  enemyAlert=sees;
-  if(!sees)return false;
-
-  statusEl.textContent='Mor taş böceği seni gördü! ❗';
-  const options=[];
-  const dx=px-e.x, dy=py-e.y;
-  if(Math.abs(dx)>=Math.abs(dy)){
-    if(dx)options.push([Math.sign(dx),0]);
-    if(dy)options.push([0,Math.sign(dy)]);
-  }else{
-    if(dy)options.push([0,Math.sign(dy)]);
-    if(dx)options.push([Math.sign(dx),0]);
-  }
-
-  for(const [sx,sy] of options){
-    const nx=e.x+sx, ny=e.y+sy;
-    if(nx===px && ny===py){
-      hurt('Mor taş böceği sana yetişti!');
-      return true;
-    }
-    if(map[ny][nx]==='.'){
-      map[e.y][e.x]='.';
-      map[ny][nx]='X';
-      return false;
-    }
+  enemyAlert=(md===1);
+  if(enemyAlert){
+    statusEl.textContent='Mor taş böceği çok yakın! Üzerine gitme ❗';
   }
   return false;
 }
@@ -360,11 +327,50 @@ function move(dx,dy){
   }
 }
 function rocksFall(){
-  for(let y=H-2;y>=1;y--)for(let x=1;x<W-1;x++)if(map[y][x]==='R'){
-    const by=y+1;
-    if(px===x&&py===by){map[y][x]='.';map[by][x]='R';hurt('Taş başına düştü!');return}
-    if(map[by][x]==='.') {map[by][x]='R';map[y][x]='.'}
+  // v3.4: gerçek ve öngörülebilir kaya fiziği.
+  // Kayanın altı boşalınca her hamlede 1 kare düşer.
+  // Oyuncu yeni kazdığı anda sabit kaya onu anında ezmez; önce kenara çekilme şansı vardır.
+  // Yalnızca bir önceki turdan beri gerçekten düşmekte olan kaya oyuncuya çarparsa can gider.
+  const nextFalling=new Set();
+  let movedAny=false;
+
+  for(let y=H-2;y>=1;y--){
+    for(let x=1;x<W-1;x++){
+      if(map[y][x]!=='R') continue;
+
+      const key=`${x},${y}`;
+      const wasFalling=fallingRocks.has(key);
+      const by=y+1;
+      const playerBelow=(px===x&&py===by);
+
+      if(playerBelow){
+        if(wasFalling){
+          // Kaya gerçekten hareket halindeydi ve oyuncuya çarptı.
+          map[y][x]='.';
+          map[by][x]='R';
+          fallingRocks=new Set();
+          render();
+          hurt('Düşen kayanın altında kaldın! 🪨');
+          return true;
+        }
+        // Sabit kaya: oyuncu altını yeni kazdıysa bir hamle kaçış payı ver.
+        continue;
+      }
+
+      if(map[by][x]==='.'){
+        map[by][x]='R';
+        map[y][x]='.';
+        nextFalling.add(`${x},${by}`);
+        movedAny=true;
+      }
+    }
   }
+
+  fallingRocks=nextFalling;
+  if(movedAny && !locked){
+    statusEl.textContent='Kaya düşüyor! 🪨 Altında kalma.';
+  }
+  return false;
 }
 function hurt(msg){
   if(locked)return;
@@ -386,11 +392,12 @@ function hurt(msg){
       reset(true);
       statusEl.textContent='Yeni oyun başladı. Dikkatli kaz!';
     } else {
-      const keep=lives;
-      reset(false);
-      lives=keep;
+      // Toplanan kristaller ve skor korunur; yalnızca güvenli başlangıç karesine dönülür.
+      px=startX;
+      py=startY;
       lifeEl.textContent=lives;
-      statusEl.textContent='Başlangıç noktasına döndün. Devam!';
+      statusEl.textContent='Başlangıç noktasına döndün. Kristallerin ve skorun duruyor.';
+      render();
     }
     locked=false;
     moveLock=false;
