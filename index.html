@@ -26,7 +26,7 @@
     width:min(100vw,560px);
     padding:calc(env(safe-area-inset-top) + 10px) 12px calc(env(safe-area-inset-bottom) + 16px);
   }
-  .topbar{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+  .topbar{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap}
   .brand{
     margin-right:auto;
     display:flex;align-items:center;gap:8px;
@@ -47,6 +47,7 @@
     font-weight:900;
   }
   .shell{
+    position:relative;
     padding:9px;
     border-radius:24px;
     background:linear-gradient(180deg,#6b432b,#362017);
@@ -62,6 +63,7 @@
     border-radius:16px;
     background:#160d09;
     touch-action:none;
+    position:relative;
   }
   .cell{
     position:relative;overflow:hidden;
@@ -76,14 +78,52 @@
   .dirt{background-image:url('dirt-tile.png')}
   .empty{background-image:url('tunnel-tile.png')}
   .rock{background-image:url('rock-tile.png')}
-  .gem{background-image:url('gem-tile.png');animation:gemPulse 1.8s ease-in-out infinite}
-  .player{background-image:url('mole-tile.png');z-index:3;animation:moleBob 1.6s ease-in-out infinite}
-  .enemy{background-image:url('enemy-tile.png');animation:enemyWiggle 1.4s ease-in-out infinite}
+  .gem{background-image:url('gem-tile.png');animation:gemPulse 1.45s ease-in-out infinite}
+  .player{
+    background-image:url('mole-tile.png');
+    background-size:128% 128%;
+    background-position:50% 53%;
+    z-index:3;
+    animation:playerStep .16s ease-out;
+    filter:drop-shadow(0 2px 3px #0008);
+  }
+  .enemy{
+    background-image:url('enemy-tile.png');
+    background-size:145% 145%;
+    background-position:50% 96%;
+    filter:saturate(.72) brightness(.78);
+  }
+  .enemy.alert{
+    background-size:100% 100%;
+    background-position:center;
+    filter:none;
+    animation:enemyWiggle .48s ease-in-out infinite alternate;
+    box-shadow:inset 0 0 14px #ff6f6f66;
+    z-index:2;
+  }
   .exit{background-image:url('exit-tile.png');filter:saturate(.72) brightness(.72)}
-  .exit.open{filter:saturate(1.15) brightness(1.1);box-shadow:inset 0 0 18px #ffd971aa,0 0 14px #ffd97188;z-index:2}
-  @keyframes gemPulse{50%{filter:brightness(1.18);transform:scale(1.03)}}
-  @keyframes moleBob{50%{transform:translateY(-1.5px) scale(1.015)}}
-  @keyframes enemyWiggle{25%{transform:translateX(-1px)}75%{transform:translateX(1px)}}
+  .exit.open{
+    filter:saturate(1.15) brightness(1.12);
+    box-shadow:inset 0 0 18px #ffd971bb,0 0 16px #ffd971aa;
+    z-index:2;
+    animation:exitGlow .8s ease-in-out infinite alternate;
+  }
+  @keyframes gemPulse{0%,100%{filter:brightness(1);transform:scale(1)}50%{filter:brightness(1.25);transform:scale(1.05)}}
+  @keyframes playerStep{0%{background-size:108% 108%;filter:brightness(1.28) drop-shadow(0 2px 3px #0008)}100%{background-size:128% 128%;filter:brightness(1) drop-shadow(0 2px 3px #0008)}}
+  @keyframes enemyWiggle{0%{transform:translateX(-1px) rotate(-1deg)}100%{transform:translateX(1px) rotate(1deg)}}
+  @keyframes exitGlow{0%{filter:saturate(1.05) brightness(1.02)}100%{filter:saturate(1.3) brightness(1.32);box-shadow:inset 0 0 24px #ffe28ddd,0 0 22px #ffd15fbb}}
+  .score-fx,.exit-fx{
+    position:absolute;
+    z-index:15;
+    transform:translate(-50%,-50%);
+    pointer-events:none;
+    font-weight:1000;
+    text-shadow:0 2px 4px #000,0 0 12px currentColor;
+    animation:floatFx .72s ease-out forwards;
+  }
+  .score-fx{color:#fff5a6;font-size:17px}
+  .exit-fx{color:#ffe28a;font-size:19px;white-space:nowrap}
+  @keyframes floatFx{0%{opacity:0;transform:translate(-50%,-35%) scale(.72)}22%{opacity:1;transform:translate(-50%,-58%) scale(1.08)}100%{opacity:0;transform:translate(-50%,-125%) scale(.95)}}
   .hud{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:10px}
   .status,.level{
     border-radius:15px;background:linear-gradient(#47291c,#29170f);
@@ -102,6 +142,16 @@
   button:active{transform:translateY(4px);box-shadow:inset 0 2px 0 #d1aa8d66,0 2px 0 #281a13}
   .ghost{visibility:hidden}
   .hint{text-align:center;font-size:12px;opacity:.8;margin-top:10px}
+  .death-note{
+    position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.92);
+    z-index:12;padding:14px 18px;border-radius:18px;
+    background:#2b160fe8;border:2px solid #ffad7a;color:#fff4e8;
+    font-weight:1000;font-size:18px;box-shadow:0 14px 34px #000a,0 0 22px #ff885566;
+    opacity:0;pointer-events:none;transition:opacity .12s ease,transform .12s ease;
+  }
+  .death-note.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+  .shell.hurt{animation:shellShake .24s ease-in-out 1}
+  @keyframes shellShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
   .win{
     position:fixed;inset:0;display:none;align-items:center;justify-content:center;
     padding:22px;background:#000b;z-index:20;
@@ -127,10 +177,11 @@
   <div class="topbar">
     <div class="brand">⛏️ <span>MOLE QUEST</span></div>
     <div class="pill">💎 <span id="gems">0</span>/<span id="total">0</span></div>
+    <div class="pill">⭐ <span id="score">0</span></div>
     <div class="pill">❤️ <span id="lives">3</span></div>
   </div>
 
-  <div class="shell"><div id="board"></div></div>
+  <div class="shell" id="shell"><div id="board"></div><div class="death-note" id="deathNote">💥 Bir can gitti!</div></div>
 
   <div class="hud">
     <div class="status" id="status">Kristalleri topla. Hepsini bulunca çıkış açılacak.</div>
@@ -141,7 +192,7 @@
     <span class="ghost"></span><button data-dir="up">▲</button><span class="ghost"></span>
     <button data-dir="left">◀</button><button data-dir="down">▼</button><button data-dir="right">▶</button>
   </div>
-  <div class="hint">Ok tuşlarına dokun veya oyun alanında kısa bir kaydırma yap.</div>
+  <div class="hint">Her dokunuş = 1 kare. Yön tuşlarını kullan.</div>
 </div>
 
 <div class="win" id="win">
@@ -173,17 +224,18 @@ const initial=[
 "#dddddddd#",
 "##########"
 ];
-let map,px,py,gems,total,lives=3,open=false,locked=false;
+let map,px,py,gems,total,score=0,lives=3,open=false,locked=false,moveLock=false,enemyAlert=false;
 const board=document.getElementById('board');
-const gemEl=document.getElementById('gems'), totalEl=document.getElementById('total'), lifeEl=document.getElementById('lives'), statusEl=document.getElementById('status'), winEl=document.getElementById('win');
+const gemEl=document.getElementById('gems'), totalEl=document.getElementById('total'), scoreEl=document.getElementById('score'), lifeEl=document.getElementById('lives'), statusEl=document.getElementById('status'), winEl=document.getElementById('win');
+const shellEl=document.getElementById('shell'), deathNote=document.getElementById('deathNote');
 
 function reset(full=false){
-  map=initial.map(r=>r.split(''));gems=0;open=false;locked=false;if(full)lives=3;total=0;
+  map=initial.map(r=>r.split(''));gems=0;score=0;open=false;enemyAlert=false;locked=false;if(full)lives=3;total=0;
   for(let y=0;y<H;y++)for(let x=0;x<W;x++){
     if(map[y][x]==='P'){px=x;py=y;map[y][x]='.'}
     if(map[y][x]==='G')total++;
   }
-  gemEl.textContent=gems;totalEl.textContent=total;lifeEl.textContent=lives;
+  gemEl.textContent=gems;totalEl.textContent=total;scoreEl.textContent=score;lifeEl.textContent=lives;
   statusEl.textContent='Kristalleri topla. Hepsini bulunca çıkış açılacak.';render();
 }
 function render(){
@@ -196,24 +248,116 @@ function render(){
     else if(t==='R')c.classList.add('rock');
     else if(t==='G')c.classList.add('gem');
     else if(t==='E'){c.classList.add('exit');if(open)c.classList.add('open')}
-    else if(t==='X')c.classList.add('enemy');
+    else if(t==='X'){c.classList.add('enemy');if(enemyAlert)c.classList.add('alert')}
     else c.classList.add('empty');
     board.appendChild(c);
   }
 }
+function showFx(x,y,text,kind='score-fx'){
+  const fx=document.createElement('div');
+  fx.className=kind;
+  fx.textContent=text;
+  fx.style.left=((x+.5)/W*100)+'%';
+  fx.style.top=((y+.5)/H*100)+'%';
+  board.appendChild(fx);
+  setTimeout(()=>fx.remove(),760);
+}
+
+function enemyLocation(){
+  for(let y=0;y<H;y++)for(let x=0;x<W;x++)if(map[y][x]==='X')return {x,y};
+  return null;
+}
+
+function clearSight(ex,ey,tx,ty){
+  if(ex!==tx && ey!==ty)return false;
+  const dist=Math.abs(ex-tx)+Math.abs(ey-ty);
+  if(dist>4)return false;
+  const sx=Math.sign(tx-ex), sy=Math.sign(ty-ey);
+  let x=ex+sx, y=ey+sy;
+  while(x!==tx || y!==ty){
+    const t=map[y][x];
+    if(t==='#' || t==='d' || t==='R')return false;
+    x+=sx;y+=sy;
+  }
+  return true;
+}
+
+function enemyTurn(){
+  const e=enemyLocation();
+  if(!e){enemyAlert=false;return false}
+  const md=Math.abs(px-e.x)+Math.abs(py-e.y);
+  const sees=(md===1)||clearSight(e.x,e.y,px,py);
+  enemyAlert=sees;
+  if(!sees)return false;
+
+  statusEl.textContent='Mor taş böceği seni gördü! ❗';
+  const options=[];
+  const dx=px-e.x, dy=py-e.y;
+  if(Math.abs(dx)>=Math.abs(dy)){
+    if(dx)options.push([Math.sign(dx),0]);
+    if(dy)options.push([0,Math.sign(dy)]);
+  }else{
+    if(dy)options.push([0,Math.sign(dy)]);
+    if(dx)options.push([Math.sign(dx),0]);
+  }
+
+  for(const [sx,sy] of options){
+    const nx=e.x+sx, ny=e.y+sy;
+    if(nx===px && ny===py){
+      hurt('Mor taş böceği sana yetişti!');
+      return true;
+    }
+    if(map[ny][nx]==='.'){
+      map[e.y][e.x]='.';
+      map[ny][nx]='X';
+      return false;
+    }
+  }
+  return false;
+}
+
 function move(dx,dy){
-  if(locked)return;const nx=px+dx,ny=py+dy;if(nx<0||ny<0||nx>=W||ny>=H)return;
-  const t=map[ny][nx];if(t==='#'||t==='R')return;
-  if(t==='X'){hurt('Yeraltı böceğine yakalandın!');return}
+  if(locked)return;
+  const nx=px+dx,ny=py+dy;
+  if(nx<0||ny<0||nx>=W||ny>=H)return;
+  const t=map[ny][nx];
+  if(t==='#'||t==='R')return;
+  if(t==='X'){hurt('Mor taş böceğine yakalandın!');return}
   if(t==='E'&&!open){statusEl.textContent='Kapı kilitli. Önce bütün kristalleri bul!';return}
+
+  let collected=false,openedNow=false;
   px=nx;py=ny;
   if(t==='d')map[ny][nx]='.';
   if(t==='G'){
-    map[ny][nx]='.';gems++;gemEl.textContent=gems;statusEl.textContent='Kristal bulundu! 💎';
-    if(gems===total){open=true;statusEl.textContent='Tüm kristaller tamam! Çıkış açıldı ✨'}
+    map[ny][nx]='.';
+    gems++;
+    score+=100;
+    gemEl.textContent=gems;
+    scoreEl.textContent=score;
+    collected=true;
+    statusEl.textContent='Kristal bulundu! 💎  +100';
+    if(gems===total){
+      open=true;
+      openedNow=true;
+      statusEl.textContent='Tüm kristaller tamam! Çıkış açıldı ✨';
+    }
   }
-  if(t==='E'&&open){render();winEl.style.display='flex';return}
-  rocksFall();render();
+  if(t==='E'&&open){
+    score+=500;
+    scoreEl.textContent=score;
+    render();
+    winEl.style.display='flex';
+    return;
+  }
+
+  rocksFall();
+  if(locked)return;
+  enemyTurn();
+  render();
+  if(collected)showFx(nx,ny,'+100 ✨');
+  if(openedNow){
+    for(let y=0;y<H;y++)for(let x=0;x<W;x++)if(map[y][x]==='E')showFx(x,y,'ÇIKIŞ AÇILDI!','exit-fx');
+  }
 }
 function rocksFall(){
   for(let y=H-2;y>=1;y--)for(let x=1;x<W-1;x++)if(map[y][x]==='R'){
@@ -223,19 +367,62 @@ function rocksFall(){
   }
 }
 function hurt(msg){
-  if(locked)return;locked=true;lives--;lifeEl.textContent=lives;statusEl.textContent=msg;
+  if(locked)return;
+  locked=true;
+  moveLock=true;
+  lives--;
+  lifeEl.textContent=lives;
+  statusEl.textContent=msg;
+  deathNote.textContent = lives<=0 ? '💥 Oyun bitti!' : '💥 Bir can gitti!';
+  deathNote.classList.add('show');
+  shellEl.classList.remove('hurt');
+  void shellEl.offsetWidth;
+  shellEl.classList.add('hurt');
+
   setTimeout(()=>{
-    if(lives<=0){reset(true);statusEl.textContent='Yeni oyun başladı. Dikkatli kaz!'}
-    else{const keep=lives;reset(false);lives=keep;lifeEl.textContent=lives;statusEl.textContent='Bir can gitti. Tekrar dene!'}
+    deathNote.classList.remove('show');
+    shellEl.classList.remove('hurt');
+    if(lives<=0){
+      reset(true);
+      statusEl.textContent='Yeni oyun başladı. Dikkatli kaz!';
+    } else {
+      const keep=lives;
+      reset(false);
+      lives=keep;
+      lifeEl.textContent=lives;
+      statusEl.textContent='Başlangıç noktasına döndün. Devam!';
+    }
     locked=false;
-  },420);
+    moveLock=false;
+  },800);
 }
-function go(d){if(d==='up')move(0,-1);if(d==='down')move(0,1);if(d==='left')move(-1,0);if(d==='right')move(1,0)}
-document.querySelectorAll('[data-dir]').forEach(b=>b.addEventListener('pointerdown',e=>{e.preventDefault();go(b.dataset.dir)}));
-addEventListener('keydown',e=>{if(e.key==='ArrowUp')go('up');if(e.key==='ArrowDown')go('down');if(e.key==='ArrowLeft')go('left');if(e.key==='ArrowRight')go('right')});
-let sx=0,sy=0;
-board.addEventListener('pointerdown',e=>{sx=e.clientX;sy=e.clientY});
-board.addEventListener('pointerup',e=>{const dx=e.clientX-sx,dy=e.clientY-sy;if(Math.max(Math.abs(dx),Math.abs(dy))<24)return;if(Math.abs(dx)>Math.abs(dy))go(dx>0?'right':'left');else go(dy>0?'down':'up')});
+
+function go(d){
+  if(locked || moveLock) return;
+  moveLock=true;
+  if(d==='up')move(0,-1);
+  if(d==='down')move(0,1);
+  if(d==='left')move(-1,0);
+  if(d==='right')move(1,0);
+  setTimeout(()=>{ if(!locked) moveLock=false; },120);
+}
+
+document.querySelectorAll('[data-dir]').forEach(b=>{
+  b.addEventListener('pointerup',e=>{
+    e.preventDefault();
+    go(b.dataset.dir);
+  });
+  b.addEventListener('contextmenu',e=>e.preventDefault());
+});
+
+addEventListener('keydown',e=>{
+  if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key)) e.preventDefault();
+  if(e.key==='ArrowUp')go('up');
+  if(e.key==='ArrowDown')go('down');
+  if(e.key==='ArrowLeft')go('left');
+  if(e.key==='ArrowRight')go('right');
+});
+
 document.getElementById('again').onclick=()=>{winEl.style.display='none';reset(true)};
 reset(true);
 </script>
