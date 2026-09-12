@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
 <meta name="theme-color" content="#24130d" />
-<title>Mole Quest — v4.0 Level 2</title>
+<title>Mole Quest — v4.2.2 Test Menu</title>
 <style>
   :root{
     --cream:#fff3dd;
@@ -80,6 +80,24 @@
   .rock{background-image:url('rock-tile.png')}
   .rock.falling{animation:rockDrop .18s ease-out;filter:brightness(1.08)}
   .gem{background-image:url('gem-tile.png');animation:gemPulse 1.45s ease-in-out infinite}
+  .key{
+    background-image:url('tunnel-tile.png');
+    animation:keyPulse 1.15s ease-in-out infinite alternate;
+  }
+  .key::before{
+    content:"";position:absolute;z-index:2;
+    width:34%;height:34%;left:14%;top:31%;
+    border:5px solid #ffd45f;border-radius:50%;
+    box-shadow:0 0 10px #ffd45faa,inset 0 0 5px #fff3af;
+  }
+  .key::after{
+    content:"";position:absolute;z-index:2;
+    width:50%;height:22%;left:43%;top:42%;
+    background:linear-gradient(180deg,#ffe48a,#e6a927);
+    clip-path:polygon(0 28%,68% 28%,68% 0,81% 0,81% 28%,100% 28%,100% 72%,85% 72%,85% 100%,72% 100%,72% 72%,0 72%);
+    border-radius:999px;
+    box-shadow:0 0 9px #ffd45f99;
+  }
   .player{
     background-image:url('mole-tile.png');
     background-size:128% 128%;
@@ -110,6 +128,7 @@
     animation:exitGlow .8s ease-in-out infinite alternate;
   }
   @keyframes gemPulse{0%,100%{filter:brightness(1);transform:scale(1)}50%{filter:brightness(1.25);transform:scale(1.05)}}
+  @keyframes keyPulse{0%{filter:brightness(1);transform:scale(.96)}100%{filter:brightness(1.28);transform:scale(1.05)}}
   @keyframes rockDrop{0%{transform:translateY(-32%)}100%{transform:translateY(0)}}
   @keyframes playerStep{0%{background-size:108% 108%;filter:brightness(1.28) drop-shadow(0 2px 3px #0008)}100%{background-size:128% 128%;filter:brightness(1) drop-shadow(0 2px 3px #0008)}}
   @keyframes enemyWiggle{0%{transform:translateX(-1px) rotate(-1deg)}100%{transform:translateX(1px) rotate(1deg)}}
@@ -169,6 +188,21 @@
   .modal-actions{display:grid;gap:9px}
   .card button{width:100%;height:56px;font-size:18px}
   .card button.secondary{height:48px;background:linear-gradient(#5d4639,#3d2a21);font-size:15px;opacity:.95}
+  .build{font-size:10px;text-align:center;opacity:.55;letter-spacing:.4px;margin-top:6px}
+
+  .devbar{
+    margin-top:10px;padding:9px 10px;border-radius:14px;
+    background:#24130dcc;border:1px dashed #9a6c4d;
+    display:flex;align-items:center;justify-content:center;gap:7px;flex-wrap:wrap;
+    font-size:11px;color:#e9d7c5;
+  }
+  .devbar strong{color:#ffd27a;letter-spacing:.3px}
+  .devbar button{
+    width:auto;height:34px;min-width:42px;padding:0 10px;border-radius:10px;
+    font-size:12px;background:linear-gradient(#6b4b39,#463025);
+    box-shadow:inset 0 1px 0 #d1aa8d55,0 3px 0 #281a13;
+  }
+  .devbar button:active{transform:translateY(2px);box-shadow:inset 0 1px 0 #d1aa8d55,0 1px 0 #281a13}
   @media(max-height:780px){
     .app{padding-top:calc(env(safe-area-inset-top) + 4px)}
     .topbar{margin-bottom:6px}.hud{margin-top:6px}.controls{margin-top:8px;grid-template-columns:repeat(3,70px)}
@@ -182,6 +216,7 @@
     <div class="brand">⛏️ <span>MOLE QUEST</span></div>
     <div class="pill">💎 <span id="gems">0</span>/<span id="total">0</span></div>
     <div class="pill">⭐ <span id="score">0</span></div>
+    <div class="pill" id="keyPill" style="display:none">🔑 <span id="keyState">0/1</span></div>
     <div class="pill">❤️ <span id="lives">3</span></div>
   </div>
 
@@ -197,6 +232,13 @@
     <button data-dir="left">◀</button><button data-dir="down">▼</button><button data-dir="right">▶</button>
   </div>
   <div class="hint" id="hint">Her dokunuş = 1 kare. Kayanın altını kazıp çekilince kaya düşer; hareket halindeki kayanın altında kalma.</div>
+  <div class="devbar">
+    <strong>TEST • Bölüme Git:</strong>
+    <button data-test-level="0">1</button>
+    <button data-test-level="1">2</button>
+    <button data-test-level="2">3</button>
+  </div>
+  <div class="build">v4.2.2 • 3 Levels • Test Menu</div>
 </div>
 
 <div class="win" id="win">
@@ -221,6 +263,7 @@ const levels=[
     intro:'Kristalleri topla. Hepsini bulunca çıkış açılacak.',
     hint:'Her dokunuş = 1 kare. Kayanın altını kazıp çekilince kaya düşer; hareket halindeki kayanın altında kalma.',
     enemyMode:'static',
+    requiresKey:false,
     map:[
       "##########",
       "#..dGdR..#",
@@ -243,6 +286,7 @@ const levels=[
     intro:'Level 2: Mor taş böceği artık hareket ediyor! Her 2 hamlede bir ilerler.',
     hint:'Level 2: Mor böcek her 2 başarılı hamlede 1 kare devriye gezer. Temas etme; kayaları da kullan.',
     enemyMode:'patrol',
+    requiresKey:false,
     map:[
       "##########",
       "#dGddRddG#",
@@ -259,16 +303,40 @@ const levels=[
       "#dddddddd#",
       "##########"
     ]
+  },
+  {
+    id:'1–3',
+    intro:'Level 3: Çıkış için bütün kristallerin yanında altın anahtarı da bulmalısın! 🔑',
+    hint:'Level 3: Altın anahtarı bul, bütün kristalleri topla ve hareket eden mor böcekten uzak dur.',
+    enemyMode:'patrol',
+    requiresKey:true,
+    map:[
+      "##########",
+      "#GdddRddG#",
+      "#ddKddddd#",
+      "#..R..G..#",
+      "#dddPdddd#",
+      "#dRddddRd#",
+      "#Gddd..dE#",
+      "#ddddGddd#",
+      "#..X.....#",
+      "#ddRdddGd#",
+      "#GddddddG#",
+      "#dddRdddd#",
+      "#ddddGddd#",
+      "##########"
+    ]
   }
 ];
 
 let currentLevel=0;
-let map,px,py,startX,startY,gems,total,score=0,levelStartScore=0,lives=3,open=false,locked=false,moveLock=false,enemyAlert=false;
+let map,px,py,startX,startY,gems,total,score=0,levelStartScore=0,lives=3,open=false,locked=false,moveLock=false,enemyAlert=false,hasKey=false;
 let fallingRocks=new Set();
 let enemyTick=0,enemyDir=1;
 
 const board=document.getElementById('board');
 const gemEl=document.getElementById('gems'), totalEl=document.getElementById('total'), scoreEl=document.getElementById('score'), lifeEl=document.getElementById('lives');
+const keyPill=document.getElementById('keyPill'), keyState=document.getElementById('keyState');
 const statusEl=document.getElementById('status'), winEl=document.getElementById('win'), levelLabel=document.getElementById('levelLabel'), hintEl=document.getElementById('hint');
 const shellEl=document.getElementById('shell'), deathNote=document.getElementById('deathNote');
 const winTitle=document.getElementById('winTitle'), winText=document.getElementById('winText'), nextBtn=document.getElementById('nextLevel'), againBtn=document.getElementById('again');
@@ -281,12 +349,14 @@ function loadLevel(index,{freshRun=false,retry=false}={}){
   lives=3;
   const level=levels[currentLevel];
   map=level.map.map(r=>r.split(''));
-  gems=0;total=0;open=false;locked=false;moveLock=false;enemyAlert=false;fallingRocks=new Set();enemyTick=0;enemyDir=1;
+  gems=0;total=0;open=false;locked=false;moveLock=false;enemyAlert=false;hasKey=false;fallingRocks=new Set();enemyTick=0;enemyDir=1;
   for(let y=0;y<H;y++)for(let x=0;x<W;x++){
     if(map[y][x]==='P'){px=x;py=y;startX=x;startY=y;map[y][x]='.'}
     if(map[y][x]==='G') total++;
   }
   gemEl.textContent=gems;totalEl.textContent=total;scoreEl.textContent=score;lifeEl.textContent=lives;
+  keyPill.style.display=level.requiresKey?'block':'none';
+  keyState.textContent=hasKey?'1/1':'0/1';
   levelLabel.textContent=level.id;
   hintEl.textContent=level.hint;
   statusEl.textContent=level.intro;
@@ -302,6 +372,7 @@ function render(){
     else if(t==='d')c.classList.add('dirt');
     else if(t==='R'){c.classList.add('rock');if(fallingRocks.has(`${x},${y}`))c.classList.add('falling')}
     else if(t==='G')c.classList.add('gem');
+    else if(t==='K')c.classList.add('key');
     else if(t==='E'){c.classList.add('exit');if(open)c.classList.add('open')}
     else if(t==='X'){c.classList.add('enemy');if(enemyAlert)c.classList.add('alert')}
     else c.classList.add('empty');
@@ -333,7 +404,7 @@ function enemyTurn(){
     return false;
   }
 
-  // Level 2: böcek yalnızca önceden açılmış tünelde devriye gezer.
+  // Level 2 ve 3: böcek yalnızca önceden açılmış tünelde devriye gezer.
   // Her iki BAŞARILI oyuncu hamlesinde bir kare ilerler; toprağı kazamaz.
   enemyTick++;
   enemyAlert=(md<=2);
@@ -366,11 +437,36 @@ function enemyTurn(){
 function completeLevel(){
   locked=true;moveLock=true;
   score+=500;scoreEl.textContent=score;
+  const level=levels[currentLevel];
   const isLast=currentLevel===levels.length-1;
-  winTitle.textContent=isLast?'Level 2 Complete! ✨':'Level Complete! ✨';
-  winText.textContent=isLast?'İkinci bölüm de tamam! Hareket eden mor böceği atlattın.':'Köstebek bütün kristalleri buldu ve çıkışa ulaştı.';
+  winTitle.textContent=`Level ${currentLevel+1} Complete! ✨`;
+  if(currentLevel===0) winText.textContent='Köstebek bütün kristalleri buldu ve çıkışa ulaştı.';
+  else if(currentLevel===1) winText.textContent='İkinci bölüm de tamam! Hareket eden mor böceği atlattın.';
+  else winText.textContent='Altın anahtarı ve bütün kristalleri buldun. Üçüncü bölüm tamam! 🔑';
   nextBtn.textContent=isLast?'Baştan Oyna':'Sonraki Bölüm →';
+  if(currentLevel===1) nextBtn.textContent='Sonraki Bölüm →';
   winEl.style.display='flex';
+}
+
+function tryOpenExit(){
+  if(open) return false;
+  const level=levels[currentLevel];
+  const requirementsMet=(gems===total)&&(!level.requiresKey||hasKey);
+  if(requirementsMet){
+    open=true;
+    statusEl.textContent=level.requiresKey?'Kristaller + altın anahtar tamam! Çıkış açıldı ✨':'Tüm kristaller tamam! Çıkış açıldı ✨';
+    return true;
+  }
+  return false;
+}
+
+function lockedExitMessage(){
+  const level=levels[currentLevel];
+  if(!level.requiresKey) return 'Kapı kilitli. Önce bütün kristalleri bul!';
+  const remaining=total-gems;
+  if(!hasKey && remaining>0) return `Kapı kilitli. ${remaining} kristal ve altın anahtar gerekiyor.`;
+  if(!hasKey) return 'Bütün kristaller tamam, ama altın anahtar eksik! 🔑';
+  return `${remaining} kristal daha bulmalısın.`;
 }
 
 function move(dx,dy){
@@ -380,15 +476,21 @@ function move(dx,dy){
   const t=map[ny][nx];
   if(t==='#'||t==='R')return false;
   if(t==='X'){hurt('Mor taş böceğine yakalandın!');return false}
-  if(t==='E'&&!open){statusEl.textContent='Kapı kilitli. Önce bütün kristalleri bul!';return false}
+  if(t==='E'&&!open){statusEl.textContent=lockedExitMessage();return false}
 
-  let collected=false,openedNow=false;
+  let collected=false,collectedKey=false,openedNow=false;
   px=nx;py=ny;
   if(t==='d')map[ny][nx]='.';
   if(t==='G'){
     map[ny][nx]='.';gems++;score+=100;gemEl.textContent=gems;scoreEl.textContent=score;collected=true;
     statusEl.textContent='Kristal bulundu! 💎  +100';
-    if(gems===total){open=true;openedNow=true;statusEl.textContent='Tüm kristaller tamam! Çıkış açıldı ✨';}
+    openedNow=tryOpenExit()||openedNow;
+    if(!openedNow && levels[currentLevel].requiresKey && gems===total && !hasKey) statusEl.textContent='Bütün kristaller tamam! Şimdi altın anahtarı bul 🔑';
+  }
+  if(t==='K'){
+    map[ny][nx]='.';hasKey=true;score+=250;scoreEl.textContent=score;keyState.textContent='1/1';collectedKey=true;
+    statusEl.textContent='Altın anahtar bulundu! 🔑  +250';
+    openedNow=tryOpenExit()||openedNow;
   }
   if(t==='E'&&open){render();completeLevel();return true}
 
@@ -398,6 +500,7 @@ function move(dx,dy){
   if(locked)return true;
   render();
   if(collected)showFx(nx,ny,'+100 ✨');
+  if(collectedKey)showFx(nx,ny,'+250 🔑');
   if(openedNow){
     for(let y=0;y<H;y++)for(let x=0;x<W;x++)if(map[y][x]==='E')showFx(x,y,'ÇIKIŞ AÇILDI!','exit-fx');
   }
@@ -512,7 +615,30 @@ againBtn.onclick=()=>{
   loadLevel(currentLevel,{retry:true});
 };
 
-loadLevel(0,{freshRun:true});
+
+
+// Geliştirme/test menüsü: istediğin bölüme doğrudan atla.
+document.querySelectorAll('[data-test-level]').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const target=Number(btn.dataset.testLevel);
+    if(Number.isInteger(target) && target>=0 && target<levels.length){
+      winEl.style.display='none';
+      loadLevel(target,{freshRun:true});
+      statusEl.textContent=`TEST: Level ${target+1} doğrudan açıldı.`;
+    }
+  });
+});
+
+// İstersen adresin sonuna ?level=3 yazarak da direkt Level 3 açılabilir.
+const params=new URLSearchParams(location.search);
+const requestedLevel=Number(params.get('level'));
+if(Number.isInteger(requestedLevel) && requestedLevel>=1 && requestedLevel<=levels.length){
+  loadLevel(requestedLevel-1,{freshRun:true});
+  statusEl.textContent=`TEST: Level ${requestedLevel} doğrudan açıldı.`;
+}else{
+  loadLevel(0,{freshRun:true});
+}
+
 </script>
 </body>
 </html>

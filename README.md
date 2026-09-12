@@ -1,13 +1,9 @@
-# Mole Quest — v4.2 (Level 3)
+# Mole Quest v4.2.2 — Test Menu
 
-Level 1 ve Level 2 korunur. Level 3 eklendi.
+Bu geliştirme sürümünde Level 1, Level 2 ve Level 3 korunmuştur.
 
-## Level 3 yeni mekanik
-- Altın anahtar (🔑) haritada bulunmalıdır.
-- Çıkış yalnızca bütün kristaller toplandığında **ve** altın anahtar alındığında açılır.
-- Anahtar +250 puan verir.
-- Mor böcek Level 2'deki gibi devriye gezer.
-- Kaya yerçekimi v4.1'deki gibi boşluğun sonuna kadar tek seferde düşer.
+Yeni: Oyun ekranının altında **TEST • Bölüme Git: 1 2 3** düğmeleri vardır. Böylece geliştirme sırasında önceki bölümleri tekrar oynamadan istediğin bölüme doğrudan geçebilirsin.
 
-## GitHub Pages
-ZIP'i açıp içindeki bütün dosyaları `mole-quest` reposunun köküne yükle ve Commit changes yap.
+Ayrıca URL sonuna `?level=2` veya `?level=3` ekleyerek de doğrudan o bölümü açabilirsin.
+
+Bu test menüsü yayın öncesinde kaldırılacaktır.
