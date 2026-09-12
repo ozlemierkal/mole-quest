@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+<title>Mole Quest – Prototype</title>
+<style>
+  :root{
+    --bg:#1a120e; --panel:#3a2419; --soil:#7a4b2a; --soil2:#8b5a34; --rock:#716b67;
+    --gem:#69d5ff; --gold:#f4c542; --text:#fff7ea; --accent:#ffcf4d; --danger:#ff6b6b;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{margin:0;background:radial-gradient(circle at top,#2f2018,#120d0a 65%);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;min-height:100vh;display:flex;justify-content:center}
+  .app{width:min(100vw,520px);padding:env(safe-area-inset-top) 12px calc(12px + env(safe-area-inset-bottom));}
+  .top{display:flex;align-items:center;gap:8px;margin:8px 0 10px;flex-wrap:wrap}
+  .logo{font-weight:900;font-size:24px;letter-spacing:.4px;color:#ffd25d;text-shadow:0 2px 0 #5a2f13;margin-right:auto}
+  .pill{background:linear-gradient(#4b2f21,#2d1d16);border:2px solid #6f4a31;border-radius:14px;padding:7px 10px;font-weight:800;box-shadow:inset 0 1px 0 #8b654c}
+  .board-wrap{background:#26170f;border:3px solid #5c3c28;border-radius:18px;padding:8px;box-shadow:0 12px 28px #0008,inset 0 0 30px #0007}
+  #board{display:grid;grid-template-columns:repeat(10,1fr);gap:2px;aspect-ratio:10/14;background:#0f0a07;border-radius:10px;overflow:hidden;touch-action:none}
+  .cell{position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;font-size:18px;user-select:none}
+  .wall{background:linear-gradient(135deg,#36261e,#2a1c15)}
+  .dirt{background:
+    radial-gradient(circle at 20% 25%,#9b6a41 0 5%,transparent 6%),
+    radial-gradient(circle at 70% 60%,#6f4025 0 6%,transparent 7%),
+    linear-gradient(135deg,var(--soil2),var(--soil));}
+  .empty{background:linear-gradient(135deg,#24140d,#140d09)}
+  .rock{background:radial-gradient(circle at 35% 30%,#9b9691,#6f6a66 45%,#494542 75%);border-radius:48%;margin:4px;box-shadow:inset -3px -4px 0 #3c3937, inset 3px 3px 0 #aaa4}
+  .gem::before{content:'◆';color:var(--gem);font-size:25px;text-shadow:0 0 10px #43c9ff,0 0 18px #43c9ff}
+  .exit{background:linear-gradient(#5b3520,#2b1b13);border-radius:6px;margin:3px;border:2px solid #7f5638}
+  .exit::before{content:'🚪';font-size:22px;filter:saturate(.8)}
+  .exit.open{box-shadow:0 0 14px #ffd86a, inset 0 0 8px #ffd86a55}
+  .exit.open::after{content:'✨';position:absolute;font-size:12px;right:1px;top:0}
+  .enemy::before{content:'🐛';font-size:20px}
+  .player{z-index:4}
+  .mole{width:78%;height:78%;position:relative;border-radius:50% 50% 46% 46%;background:radial-gradient(circle at 50% 45%,#7f553d 0 58%,#5d3e2f 59% 100%);box-shadow:0 2px 5px #0008}
+  .mole:before{content:'';position:absolute;width:66%;height:30%;left:17%;top:17%;background:#f0b42f;border-radius:50% 50% 35% 35%;box-shadow:inset 0 -3px 0 #a86e11}
+  .mole:after{content:'';position:absolute;width:18%;height:18%;left:41%;top:49%;background:#f39aa0;border-radius:50%;box-shadow: -10px -4px 0 -6px #111, 10px -4px 0 -6px #111}
+  .lamp{position:absolute;width:18%;height:18%;left:41%;top:10%;background:#fff7a9;border:2px solid #8e6d2d;border-radius:50%;box-shadow:0 0 8px #fff19c}
+  .hudline{display:flex;gap:8px;align-items:center;margin:10px 2px 0;font-size:14px;color:#ead9c7}
+  .status{flex:1;background:#21140d;border:1px solid #4f3323;border-radius:12px;padding:8px 10px;min-height:38px}
+  .controls{display:grid;grid-template-columns:repeat(3,76px);justify-content:center;gap:8px;margin:14px 0 4px}
+  button{appearance:none;border:0;border-radius:18px;background:linear-gradient(#5d4435,#3a2a21);color:#fff3dd;font-size:28px;font-weight:900;height:64px;box-shadow:inset 0 2px 0 #8a6a54,0 5px 0 #241912;touch-action:manipulation}
+  button:active{transform:translateY(3px);box-shadow:inset 0 2px 0 #8a6a54,0 2px 0 #241912}
+  .spacer{visibility:hidden}
+  .mini{font-size:12px;opacity:.82;text-align:center;margin-top:8px;line-height:1.35}
+  .win{position:fixed;inset:0;background:#000a;display:none;align-items:center;justify-content:center;padding:24px;z-index:20}
+  .card{width:min(340px,90vw);background:linear-gradient(#4d301f,#2a1a12);border:3px solid #7f5738;border-radius:22px;padding:24px;text-align:center;box-shadow:0 20px 50px #000b}
+  .card h2{margin:0 0 8px;color:#ffd25d;font-size:30px}.card p{margin:0 0 18px;color:#f1dfcf}
+  .card button{width:100%;height:54px;font-size:18px}
+  @media (max-height:760px){.controls{margin-top:8px}.controls button{height:54px}.app{padding-top:2px}.top{margin-top:2px}.mini{display:none}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <div class="logo">⛏ MOLE QUEST</div>
+    <div class="pill">💎 <span id="gems">0</span>/<span id="total">0</span></div>
+    <div class="pill">❤️ <span id="lives">3</span></div>
+  </div>
+  <div class="board-wrap"><div id="board"></div></div>
+  <div class="hudline"><div class="status" id="status">Kristalleri topla. Tümünü bulunca çıkış açılacak.</div></div>
+  <div class="controls">
+    <span class="spacer"></span><button data-dir="up">▲</button><span class="spacer"></span>
+    <button data-dir="left">◀</button><button data-dir="down">▼</button><button data-dir="right">▶</button>
+  </div>
+  <div class="mini">iPad'de dokunmatik okları kullan. Klavyede de yön tuşları çalışır.</div>
+</div>
+<div class="win" id="win"><div class="card"><h2>Level Complete! ✨</h2><p>Köstebek tüm kristalleri buldu ve çıkışa ulaştı.</p><button id="again">Tekrar Oyna</button></div></div>
+<script>
+const W=10,H=14;
+const initial=[
+"##########",
+"#..dGdR..#",
+"#dRdddddG#",
+"#dd..d...#",
+"#dGdPdRdd#",
+"#ddd.dddd#",
+"#..Rdd.dE#",
+"#ddddGddd#",
+"#dRdddddX#",
+"#ddddRddd#",
+"#GddddddG#",
+"#dddRdddd#",
+"#dddddddd#",
+"##########"
+];
+let map,px,py,gems,total,lives=3,open=false,locked=false;
+const board=document.getElementById('board');
+const gemEl=document.getElementById('gems'),totalEl=document.getElementById('total'),lifeEl=document.getElementById('lives'),statusEl=document.getElementById('status');
+function reset(full=false){
+  map=initial.map(r=>r.split('')); gems=0; open=false; locked=false; if(full) lives=3;
+  total=0;
+  for(let y=0;y<H;y++)for(let x=0;x<W;x++){if(map[y][x]==='P'){px=x;py=y;map[y][x]='.'} if(map[y][x]==='G') total++;}
+  totalEl.textContent=total; gemEl.textContent=gems; lifeEl.textContent=lives; statusEl.textContent='Kristalleri topla. Tümünü bulunca çıkış açılacak.'; render();
+}
+function render(){
+  board.innerHTML='';
+  for(let y=0;y<H;y++)for(let x=0;x<W;x++){
+    const c=document.createElement('div'); c.className='cell'; const t=map[y][x];
+    if(x===px&&y===py){c.classList.add('empty','player'); const m=document.createElement('div');m.className='mole';const l=document.createElement('div');l.className='lamp';m.appendChild(l);c.appendChild(m)}
+    else if(t==='#') c.classList.add('wall');
+    else if(t==='d') c.classList.add('dirt');
+    else if(t==='R') c.classList.add('empty','rock');
+    else if(t==='G') c.classList.add('empty','gem');
+    else if(t==='E'){c.classList.add('empty','exit'); if(open)c.classList.add('open')}
+    else if(t==='X') c.classList.add('empty','enemy');
+    else c.classList.add('empty');
+    board.appendChild(c);
+  }
+}
+function move(dx,dy){
+  if(locked)return; const nx=px+dx,ny=py+dy; if(nx<0||ny<0||nx>=W||ny>=H)return;
+  const t=map[ny][nx]; if(t==='#'||t==='R') return;
+  if(t==='X'){hurt('Bir yeraltı böceğine yakalandın!');return}
+  if(t==='E'&&!open){statusEl.textContent='Çıkış kilitli. Önce tüm kristalleri bul!';return}
+  px=nx;py=ny;
+  if(t==='d') map[ny][nx]='.';
+  if(t==='G'){map[ny][nx]='.';gems++;gemEl.textContent=gems;statusEl.textContent='Kristal bulundu! 💎';if(gems===total){open=true;statusEl.textContent='Tüm kristaller tamam! Çıkış açıldı ✨';}}
+  if(t==='E'&&open){render();document.getElementById('win').style.display='flex';return}
+  rocksFall(); render();
+}
+function rocksFall(){
+  // bottom-up: each rock can drop one cell if empty; player under it gets hit
+  for(let y=H-2;y>=1;y--)for(let x=1;x<W-1;x++) if(map[y][x]==='R'){
+    const by=y+1;
+    if(px===x&&py===by){ map[y][x]='.'; map[by][x]='R'; hurt('Taş kafana düştü!'); return; }
+    if(map[by][x]==='.') {map[by][x]='R';map[y][x]='.';}
+  }
+}
+function hurt(msg){
+  if(locked)return; locked=true; lives--;lifeEl.textContent=lives;statusEl.textContent=msg;
+  setTimeout(()=>{if(lives<=0){reset(true);statusEl.textContent='Yeni oyun başladı. Dikkatli kaz!';}else{const oldLives=lives;reset(false);lives=oldLives;lifeEl.textContent=lives;statusEl.textContent='Bir can gitti. Tekrar dene!';}locked=false;},450);
+}
+document.querySelectorAll('button[data-dir]').forEach(b=>b.addEventListener('pointerdown',e=>{e.preventDefault();const d=b.dataset.dir;if(d==='up')move(0,-1);if(d==='down')move(0,1);if(d==='left')move(-1,0);if(d==='right')move(1,0)}));
+addEventListener('keydown',e=>{const k=e.key;if(k==='ArrowUp')move(0,-1);if(k==='ArrowDown')move(0,1);if(k==='ArrowLeft')move(-1,0);if(k==='ArrowRight')move(1,0)});
+document.getElementById('again').onclick=()=>{document.getElementById('win').style.display='none';reset(true)};
+reset(true);
+</script>
+</body>
+</html>
