@@ -1,10 +1,17 @@
-# Mole Quest — v3.4
+# Mole Quest — v4.0
 
-Bu paket v3.3'teki görsel ve hareket iyileştirmelerini korur, kaya fiziğini düzeltir.
+## Bu sürüm
+- Level 1 stabil kurallar korunur.
+- Level 1 bitince **Sonraki Bölüm** ile Level 2 açılır.
+- Level 2 yeni mekanik: mor taş böceği her 2 başarılı hamlede 1 kare, yalnızca açık tünelde devriye gezer.
+- Böcek toprağı kazamaz; ona dokunursan veya sana çarparsa 1 can gider.
+- Kayalar v3.4 fiziğiyle düşmeye devam eder.
+- Level bitiş görseli yakınlaştırılarak sağ üstteki kırpık MOLE QUEST yazısı görünmez hale getirildi.
+- Level 1 sonucu: Sonraki Bölüm + Tekrar Oyna.
+- Level 2 sonucu: Baştan Oyna + Tekrar Oyna.
 
-- Her dokunuş 1 kare hareket eder.
-- Mor taş böceği Level 1'de sabittir; üzerine girersen can gider.
-- Kayanın altındaki toprağı kazıp kenara çekilince kaya her hamlede 1 kare aşağı düşer.
-- Sabit kaya, altını yeni kazdığın anda seni rastgele ezmez.
-- Yalnızca gerçekten düşmekte olan kaya oyuncuya çarparsa 1 can gider.
-- Kristal, skor, çıkış parlaması ve büyük köstebek görselleri korunur.
+
+## v4.1 gravity fix
+- Rocks now fall through the entire contiguous empty vertical gap in a single turn.
+- A rock can only cost a life when its actual falling path reaches the mole.
+- Level 1 and Level 2 both use the same updated gravity rule.

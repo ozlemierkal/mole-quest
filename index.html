@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
 <meta name="theme-color" content="#24130d" />
-<title>Mole Quest — v3.4</title>
+<title>Mole Quest — v4.0 Level 2</title>
 <style>
   :root{
     --cream:#fff3dd;
@@ -163,10 +163,12 @@
     background:linear-gradient(#57331f,#2b1810);
     border:3px solid #8a5b3c;border-radius:24px;box-shadow:0 24px 54px #000b;
   }
-  .hero{height:190px;background:url('hero-character.jpg') center 32%/cover no-repeat;border-bottom:2px solid #8a5b3c}
+  .hero{height:190px;background:url('hero-character.jpg') 18% 34%/140% auto no-repeat;border-bottom:2px solid #8a5b3c}
   .card-body{padding:18px}
   .card h2{margin:0 0 8px;color:#ffd15f;font-size:30px}.card p{margin:0 0 16px;color:#f3dfcc}
+  .modal-actions{display:grid;gap:9px}
   .card button{width:100%;height:56px;font-size:18px}
+  .card button.secondary{height:48px;background:linear-gradient(#5d4639,#3d2a21);font-size:15px;opacity:.95}
   @media(max-height:780px){
     .app{padding-top:calc(env(safe-area-inset-top) + 4px)}
     .topbar{margin-bottom:6px}.hud{margin-top:6px}.controls{margin-top:8px;grid-template-columns:repeat(3,70px)}
@@ -187,60 +189,110 @@
 
   <div class="hud">
     <div class="status" id="status">Kristalleri topla. Hepsini bulunca çıkış açılacak.</div>
-    <div class="level">1–1</div>
+    <div class="level" id="levelLabel">1–1</div>
   </div>
 
   <div class="controls">
     <span class="ghost"></span><button data-dir="up">▲</button><span class="ghost"></span>
     <button data-dir="left">◀</button><button data-dir="down">▼</button><button data-dir="right">▶</button>
   </div>
-  <div class="hint">Her dokunuş = 1 kare. Kayanın altını kazıp çekilince kaya düşer; hareket halindeki kayanın altında kalma.</div>
+  <div class="hint" id="hint">Her dokunuş = 1 kare. Kayanın altını kazıp çekilince kaya düşer; hareket halindeki kayanın altında kalma.</div>
 </div>
 
 <div class="win" id="win">
   <div class="card">
     <div class="hero"></div>
     <div class="card-body">
-      <h2>Level Complete! ✨</h2>
-      <p>Köstebek bütün kristalleri buldu ve çıkışa ulaştı.</p>
-      <button id="again">Tekrar Oyna</button>
+      <h2 id="winTitle">Level Complete! ✨</h2>
+      <p id="winText">Köstebek bütün kristalleri buldu ve çıkışa ulaştı.</p>
+      <div class="modal-actions">
+        <button id="nextLevel">Sonraki Bölüm →</button>
+        <button id="again" class="secondary">Tekrar Oyna</button>
+      </div>
     </div>
   </div>
 </div>
 
 <script>
 const W=10,H=14;
-const initial=[
-"##########",
-"#..dGdR..#",
-"#dRdddddG#",
-"#dd..d...#",
-"#dGdPdRdd#",
-"#ddd.dddd#",
-"#..Rdd.dE#",
-"#ddddGddd#",
-"#dRdddddX#",
-"#ddddRddd#",
-"#GddddddG#",
-"#dddRdddd#",
-"#dddddddd#",
-"##########"
+const levels=[
+  {
+    id:'1–1',
+    intro:'Kristalleri topla. Hepsini bulunca çıkış açılacak.',
+    hint:'Her dokunuş = 1 kare. Kayanın altını kazıp çekilince kaya düşer; hareket halindeki kayanın altında kalma.',
+    enemyMode:'static',
+    map:[
+      "##########",
+      "#..dGdR..#",
+      "#dRdddddG#",
+      "#dd..d...#",
+      "#dGdPdRdd#",
+      "#ddd.dddd#",
+      "#..Rdd.dE#",
+      "#ddddGddd#",
+      "#dRdddddX#",
+      "#ddddRddd#",
+      "#GddddddG#",
+      "#dddRdddd#",
+      "#dddddddd#",
+      "##########"
+    ]
+  },
+  {
+    id:'1–2',
+    intro:'Level 2: Mor taş böceği artık hareket ediyor! Her 2 hamlede bir ilerler.',
+    hint:'Level 2: Mor böcek her 2 başarılı hamlede 1 kare devriye gezer. Temas etme; kayaları da kullan.',
+    enemyMode:'patrol',
+    map:[
+      "##########",
+      "#dGddRddG#",
+      "#dddddddd#",
+      "#..R..G..#",
+      "#dddddPdd#",
+      "#dddRdddd#",
+      "#..dddG.E#",
+      "#dddddddd#",
+      "#..X.....#",
+      "#ddddRddd#",
+      "#Gddd..dG#",
+      "#ddRddddG#",
+      "#dddddddd#",
+      "##########"
+    ]
+  }
 ];
-let map,px,py,startX,startY,gems,total,score=0,lives=3,open=false,locked=false,moveLock=false,enemyAlert=false;
-let fallingRocks=new Set();
-const board=document.getElementById('board');
-const gemEl=document.getElementById('gems'), totalEl=document.getElementById('total'), scoreEl=document.getElementById('score'), lifeEl=document.getElementById('lives'), statusEl=document.getElementById('status'), winEl=document.getElementById('win');
-const shellEl=document.getElementById('shell'), deathNote=document.getElementById('deathNote');
 
-function reset(full=false){
-  map=initial.map(r=>r.split(''));gems=0;score=0;open=false;enemyAlert=false;locked=false;fallingRocks=new Set();if(full)lives=3;total=0;
+let currentLevel=0;
+let map,px,py,startX,startY,gems,total,score=0,levelStartScore=0,lives=3,open=false,locked=false,moveLock=false,enemyAlert=false;
+let fallingRocks=new Set();
+let enemyTick=0,enemyDir=1;
+
+const board=document.getElementById('board');
+const gemEl=document.getElementById('gems'), totalEl=document.getElementById('total'), scoreEl=document.getElementById('score'), lifeEl=document.getElementById('lives');
+const statusEl=document.getElementById('status'), winEl=document.getElementById('win'), levelLabel=document.getElementById('levelLabel'), hintEl=document.getElementById('hint');
+const shellEl=document.getElementById('shell'), deathNote=document.getElementById('deathNote');
+const winTitle=document.getElementById('winTitle'), winText=document.getElementById('winText'), nextBtn=document.getElementById('nextLevel'), againBtn=document.getElementById('again');
+
+function loadLevel(index,{freshRun=false,retry=false}={}){
+  currentLevel=index;
+  if(freshRun) score=0;
+  if(retry) score=levelStartScore;
+  levelStartScore=score;
+  lives=3;
+  const level=levels[currentLevel];
+  map=level.map.map(r=>r.split(''));
+  gems=0;total=0;open=false;locked=false;moveLock=false;enemyAlert=false;fallingRocks=new Set();enemyTick=0;enemyDir=1;
   for(let y=0;y<H;y++)for(let x=0;x<W;x++){
     if(map[y][x]==='P'){px=x;py=y;startX=x;startY=y;map[y][x]='.'}
-    if(map[y][x]==='G')total++;
+    if(map[y][x]==='G') total++;
   }
   gemEl.textContent=gems;totalEl.textContent=total;scoreEl.textContent=score;lifeEl.textContent=lives;
-  statusEl.textContent='Kristalleri topla. Hepsini bulunca çıkış açılacak.';render();
+  levelLabel.textContent=level.id;
+  hintEl.textContent=level.hint;
+  statusEl.textContent=level.intro;
+  render();
 }
+
 function render(){
   board.innerHTML='';
   for(let y=0;y<H;y++)for(let x=0;x<W;x++){
@@ -248,7 +300,7 @@ function render(){
     if(x===px&&y===py)c.classList.add('player');
     else if(t==='#')c.classList.add('wall');
     else if(t==='d')c.classList.add('dirt');
-    else if(t==='R'){c.classList.add('rock');if(fallingRocks.has(`${x},${y}`))c.classList.add('falling')} 
+    else if(t==='R'){c.classList.add('rock');if(fallingRocks.has(`${x},${y}`))c.classList.add('falling')}
     else if(t==='G')c.classList.add('gem');
     else if(t==='E'){c.classList.add('exit');if(open)c.classList.add('open')}
     else if(t==='X'){c.classList.add('enemy');if(enemyAlert)c.classList.add('alert')}
@@ -256,14 +308,12 @@ function render(){
     board.appendChild(c);
   }
 }
+
 function showFx(x,y,text,kind='score-fx'){
   const fx=document.createElement('div');
-  fx.className=kind;
-  fx.textContent=text;
-  fx.style.left=((x+.5)/W*100)+'%';
-  fx.style.top=((y+.5)/H*100)+'%';
-  board.appendChild(fx);
-  setTimeout(()=>fx.remove(),760);
+  fx.className=kind;fx.textContent=text;
+  fx.style.left=((x+.5)/W*100)+'%';fx.style.top=((y+.5)/H*100)+'%';
+  board.appendChild(fx);setTimeout(()=>fx.remove(),760);
 }
 
 function enemyLocation(){
@@ -272,166 +322,197 @@ function enemyLocation(){
 }
 
 function enemyTurn(){
-  // Level 1: böcek sabit durur. Sadece yanına gelince uyarı verir.
   const e=enemyLocation();
   if(!e){enemyAlert=false;return false}
+  const mode=levels[currentLevel].enemyMode;
   const md=Math.abs(px-e.x)+Math.abs(py-e.y);
-  enemyAlert=(md===1);
-  if(enemyAlert){
-    statusEl.textContent='Mor taş böceği çok yakın! Üzerine gitme ❗';
+
+  if(mode==='static'){
+    enemyAlert=(md===1);
+    if(enemyAlert) statusEl.textContent='Mor taş böceği çok yakın! Üzerine gitme ❗';
+    return false;
   }
+
+  // Level 2: böcek yalnızca önceden açılmış tünelde devriye gezer.
+  // Her iki BAŞARILI oyuncu hamlesinde bir kare ilerler; toprağı kazamaz.
+  enemyTick++;
+  enemyAlert=(md<=2);
+  if(enemyTick%2!==0){
+    if(enemyAlert) statusEl.textContent='Mor böcek seni fark etti! Bir sonraki hamlede hareket edecek ❗';
+    return false;
+  }
+
+  let dir=enemyDir;
+  for(let attempt=0;attempt<2;attempt++){
+    const nx=e.x+dir, ny=e.y;
+    const playerThere=(nx===px&&ny===py);
+    if(playerThere){
+      map[e.y][e.x]='.';map[ny][nx]='X';enemyDir=dir;enemyAlert=true;render();
+      hurt('Hareket eden mor böcek sana çarptı!');
+      return true;
+    }
+    if(map[ny] && map[ny][nx]==='.'){
+      map[e.y][e.x]='.';map[ny][nx]='X';enemyDir=dir;
+      const newMd=Math.abs(px-nx)+Math.abs(py-ny);enemyAlert=(newMd<=2);
+      statusEl.textContent=enemyAlert?'Mor böcek yaklaşıyor! ❗':'Mor böcek devriye geziyor.';
+      return false;
+    }
+    dir*=-1;
+  }
+  enemyDir*=-1;
   return false;
+}
+
+function completeLevel(){
+  locked=true;moveLock=true;
+  score+=500;scoreEl.textContent=score;
+  const isLast=currentLevel===levels.length-1;
+  winTitle.textContent=isLast?'Level 2 Complete! ✨':'Level Complete! ✨';
+  winText.textContent=isLast?'İkinci bölüm de tamam! Hareket eden mor böceği atlattın.':'Köstebek bütün kristalleri buldu ve çıkışa ulaştı.';
+  nextBtn.textContent=isLast?'Baştan Oyna':'Sonraki Bölüm →';
+  winEl.style.display='flex';
 }
 
 function move(dx,dy){
   if(locked)return;
   const nx=px+dx,ny=py+dy;
-  if(nx<0||ny<0||nx>=W||ny>=H)return;
+  if(nx<0||ny<0||nx>=W||ny>=H)return false;
   const t=map[ny][nx];
-  if(t==='#'||t==='R')return;
-  if(t==='X'){hurt('Mor taş böceğine yakalandın!');return}
-  if(t==='E'&&!open){statusEl.textContent='Kapı kilitli. Önce bütün kristalleri bul!';return}
+  if(t==='#'||t==='R')return false;
+  if(t==='X'){hurt('Mor taş böceğine yakalandın!');return false}
+  if(t==='E'&&!open){statusEl.textContent='Kapı kilitli. Önce bütün kristalleri bul!';return false}
 
   let collected=false,openedNow=false;
   px=nx;py=ny;
   if(t==='d')map[ny][nx]='.';
   if(t==='G'){
-    map[ny][nx]='.';
-    gems++;
-    score+=100;
-    gemEl.textContent=gems;
-    scoreEl.textContent=score;
-    collected=true;
+    map[ny][nx]='.';gems++;score+=100;gemEl.textContent=gems;scoreEl.textContent=score;collected=true;
     statusEl.textContent='Kristal bulundu! 💎  +100';
-    if(gems===total){
-      open=true;
-      openedNow=true;
-      statusEl.textContent='Tüm kristaller tamam! Çıkış açıldı ✨';
-    }
+    if(gems===total){open=true;openedNow=true;statusEl.textContent='Tüm kristaller tamam! Çıkış açıldı ✨';}
   }
-  if(t==='E'&&open){
-    score+=500;
-    scoreEl.textContent=score;
-    render();
-    winEl.style.display='flex';
-    return;
-  }
+  if(t==='E'&&open){render();completeLevel();return true}
 
   rocksFall();
-  if(locked)return;
+  if(locked)return true;
   enemyTurn();
+  if(locked)return true;
   render();
   if(collected)showFx(nx,ny,'+100 ✨');
   if(openedNow){
     for(let y=0;y<H;y++)for(let x=0;x<W;x++)if(map[y][x]==='E')showFx(x,y,'ÇIKIŞ AÇILDI!','exit-fx');
   }
+  return true;
 }
+
 function rocksFall(){
-  // v3.4: gerçek ve öngörülebilir kaya fiziği.
-  // Kayanın altı boşalınca her hamlede 1 kare düşer.
-  // Oyuncu yeni kazdığı anda sabit kaya onu anında ezmez; önce kenara çekilme şansı vardır.
-  // Yalnızca bir önceki turdan beri gerçekten düşmekte olan kaya oyuncuya çarparsa can gider.
+  // Gerçek yerçekimi: kayanın altında art arda boş kareler varsa,
+  // kaya TEK TURDA boşluk bitene kadar aşağı iner.
+  // Oyuncu kayanın hemen altındaki toprağı yeni kazdıysa bir kaçış hamlesi verilir;
+  // kenara çekildiği anda kaya bütün boşluğu tek seferde kat eder.
   const nextFalling=new Set();
   let movedAny=false;
 
+  // Alttan üste doğru ilerlemek aynı turda bir kayanın iki kez işlenmesini engeller.
   for(let y=H-2;y>=1;y--){
     for(let x=1;x<W-1;x++){
       if(map[y][x]!=='R') continue;
 
       const key=`${x},${y}`;
       const wasFalling=fallingRocks.has(key);
-      const by=y+1;
-      const playerBelow=(px===x&&py===by);
 
-      if(playerBelow){
-        if(wasFalling){
-          // Kaya gerçekten hareket halindeydi ve oyuncuya çarptı.
-          map[y][x]='.';
-          map[by][x]='R';
-          fallingRocks=new Set();
-          render();
-          hurt('Düşen kayanın altında kaldın! 🪨');
-          return true;
+      // Kayanın hemen altında oyuncu varsa ilk anda kaçış payı ver.
+      if(px===x && py===y+1 && !wasFalling) continue;
+
+      let finalY=y;
+      let hitPlayer=false;
+
+      // Aşağıdaki tüm kesintisiz boşluğu tara.
+      for(let ty=y+1; ty<H-1; ty++){
+        if(px===x && py===ty){
+          hitPlayer=true;
+          finalY=ty;
+          break;
         }
-        // Sabit kaya: oyuncu altını yeni kazdıysa bir hamle kaçış payı ver.
-        continue;
+        if(map[ty][x]!=='.') break;
+        finalY=ty;
       }
 
-      if(map[by][x]==='.'){
-        map[by][x]='R';
-        map[y][x]='.';
-        nextFalling.add(`${x},${by}`);
-        movedAny=true;
+      if(finalY===y) continue;
+
+      map[y][x]='.';
+      map[finalY][x]='R';
+      movedAny=true;
+      nextFalling.add(`${x},${finalY}`);
+
+      // Oyuncu düşüş yolundaysa kaya gerçekten çarpmıştır.
+      if(hitPlayer){
+        fallingRocks=new Set();
+        render();
+        hurt('Düşen kayanın altında kaldın! 🪨');
+        return true;
       }
     }
   }
 
   fallingRocks=nextFalling;
-  if(movedAny && !locked){
-    statusEl.textContent='Kaya düşüyor! 🪨 Altında kalma.';
-  }
+  if(movedAny&&!locked) statusEl.textContent='Kaya boşluğun sonuna kadar düştü! 🪨';
   return false;
 }
+
 function hurt(msg){
   if(locked)return;
-  locked=true;
-  moveLock=true;
-  lives--;
-  lifeEl.textContent=lives;
-  statusEl.textContent=msg;
-  deathNote.textContent = lives<=0 ? '💥 Oyun bitti!' : '💥 Bir can gitti!';
-  deathNote.classList.add('show');
-  shellEl.classList.remove('hurt');
-  void shellEl.offsetWidth;
-  shellEl.classList.add('hurt');
+  locked=true;moveLock=true;lives--;lifeEl.textContent=lives;statusEl.textContent=msg;
+  deathNote.textContent=lives<=0?'💥 Oyun bitti!':'💥 Bir can gitti!';deathNote.classList.add('show');
+  shellEl.classList.remove('hurt');void shellEl.offsetWidth;shellEl.classList.add('hurt');
 
   setTimeout(()=>{
-    deathNote.classList.remove('show');
-    shellEl.classList.remove('hurt');
+    deathNote.classList.remove('show');shellEl.classList.remove('hurt');
     if(lives<=0){
-      reset(true);
-      statusEl.textContent='Yeni oyun başladı. Dikkatli kaz!';
-    } else {
-      // Toplanan kristaller ve skor korunur; yalnızca güvenli başlangıç karesine dönülür.
-      px=startX;
-      py=startY;
-      lifeEl.textContent=lives;
+      loadLevel(currentLevel,{retry:true});
+      statusEl.textContent='Bölüm yeniden başladı. Dikkatli kaz!';
+    }else{
+      px=startX;py=startY;lifeEl.textContent=lives;
       statusEl.textContent='Başlangıç noktasına döndün. Kristallerin ve skorun duruyor.';
-      render();
+      render();locked=false;moveLock=false;
     }
-    locked=false;
-    moveLock=false;
   },800);
 }
 
 function go(d){
-  if(locked || moveLock) return;
+  if(locked||moveLock)return;
   moveLock=true;
-  if(d==='up')move(0,-1);
-  if(d==='down')move(0,1);
-  if(d==='left')move(-1,0);
-  if(d==='right')move(1,0);
-  setTimeout(()=>{ if(!locked) moveLock=false; },120);
+  let moved=false;
+  if(d==='up')moved=move(0,-1);
+  if(d==='down')moved=move(0,1);
+  if(d==='left')moved=move(-1,0);
+  if(d==='right')moved=move(1,0);
+  setTimeout(()=>{if(!locked)moveLock=false},moved?120:70);
 }
 
 document.querySelectorAll('[data-dir]').forEach(b=>{
-  b.addEventListener('pointerup',e=>{
-    e.preventDefault();
-    go(b.dataset.dir);
-  });
+  b.addEventListener('pointerup',e=>{e.preventDefault();go(b.dataset.dir)});
   b.addEventListener('contextmenu',e=>e.preventDefault());
 });
 
 addEventListener('keydown',e=>{
-  if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key)) e.preventDefault();
+  if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key))e.preventDefault();
   if(e.key==='ArrowUp')go('up');
   if(e.key==='ArrowDown')go('down');
   if(e.key==='ArrowLeft')go('left');
   if(e.key==='ArrowRight')go('right');
 });
 
-document.getElementById('again').onclick=()=>{winEl.style.display='none';reset(true)};
-reset(true);
+nextBtn.onclick=()=>{
+  winEl.style.display='none';
+  if(currentLevel<levels.length-1)loadLevel(currentLevel+1);
+  else loadLevel(0,{freshRun:true});
+};
+againBtn.onclick=()=>{
+  winEl.style.display='none';
+  loadLevel(currentLevel,{retry:true});
+};
+
+loadLevel(0,{freshRun:true});
 </script>
 </body>
 </html>
