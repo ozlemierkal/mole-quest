@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
 <meta name="theme-color" content="#24130d" />
-<title>Mole Quest — v5.1 Level 6</title>
+<title>Mole Quest — v5.1.1 Level 6 Fix</title>
 <style>
   :root{
     --cream:#efe4d3;
@@ -210,7 +210,7 @@
     <button id="testAddHints">+10 HINT</button>
   </div>
   <div class="economy-note">Prototype economy • 5 can • 20 dakikada 1 can • 3 başlangıç hinti</div>
-  <div class="build">v5.1 • Visual Revision • Levels 1–6 • Pressure Plate</div>
+  <div class="build">v5.1.1 • Level 6 Fix • Pressure Plate + More Motion</div>
 </div>
 
 <div class="win" id="win">
@@ -252,7 +252,7 @@ const W=10,H=14;
 const MAX_LIVES=5;
 const REFILL_MS=20*60*1000;
 const START_HINTS=3;
-const STORAGE_PREFIX='mq_v51_';
+const STORAGE_PREFIX='mq_v511_';
 function readStore(key,fallback){try{const v=localStorage.getItem(STORAGE_PREFIX+key);return v===null?fallback:Number(v)}catch(e){return fallback}}
 function writeStore(key,value){try{localStorage.setItem(STORAGE_PREFIX+key,String(value))}catch(e){}}
 let lives=Math.max(0,Math.min(MAX_LIVES,readStore('lives',MAX_LIVES)));
@@ -385,9 +385,9 @@ const levels=[
   }
   ,{
     id:'1–6',
-    intro:'Level 6: Basınç plakası yalnızca üstünde ağırlık varken geçidi açık tutar. Kayayı doğru hatta düşür.',
-    hint:'Level 6: Geçit açık kalmak için ağırlık ister. Yukarıdaki kayayı plakanın üzerine indir; geçit bu sırada açık kalacaktır.',
-    hints:['Basınç plakası üstünde köstebek ya da kaya varken etkinleşir. Kalıcı çözüm için kayayı plakanın üstüne oturt.','İlk kaya plakanın tam üstünde. Altındaki toprağı güvenli şekilde temizleyip yana çekil.','Geçit açıldıktan sonra sağ bölgedeki kristalleri topla ve çıkışa ilerle.'],
+    intro:'Level 6: Kayayı basınç plakasına oturt, geçidi açık tut ve sağ koridordaki devriye böceğini geç.',
+    hint:'Level 6: Geçit sadece basınç plakası aktifken açılır. İlk kayanın yeri bunun için hazır.',
+    hints:['Basınç plakası üstünde kaya durursa geçit açık kalır. İlk iş üstteki kayayı plakanın üstüne indirmek olsun.','Kaya plakanın üstüne oturduğunda artık düşmez. Sonra orta geçitten sağ bölgeye sız.','Sağ tarafta devriye gezen mor böceğin ritmini izle; güvenli anda kristalleri toplayıp çıkışa git.'],
     enemyMode:'patrol',
     requiresKey:false,
     requiresSwitch:false,
@@ -396,15 +396,15 @@ const levels=[
       "##########",
       "#GddR#ddG#",
       "#dddd#ddd#",
-      "#dPdd#ddd#",
-      "#dddT#ddd#",
-      "#ddd.Add.#",
-      "#Gddd#ddE#",
+      "#dPdd#d.d#",
+      "#dddT#dGd#",
+      "#ddd.A..E#",
+      "#Gddd#d.d#",
+      "#dddd#.X.#",
       "#dddR#dGd#",
-      "#d..X#...#",
-      "#dddd#Gdd#",
+      "#d...#...#",
       "#Gddd#ddd#",
-      "#dddR#ddG#",
+      "#dddd#ddG#",
       "#dddd#ddd#",
       "##########"
     ]
@@ -693,11 +693,11 @@ function rocksFall(){
   for(let y=H-2;y>=1;y--){
     for(let x=1;x<W-1;x++){
       const rockCell=map[y][x];
-      if(rockCell!=='R' && rockCell!=='Q') continue;
+      if(rockCell==='Q') continue; // Plakaya oturmuş kaya burada sabit kalır.
+      if(rockCell!=='R') continue;
 
       const key=`${x},${y}`;
       const wasFalling=fallingRocks.has(key);
-      const fromPlate=(rockCell==='Q');
 
       if(px===x && py===y+1 && !wasFalling) continue;
 
@@ -718,7 +718,7 @@ function rocksFall(){
           finalY=ty;
           continue;
         }
-        if(cell==='T' && (levels[currentLevel].requiresPlate || true)){
+        if(cell==='T' && levels[currentLevel].requiresPlate){
           finalY=ty;
           landedOnPlate=true;
           break;
@@ -734,7 +734,7 @@ function rocksFall(){
 
       if(finalY===y) continue;
 
-      map[y][x]=fromPlate?'T':'.';
+      map[y][x]='.';
       map[finalY][x]=landedOnPlate?'Q':'R';
       nextFalling.add(`${x},${finalY}`);
 
