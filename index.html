@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
 <meta name="theme-color" content="#24130d" />
-<title>Mole Quest — v4.3 Economy Prototype</title>
+<title>Mole Quest — v4.4 Level 4</title>
 <style>
   :root{
     --cream:#fff3dd;
@@ -97,6 +97,34 @@
     clip-path:polygon(0 28%,68% 28%,68% 0,81% 0,81% 28%,100% 28%,100% 72%,85% 72%,85% 100%,72% 100%,72% 72%,0 72%);
     border-radius:999px;
     box-shadow:0 0 9px #ffd45f99;
+  }
+
+  .switch{
+    background-image:url('tunnel-tile.png');
+  }
+  .switch::before{
+    content:"";position:absolute;z-index:2;left:18%;right:18%;bottom:19%;height:28%;
+    border-radius:8px;background:linear-gradient(180deg,#8b8d90,#4b4d50);
+    border:2px solid #b9b9b9;box-shadow:inset 0 -4px 0 #2e3032,0 2px 4px #0008;
+  }
+  .switch::after{
+    content:"";position:absolute;z-index:3;width:26%;height:26%;left:37%;top:26%;
+    border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffe7a0,#d79321 58%,#7d4c12 60%);
+    box-shadow:0 0 10px #f0b43d99;
+  }
+  .switch.active::before{background:linear-gradient(180deg,#526f59,#2f4c37);border-color:#7fac87}
+  .switch.active::after{background:radial-gradient(circle at 35% 30%,#d7ffd9,#62c878 58%,#256335 60%);box-shadow:0 0 13px #6de584aa}
+  .gate{
+    background-image:url('tunnel-tile.png');
+  }
+  .gate::before{
+    content:"";position:absolute;z-index:2;inset:7% 13%;
+    border-left:6px solid #86898b;border-right:6px solid #86898b;
+    background:repeating-linear-gradient(90deg,transparent 0 15%,#9da0a2 15% 26%,transparent 26% 41%);
+    box-shadow:inset 0 0 0 2px #3b3d3f,0 0 8px #0008;
+  }
+  .gate.open::before{
+    opacity:.26;transform:translateY(-70%);transition:transform .2s ease,opacity .2s ease;
   }
   .player{
     background-image:url('mole-tile.png');
@@ -239,6 +267,7 @@
     <div class="pill">💎 <span id="gems">0</span>/<span id="total">0</span></div>
     <div class="pill">⭐ <span id="score">0</span></div>
     <div class="pill" id="keyPill" style="display:none">🔑 <span id="keyState">0/1</span></div>
+    <div class="pill" id="switchPill" style="display:none">SWITCH <span id="switchState">OFF</span></div>
     <div class="pill">♥ <span id="lives">5</span>/5</div>
   </div>
 
@@ -265,11 +294,12 @@
     <button data-test-level="0">1</button>
     <button data-test-level="1">2</button>
     <button data-test-level="2">3</button>
+    <button data-test-level="3">4</button>
     <button id="testFillLives">CAN DOLDUR</button>
     <button id="testAddHints">+10 HINT</button>
   </div>
   <div class="economy-note">Prototype economy: 5 can • 20 dakikada 1 can • başlangıçta 3 hint</div>
-  <div class="build">v4.3 • 3 Levels • Shop / Hint Prototype</div>
+  <div class="build">v4.4 • 4 Levels • Switch Gate</div>
 </div>
 
 <div class="win" id="win">
@@ -317,7 +347,7 @@ function writeStore(key,value){try{localStorage.setItem(STORAGE_PREFIX+key,Strin
 let lives=Math.max(0,Math.min(MAX_LIVES,readStore('lives',MAX_LIVES)));
 let nextLifeAt=Math.max(0,readStore('nextLifeAt',0));
 let hintCredits=Math.max(0,readStore('hints',START_HINTS));
-let hintSteps=[0,0,0];
+let hintSteps=[0,0,0,0];
 const levels=[
   {
     id:'1–1',
@@ -390,17 +420,42 @@ const levels=[
       "#ddddGddd#",
       "##########"
     ]
+  },
+  {
+    id:'1–4',
+    intro:'Level 4: Metal geçidi açmak için şalteri etkinleştir. Rotanı kayalar ve hareketli böceğe göre planla.',
+    hint:'Level 4: SWITCH üzerine basınca metal geçit açılır ve açık kalır. Önce rotayı düşün, sonra kristalleri temizle.',
+    hints:['Metal geçit şalter etkinleşmeden geçilemez. Şalter bir kez açılınca açık kalır.','Şaltere giderken kaya koridorlarında kaçış yönü bırak; dönüş yolunu kapatma.','Hareketli böcek iki hamlede bir devriye gezer. Geçidi açtıktan sonra ritmini say.'],
+    enemyMode:'patrol',
+    requiresKey:false,
+    requiresSwitch:true,
+    map:[
+      "##########",
+      "#GddRdddG#",
+      "#ddd.dddd#",
+      "#dSddRddd#",
+      "#dddPdddd#",
+      "#dRdddRdd#",
+      "#GddD..dE#",
+      "#ddddGddd#",
+      "#..X.....#",
+      "#ddRdddGd#",
+      "#GddddddG#",
+      "#dddRdddd#",
+      "#ddddGddd#",
+      "##########"
+    ]
   }
 ];
 
 let currentLevel=0;
-let map,px,py,startX,startY,gems,total,score=0,levelStartScore=0,open=false,locked=false,moveLock=false,enemyAlert=false,hasKey=false;
+let map,px,py,startX,startY,gems,total,score=0,levelStartScore=0,open=false,locked=false,moveLock=false,enemyAlert=false,hasKey=false,switchOn=false;
 let fallingRocks=new Set();
 let enemyTick=0,enemyDir=1;
 
 const board=document.getElementById('board');
 const gemEl=document.getElementById('gems'), totalEl=document.getElementById('total'), scoreEl=document.getElementById('score'), lifeEl=document.getElementById('lives');
-const keyPill=document.getElementById('keyPill'), keyState=document.getElementById('keyState');
+const keyPill=document.getElementById('keyPill'), keyState=document.getElementById('keyState'), switchPill=document.getElementById('switchPill'), switchState=document.getElementById('switchState');
 const statusEl=document.getElementById('status'), winEl=document.getElementById('win'), levelLabel=document.getElementById('levelLabel'), hintEl=document.getElementById('hint');
 const shellEl=document.getElementById('shell'), deathNote=document.getElementById('deathNote');
 const winTitle=document.getElementById('winTitle'), winText=document.getElementById('winText'), nextBtn=document.getElementById('nextLevel'), againBtn=document.getElementById('again');
@@ -416,7 +471,7 @@ function loadLevel(index,{freshRun=false,retry=false}={}){
   syncRefill();
   const level=levels[currentLevel];
   map=level.map.map(r=>r.split(''));
-  gems=0;total=0;open=false;locked=false;moveLock=false;enemyAlert=false;hasKey=false;fallingRocks=new Set();enemyTick=0;enemyDir=1;
+  gems=0;total=0;open=false;locked=false;moveLock=false;enemyAlert=false;hasKey=false;switchOn=false;fallingRocks=new Set();enemyTick=0;enemyDir=1;
   for(let y=0;y<H;y++)for(let x=0;x<W;x++){
     if(map[y][x]==='P'){px=x;py=y;startX=x;startY=y;map[y][x]='.'}
     if(map[y][x]==='G') total++;
@@ -424,6 +479,8 @@ function loadLevel(index,{freshRun=false,retry=false}={}){
   gemEl.textContent=gems;totalEl.textContent=total;scoreEl.textContent=score;updateEconomyUI();
   keyPill.style.display=level.requiresKey?'block':'none';
   keyState.textContent=hasKey?'1/1':'0/1';
+  switchPill.style.display=level.requiresSwitch?'block':'none';
+  switchState.textContent=switchOn?'ON':'OFF';
   levelLabel.textContent=level.id;
   hintEl.textContent=level.hint;
   statusEl.textContent=level.intro;
@@ -441,6 +498,8 @@ function render(){
     else if(t==='R'){c.classList.add('rock');if(fallingRocks.has(`${x},${y}`))c.classList.add('falling')}
     else if(t==='G')c.classList.add('gem');
     else if(t==='K')c.classList.add('key');
+    else if(t==='S'){c.classList.add('switch');if(switchOn)c.classList.add('active')}
+    else if(t==='D'){c.classList.add('gate');if(switchOn)c.classList.add('open')}
     else if(t==='E'){c.classList.add('exit');if(open)c.classList.add('open')}
     else if(t==='X'){c.classList.add('enemy');if(enemyAlert)c.classList.add('alert')}
     else c.classList.add('empty');
@@ -550,7 +609,8 @@ function completeLevel(){
   winTitle.textContent=`LEVEL ${currentLevel+1} COMPLETE`;
   if(currentLevel===0) winText.textContent='Köstebek bütün kristalleri buldu ve çıkışa ulaştı.';
   else if(currentLevel===1) winText.textContent='İkinci bölüm de tamam! Hareket eden mor böceği atlattın.';
-  else winText.textContent='Altın anahtarı ve bütün kristalleri buldun. Üçüncü bölüm tamam.';
+  else if(currentLevel===2) winText.textContent='Altın anahtarı ve bütün kristalleri buldun. Üçüncü bölüm tamam.';
+  else winText.textContent='Şalteri etkinleştirdin, metal geçidi açtın ve dördüncü bölümü tamamladın.';
   nextBtn.textContent=isLast?'Baştan Oyna':'Sonraki Bölüm →';
   if(currentLevel===1) nextBtn.textContent='Sonraki Bölüm →';
   winEl.style.display='flex';
@@ -559,10 +619,12 @@ function completeLevel(){
 function tryOpenExit(){
   if(open) return false;
   const level=levels[currentLevel];
-  const requirementsMet=(gems===total)&&(!level.requiresKey||hasKey);
+  const requirementsMet=(gems===total)&&(!level.requiresKey||hasKey)&&(!level.requiresSwitch||switchOn);
   if(requirementsMet){
     open=true;
-    statusEl.textContent=level.requiresKey?'Kristaller + altın anahtar tamam! Çıkış açıldı ✨':'Tüm kristaller tamam! Çıkış açıldı ✨';
+    if(level.requiresKey) statusEl.textContent='Kristaller + altın anahtar tamam! Çıkış açıldı.';
+    else if(level.requiresSwitch) statusEl.textContent='Kristaller + şalter tamam! Çıkış açıldı.';
+    else statusEl.textContent='Tüm kristaller tamam! Çıkış açıldı.';
     return true;
   }
   return false;
@@ -570,6 +632,12 @@ function tryOpenExit(){
 
 function lockedExitMessage(){
   const level=levels[currentLevel];
+  if(level.requiresSwitch){
+    const remaining=total-gems;
+    if(!switchOn && remaining>0) return `Çıkış kilitli. ${remaining} kristal ve aktif şalter gerekiyor.`;
+    if(!switchOn) return 'Bütün kristaller tamam, ama şalter hâlâ kapalı.';
+    return `${remaining} kristal daha bulmalısın.`;
+  }
   if(!level.requiresKey) return 'Kapı kilitli. Önce bütün kristalleri bul!';
   const remaining=total-gems;
   if(!hasKey && remaining>0) return `Kapı kilitli. ${remaining} kristal ve altın anahtar gerekiyor.`;
@@ -583,10 +651,11 @@ function move(dx,dy){
   if(nx<0||ny<0||nx>=W||ny>=H)return false;
   const t=map[ny][nx];
   if(t==='#'||t==='R')return false;
+  if(t==='D'&&!switchOn){statusEl.textContent='Metal geçit kapalı. Önce SWITCH noktasını etkinleştir.';return false}
   if(t==='X'){hurt('Mor taş böceğine yakalandın!');return false}
   if(t==='E'&&!open){statusEl.textContent=lockedExitMessage();return false}
 
-  let collected=false,collectedKey=false,openedNow=false;
+  let collected=false,collectedKey=false,activatedSwitch=false,openedNow=false;
   px=nx;py=ny;
   if(t==='d')map[ny][nx]='.';
   if(t==='G'){
@@ -597,7 +666,12 @@ function move(dx,dy){
   }
   if(t==='K'){
     map[ny][nx]='.';hasKey=true;score+=250;scoreEl.textContent=score;keyState.textContent='1/1';collectedKey=true;
-    statusEl.textContent='Altın anahtar bulundu! 🔑  +250';
+    statusEl.textContent='Altın anahtar bulundu! +250';
+    openedNow=tryOpenExit()||openedNow;
+  }
+  if(t==='S'&&!switchOn){
+    switchOn=true;score+=200;scoreEl.textContent=score;switchState.textContent='ON';activatedSwitch=true;
+    statusEl.textContent='Şalter etkin. Metal geçit açıldı. +200';
     openedNow=tryOpenExit()||openedNow;
   }
   if(t==='E'&&open){render();completeLevel();return true}
@@ -608,7 +682,8 @@ function move(dx,dy){
   if(locked)return true;
   render();
   if(collected)showFx(nx,ny,'+100 ✨');
-  if(collectedKey)showFx(nx,ny,'+250 🔑');
+  if(collectedKey)showFx(nx,ny,'+250');
+  if(activatedSwitch)showFx(nx,ny,'GATE OPEN','exit-fx');
   if(openedNow){
     for(let y=0;y<H;y++)for(let x=0;x<W;x++)if(map[y][x]==='E')showFx(x,y,'ÇIKIŞ AÇILDI!','exit-fx');
   }
@@ -749,7 +824,7 @@ document.querySelectorAll('[data-test-level]').forEach(btn=>{
 });
 
 syncRefill();
-// İstersen adresin sonuna ?level=3 yazarak da direkt Level 3 açılabilir.
+// İstersen adresin sonuna ?level=4 yazarak da direkt Level 4 açılabilir.
 const params=new URLSearchParams(location.search);
 const requestedLevel=Number(params.get('level'));
 if(Number.isInteger(requestedLevel) && requestedLevel>=1 && requestedLevel<=levels.length){
