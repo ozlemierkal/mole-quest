@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
 <meta name="theme-color" content="#24130d" />
-<title>Mole Quest — v4.2.2 Test Menu</title>
+<title>Mole Quest — v4.3 Economy Prototype</title>
 <style>
   :root{
     --cream:#fff3dd;
@@ -208,6 +208,28 @@
     .topbar{margin-bottom:6px}.hud{margin-top:6px}.controls{margin-top:8px;grid-template-columns:repeat(3,70px)}
     button{height:56px}.hint{display:none}
   }
+
+  .utilitybar{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center;margin:0 0 10px}
+  .utilitybar button{width:auto;height:42px;padding:0 14px;border-radius:13px;font-size:12px;letter-spacing:.7px;background:linear-gradient(#5c493d,#34271f);box-shadow:inset 0 1px 0 #d1aa8d55,0 3px 0 #211711}
+  .utilitybar .timer{min-height:42px;display:flex;align-items:center;justify-content:center;border-radius:13px;background:#21140fbb;border:1px solid #614637;color:#d9c9bb;font-size:12px;font-weight:800}
+  .utilitybar .count{color:#ffd27a;font-weight:1000}
+  .economy-note{font-size:11px;opacity:.68;text-align:center;line-height:1.35;margin-top:6px}
+  .modal-overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:22px;background:#000c;z-index:35}
+  #shopModal{z-index:40}
+  .shop-card{width:min(390px,94vw);max-height:88vh;overflow:auto;background:linear-gradient(180deg,#3c2b22,#1e1511);border:2px solid #725440;border-radius:22px;padding:18px;box-shadow:0 24px 60px #000d}
+  .shop-card h2{margin:0 0 4px;font-size:24px;color:#f5d28e;letter-spacing:.5px}
+  .shop-card .sub{margin:0 0 14px;font-size:12px;color:#cbb8a8;line-height:1.4}
+  .shop-item{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:12px 0;border-top:1px solid #ffffff12}
+  .shop-item:first-of-type{border-top:0}
+  .shop-item strong{display:block;font-size:14px;color:#f5eadf;margin-bottom:3px}
+  .shop-item span{display:block;font-size:11px;color:#bfae9f;line-height:1.35}
+  .shop-item button{width:auto;height:42px;padding:0 12px;border-radius:12px;font-size:12px;background:linear-gradient(#725844,#49372b)}
+  .shop-footer{display:grid;gap:8px;margin-top:12px}
+  .shop-footer button{height:48px;font-size:14px}
+  .shop-footer .secondary{background:linear-gradient(#514239,#332820)}
+  .life-card{text-align:center}.life-card .big-heart{font-size:44px;line-height:1;margin:6px 0 10px}.life-card .wait{font-size:20px;font-weight:1000;color:#f2cf8c;margin:10px 0}.life-card button:disabled{opacity:.4;filter:grayscale(.6)}
+  .hint-flash{animation:hintFlash .72s ease-in-out 2}@keyframes hintFlash{0%,100%{box-shadow:inset 0 0 0 0 #f4cd7a00}50%{box-shadow:inset 0 0 0 3px #f4cd7aaa,0 0 22px #f4cd7a66}}
+
 </style>
 </head>
 <body>
@@ -217,7 +239,13 @@
     <div class="pill">💎 <span id="gems">0</span>/<span id="total">0</span></div>
     <div class="pill">⭐ <span id="score">0</span></div>
     <div class="pill" id="keyPill" style="display:none">🔑 <span id="keyState">0/1</span></div>
-    <div class="pill">❤️ <span id="lives">3</span></div>
+    <div class="pill">♥ <span id="lives">5</span>/5</div>
+  </div>
+
+  <div class="utilitybar">
+    <button id="hintBtn">HINT <span class="count" id="hintCount">3</span></button>
+    <div class="timer" id="lifeTimer">Canlar dolu</div>
+    <button id="shopBtn">SHOP</button>
   </div>
 
   <div class="shell" id="shell"><div id="board"></div><div class="death-note" id="deathNote">💥 Bir can gitti!</div></div>
@@ -237,8 +265,11 @@
     <button data-test-level="0">1</button>
     <button data-test-level="1">2</button>
     <button data-test-level="2">3</button>
+    <button id="testFillLives">CAN DOLDUR</button>
+    <button id="testAddHints">+10 HINT</button>
   </div>
-  <div class="build">v4.2.2 • 3 Levels • Test Menu</div>
+  <div class="economy-note">Prototype economy: 5 can • 20 dakikada 1 can • başlangıçta 3 hint</div>
+  <div class="build">v4.3 • 3 Levels • Shop / Hint Prototype</div>
 </div>
 
 <div class="win" id="win">
@@ -255,13 +286,44 @@
   </div>
 </div>
 
+
+<div class="modal-overlay" id="shopModal">
+  <div class="shop-card">
+    <h2>SUPPLY SHOP</h2>
+    <p class="sub">Web prototipidir; aşağıdaki düğmeler gerçek ödeme almaz. iOS sürümünde App Store / StoreKit'e bağlanacak.</p>
+    <div class="shop-item"><div><strong>Canları Doldur</strong><span>Can sayısını tekrar 5'e çıkarır.</span></div><button data-demo-buy="lives">DEMO AL</button></div>
+    <div class="shop-item"><div><strong>Hint Paketi</strong><span>10 ek hint ekler.</span></div><button data-demo-buy="hints">DEMO AL</button></div>
+    <div class="shop-item"><div><strong>Explorer Pack</strong><span>Canları doldurur + 10 hint ekler.</span></div><button data-demo-buy="bundle">DEMO AL</button></div>
+    <div class="shop-footer"><button class="secondary" id="closeShop">Kapat</button></div>
+  </div>
+</div>
+<div class="modal-overlay" id="outLivesModal">
+  <div class="shop-card life-card">
+    <div class="big-heart">♥</div><h2>CAN BİTTİ</h2>
+    <p class="sub">Bir can yenilenince devam edebilirsin veya Shop'tan canlarını doldurabilirsin.</p>
+    <div class="wait" id="outLifeTimer">--:--</div>
+    <div class="shop-footer"><button id="continueAfterLife" disabled>Devam Et</button><button class="secondary" id="openShopFromLives">Shop</button></div>
+  </div>
+</div>
+
 <script>
 const W=10,H=14;
+const MAX_LIVES=5;
+const REFILL_MS=20*60*1000;
+const START_HINTS=3;
+const STORAGE_PREFIX='mq_v43_';
+function readStore(key,fallback){try{const v=localStorage.getItem(STORAGE_PREFIX+key);return v===null?fallback:Number(v)}catch(e){return fallback}}
+function writeStore(key,value){try{localStorage.setItem(STORAGE_PREFIX+key,String(value))}catch(e){}}
+let lives=Math.max(0,Math.min(MAX_LIVES,readStore('lives',MAX_LIVES)));
+let nextLifeAt=Math.max(0,readStore('nextLifeAt',0));
+let hintCredits=Math.max(0,readStore('hints',START_HINTS));
+let hintSteps=[0,0,0];
 const levels=[
   {
     id:'1–1',
     intro:'Kristalleri topla. Hepsini bulunca çıkış açılacak.',
     hint:'Her dokunuş = 1 kare. Kayanın altını kazıp çekilince kaya düşer; hareket halindeki kayanın altında kalma.',
+    hints:['Kayaların altını boşaltmadan önce bir kaçış yönü bırak.','Bir kayanın altındaki kesintisiz boşluk açılırsa kaya boşluğun sonuna kadar iner.'],
     enemyMode:'static',
     requiresKey:false,
     map:[
@@ -285,6 +347,7 @@ const levels=[
     id:'1–2',
     intro:'Level 2: Mor taş böceği artık hareket ediyor! Her 2 hamlede bir ilerler.',
     hint:'Level 2: Mor böcek her 2 başarılı hamlede 1 kare devriye gezer. Temas etme; kayaları da kullan.',
+    hints:['Mor böcek her iki başarılı hamlende bir hareket eder. Hamlelerini buna göre say.','Böcek yalnızca açık tünelde devriye gezer; toprağı kazamaz.'],
     enemyMode:'patrol',
     requiresKey:false,
     map:[
@@ -308,6 +371,7 @@ const levels=[
     id:'1–3',
     intro:'Level 3: Çıkış için bütün kristallerin yanında altın anahtarı da bulmalısın! 🔑',
     hint:'Level 3: Altın anahtarı bul, bütün kristalleri topla ve hareket eden mor böcekten uzak dur.',
+    hints:['Çıkışın iki şartı var: bütün kristaller ve altın anahtar.','Anahtarı erken almak, sona geldiğinde geri dönme riskini azaltır.'],
     enemyMode:'patrol',
     requiresKey:true,
     map:[
@@ -330,7 +394,7 @@ const levels=[
 ];
 
 let currentLevel=0;
-let map,px,py,startX,startY,gems,total,score=0,levelStartScore=0,lives=3,open=false,locked=false,moveLock=false,enemyAlert=false,hasKey=false;
+let map,px,py,startX,startY,gems,total,score=0,levelStartScore=0,open=false,locked=false,moveLock=false,enemyAlert=false,hasKey=false;
 let fallingRocks=new Set();
 let enemyTick=0,enemyDir=1;
 
@@ -340,13 +404,16 @@ const keyPill=document.getElementById('keyPill'), keyState=document.getElementBy
 const statusEl=document.getElementById('status'), winEl=document.getElementById('win'), levelLabel=document.getElementById('levelLabel'), hintEl=document.getElementById('hint');
 const shellEl=document.getElementById('shell'), deathNote=document.getElementById('deathNote');
 const winTitle=document.getElementById('winTitle'), winText=document.getElementById('winText'), nextBtn=document.getElementById('nextLevel'), againBtn=document.getElementById('again');
+const hintBtn=document.getElementById('hintBtn'), hintCount=document.getElementById('hintCount'), lifeTimer=document.getElementById('lifeTimer');
+const shopBtn=document.getElementById('shopBtn'), shopModal=document.getElementById('shopModal'), closeShop=document.getElementById('closeShop');
+const outLivesModal=document.getElementById('outLivesModal'), outLifeTimer=document.getElementById('outLifeTimer'), continueAfterLife=document.getElementById('continueAfterLife'), openShopFromLives=document.getElementById('openShopFromLives');
 
 function loadLevel(index,{freshRun=false,retry=false}={}){
   currentLevel=index;
   if(freshRun) score=0;
   if(retry) score=levelStartScore;
   levelStartScore=score;
-  lives=3;
+  syncRefill();
   const level=levels[currentLevel];
   map=level.map.map(r=>r.split(''));
   gems=0;total=0;open=false;locked=false;moveLock=false;enemyAlert=false;hasKey=false;fallingRocks=new Set();enemyTick=0;enemyDir=1;
@@ -354,13 +421,14 @@ function loadLevel(index,{freshRun=false,retry=false}={}){
     if(map[y][x]==='P'){px=x;py=y;startX=x;startY=y;map[y][x]='.'}
     if(map[y][x]==='G') total++;
   }
-  gemEl.textContent=gems;totalEl.textContent=total;scoreEl.textContent=score;lifeEl.textContent=lives;
+  gemEl.textContent=gems;totalEl.textContent=total;scoreEl.textContent=score;updateEconomyUI();
   keyPill.style.display=level.requiresKey?'block':'none';
   keyState.textContent=hasKey?'1/1':'0/1';
   levelLabel.textContent=level.id;
   hintEl.textContent=level.hint;
   statusEl.textContent=level.intro;
   render();
+  if(lives<=0){locked=true;moveLock=true;showOutOfLives();}
 }
 
 function render(){
@@ -378,6 +446,46 @@ function render(){
     else c.classList.add('empty');
     board.appendChild(c);
   }
+}
+
+
+function persistEconomy(){writeStore('lives',lives);writeStore('nextLifeAt',nextLifeAt);writeStore('hints',hintCredits)}
+function fmtTime(ms){const sec=Math.max(0,Math.ceil(ms/1000));const m=Math.floor(sec/60),s=sec%60;return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`}
+function updateEconomyUI(){
+  lifeEl.textContent=lives;hintCount.textContent=hintCredits;
+  lifeTimer.textContent=lives>=MAX_LIVES?'Canlar dolu':`Sonraki can: ${fmtTime(nextLifeAt-Date.now())}`;
+  if(outLivesModal.style.display==='flex'){
+    if(lives>0){outLifeTimer.textContent='Can yenilendi';continueAfterLife.disabled=false}
+    else{outLifeTimer.textContent=fmtTime(nextLifeAt-Date.now());continueAfterLife.disabled=true}
+  }
+}
+function syncRefill(){
+  const now=Date.now();
+  if(lives>=MAX_LIVES){lives=MAX_LIVES;nextLifeAt=0}
+  else{
+    if(!nextLifeAt)nextLifeAt=now+REFILL_MS;
+    while(lives<MAX_LIVES&&now>=nextLifeAt){lives++;nextLifeAt+=REFILL_MS}
+    if(lives>=MAX_LIVES)nextLifeAt=0;
+  }
+  persistEconomy();updateEconomyUI();
+}
+function spendLife(){syncRefill();if(lives<=0)return false;lives--;if(lives<MAX_LIVES&&!nextLifeAt)nextLifeAt=Date.now()+REFILL_MS;persistEconomy();updateEconomyUI();return true}
+function fillLives(){lives=MAX_LIVES;nextLifeAt=0;persistEconomy();updateEconomyUI()}
+function addHints(n){hintCredits+=n;persistEconomy();updateEconomyUI()}
+function showOutOfLives(){locked=true;moveLock=true;syncRefill();outLivesModal.style.display='flex';updateEconomyUI()}
+function resumeAfterLife(){syncRefill();if(lives<=0)return;outLivesModal.style.display='none';px=startX;py=startY;locked=false;moveLock=false;statusEl.textContent='Yeni canla devam ediyorsun. Topladıkların korunuyor.';render()}
+function useHint(){
+  if(locked&&outLivesModal.style.display==='flex')return;
+  if(hintCredits<=0){statusEl.textContent='Hint hakkın kalmadı. Shop bölümünden hint paketi alabilirsin.';shopModal.style.display='flex';return}
+  const list=levels[currentLevel].hints||[levels[currentLevel].hint];
+  const i=hintSteps[currentLevel]%list.length;hintSteps[currentLevel]++;hintCredits--;persistEconomy();updateEconomyUI();
+  statusEl.textContent=`HINT: ${list[i]}`;board.classList.remove('hint-flash');void board.offsetWidth;board.classList.add('hint-flash');
+}
+function demoPurchase(type){
+  if(type==='lives')fillLives();
+  if(type==='hints')addHints(10);
+  if(type==='bundle'){fillLives();addHints(10)}
+  shopModal.style.display='none';statusEl.textContent='Demo satın alma uygulandı. Gerçek ödeme yapılmadı.';if(outLivesModal.style.display==='flex')updateEconomyUI();
 }
 
 function showFx(x,y,text,kind='score-fx'){
@@ -439,10 +547,10 @@ function completeLevel(){
   score+=500;scoreEl.textContent=score;
   const level=levels[currentLevel];
   const isLast=currentLevel===levels.length-1;
-  winTitle.textContent=`Level ${currentLevel+1} Complete! ✨`;
+  winTitle.textContent=`LEVEL ${currentLevel+1} COMPLETE`;
   if(currentLevel===0) winText.textContent='Köstebek bütün kristalleri buldu ve çıkışa ulaştı.';
   else if(currentLevel===1) winText.textContent='İkinci bölüm de tamam! Hareket eden mor böceği atlattın.';
-  else winText.textContent='Altın anahtarı ve bütün kristalleri buldun. Üçüncü bölüm tamam! 🔑';
+  else winText.textContent='Altın anahtarı ve bütün kristalleri buldun. Üçüncü bölüm tamam.';
   nextBtn.textContent=isLast?'Baştan Oyna':'Sonraki Bölüm →';
   if(currentLevel===1) nextBtn.textContent='Sonraki Bölüm →';
   winEl.style.display='flex';
@@ -564,17 +672,16 @@ function rocksFall(){
 
 function hurt(msg){
   if(locked)return;
-  locked=true;moveLock=true;lives--;lifeEl.textContent=lives;statusEl.textContent=msg;
+  locked=true;moveLock=true;spendLife();statusEl.textContent=msg;
   deathNote.textContent=lives<=0?'💥 Oyun bitti!':'💥 Bir can gitti!';deathNote.classList.add('show');
   shellEl.classList.remove('hurt');void shellEl.offsetWidth;shellEl.classList.add('hurt');
 
   setTimeout(()=>{
     deathNote.classList.remove('show');shellEl.classList.remove('hurt');
     if(lives<=0){
-      loadLevel(currentLevel,{retry:true});
-      statusEl.textContent='Bölüm yeniden başladı. Dikkatli kaz!';
+      showOutOfLives();
     }else{
-      px=startX;py=startY;lifeEl.textContent=lives;
+      px=startX;py=startY;updateEconomyUI();
       statusEl.textContent='Başlangıç noktasına döndün. Kristallerin ve skorun duruyor.';
       render();locked=false;moveLock=false;
     }
@@ -617,6 +724,18 @@ againBtn.onclick=()=>{
 
 
 
+
+hintBtn.addEventListener('click',useHint);
+shopBtn.addEventListener('click',()=>shopModal.style.display='flex');
+closeShop.addEventListener('click',()=>shopModal.style.display='none');
+shopModal.addEventListener('click',e=>{if(e.target===shopModal)shopModal.style.display='none'});
+document.querySelectorAll('[data-demo-buy]').forEach(b=>b.addEventListener('click',()=>demoPurchase(b.dataset.demoBuy)));
+openShopFromLives.addEventListener('click',()=>{shopModal.style.display='flex'});
+continueAfterLife.addEventListener('click',resumeAfterLife);
+document.getElementById('testFillLives').addEventListener('click',()=>{fillLives();statusEl.textContent='TEST: Canlar dolduruldu.'});
+document.getElementById('testAddHints').addEventListener('click',()=>{addHints(10);statusEl.textContent='TEST: +10 hint eklendi.'});
+setInterval(syncRefill,1000);
+
 // Geliştirme/test menüsü: istediğin bölüme doğrudan atla.
 document.querySelectorAll('[data-test-level]').forEach(btn=>{
   btn.addEventListener('click',()=>{
@@ -629,6 +748,7 @@ document.querySelectorAll('[data-test-level]').forEach(btn=>{
   });
 });
 
+syncRefill();
 // İstersen adresin sonuna ?level=3 yazarak da direkt Level 3 açılabilir.
 const params=new URLSearchParams(location.search);
 const requestedLevel=Number(params.get('level'));

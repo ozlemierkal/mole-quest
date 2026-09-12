@@ -1,9 +1,15 @@
-# Mole Quest v4.2.2 — Test Menu
+# Mole Quest v4.3 — Economy Prototype
 
-Bu geliştirme sürümünde Level 1, Level 2 ve Level 3 korunmuştur.
+Bu paket ilk 3 levelı değiştirmeden oyun içi ekonomi prototipini ekler.
 
-Yeni: Oyun ekranının altında **TEST • Bölüme Git: 1 2 3** düğmeleri vardır. Böylece geliştirme sırasında önceki bölümleri tekrar oynamadan istediğin bölüme doğrudan geçebilirsin.
+- 5 can
+- 20 dakikada 1 can yenilenmesi (prototip ayarı)
+- Başlangıçta 3 hint
+- HINT butonu ve level başına ipuçları
+- SHOP demo ekranı: can doldurma, +10 hint, Explorer Pack
+- Gerçek ödeme yok; demo düğmeleri kaynak ekler
+- Canlar ve hintler tarayıcı localStorage içinde korunur
+- Test menüsünde Level 1/2/3, CAN DOLDUR ve +10 HINT bulunur
+- Level 1–3 haritaları ve kaya fiziği v4.2.2 ile aynıdır
 
-Ayrıca URL sonuna `?level=2` veya `?level=3` ekleyerek de doğrudan o bölümü açabilirsin.
-
-Bu test menüsü yayın öncesinde kaldırılacaktır.
+Gerçek iOS sürümünde satın almalar Apple StoreKit'e bağlanacaktır.
