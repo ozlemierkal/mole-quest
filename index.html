@@ -3,137 +3,552 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
-<title>Mole Quest – Prototype</title>
+<title>Mole Quest</title>
 <style>
   :root{
-    --bg:#1a120e; --panel:#3a2419; --soil:#7a4b2a; --soil2:#8b5a34; --rock:#716b67;
-    --gem:#69d5ff; --gold:#f4c542; --text:#fff7ea; --accent:#ffcf4d; --danger:#ff6b6b;
+    --bg1:#2a160f;
+    --bg2:#100906;
+    --wood1:#6e452d;
+    --wood2:#3f2519;
+    --gold:#ffc95f;
+    --cream:#fff4df;
+    --soil1:#a46a3a;
+    --soil2:#7a4b28;
+    --soil3:#5a321b;
+    --tunnel1:#2a1810;
+    --tunnel2:#130c08;
+    --stone1:#b7b0ab;
+    --stone2:#817a75;
+    --stone3:#57504c;
+    --gem1:#8df2ff;
+    --gem2:#35c7ff;
+    --gem3:#0c7dd1;
+    --danger:#ff6b77;
+    --leaf:#6bc26d;
   }
-  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  body{margin:0;background:radial-gradient(circle at top,#2f2018,#120d0a 65%);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;min-height:100vh;display:flex;justify-content:center}
-  .app{width:min(100vw,520px);padding:env(safe-area-inset-top) 12px calc(12px + env(safe-area-inset-bottom));}
-  .top{display:flex;align-items:center;gap:8px;margin:8px 0 10px;flex-wrap:wrap}
-  .logo{font-weight:900;font-size:24px;letter-spacing:.4px;color:#ffd25d;text-shadow:0 2px 0 #5a2f13;margin-right:auto}
-  .pill{background:linear-gradient(#4b2f21,#2d1d16);border:2px solid #6f4a31;border-radius:14px;padding:7px 10px;font-weight:800;box-shadow:inset 0 1px 0 #8b654c}
-  .board-wrap{background:#26170f;border:3px solid #5c3c28;border-radius:18px;padding:8px;box-shadow:0 12px 28px #0008,inset 0 0 30px #0007}
-  #board{display:grid;grid-template-columns:repeat(10,1fr);gap:2px;aspect-ratio:10/14;background:#0f0a07;border-radius:10px;overflow:hidden;touch-action:none}
-  .cell{position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;font-size:18px;user-select:none}
-  .wall{background:linear-gradient(135deg,#36261e,#2a1c15)}
-  .dirt{background:
-    radial-gradient(circle at 20% 25%,#9b6a41 0 5%,transparent 6%),
-    radial-gradient(circle at 70% 60%,#6f4025 0 6%,transparent 7%),
-    linear-gradient(135deg,var(--soil2),var(--soil));}
-  .empty{background:linear-gradient(135deg,#24140d,#140d09)}
-  .rock{background:radial-gradient(circle at 35% 30%,#9b9691,#6f6a66 45%,#494542 75%);border-radius:48%;margin:4px;box-shadow:inset -3px -4px 0 #3c3937, inset 3px 3px 0 #aaa4}
-  .gem::before{content:'◆';color:var(--gem);font-size:25px;text-shadow:0 0 10px #43c9ff,0 0 18px #43c9ff}
-  .exit{background:linear-gradient(#5b3520,#2b1b13);border-radius:6px;margin:3px;border:2px solid #7f5638}
-  .exit::before{content:'🚪';font-size:22px;filter:saturate(.8)}
-  .exit.open{box-shadow:0 0 14px #ffd86a, inset 0 0 8px #ffd86a55}
-  .exit.open::after{content:'✨';position:absolute;font-size:12px;right:1px;top:0}
-  .enemy::before{content:'🐛';font-size:20px}
-  .player{z-index:4}
-  .mole{width:78%;height:78%;position:relative;border-radius:50% 50% 46% 46%;background:radial-gradient(circle at 50% 45%,#7f553d 0 58%,#5d3e2f 59% 100%);box-shadow:0 2px 5px #0008}
-  .mole:before{content:'';position:absolute;width:66%;height:30%;left:17%;top:17%;background:#f0b42f;border-radius:50% 50% 35% 35%;box-shadow:inset 0 -3px 0 #a86e11}
-  .mole:after{content:'';position:absolute;width:18%;height:18%;left:41%;top:49%;background:#f39aa0;border-radius:50%;box-shadow: -10px -4px 0 -6px #111, 10px -4px 0 -6px #111}
-  .lamp{position:absolute;width:18%;height:18%;left:41%;top:10%;background:#fff7a9;border:2px solid #8e6d2d;border-radius:50%;box-shadow:0 0 8px #fff19c}
-  .hudline{display:flex;gap:8px;align-items:center;margin:10px 2px 0;font-size:14px;color:#ead9c7}
-  .status{flex:1;background:#21140d;border:1px solid #4f3323;border-radius:12px;padding:8px 10px;min-height:38px}
-  .controls{display:grid;grid-template-columns:repeat(3,76px);justify-content:center;gap:8px;margin:14px 0 4px}
-  button{appearance:none;border:0;border-radius:18px;background:linear-gradient(#5d4435,#3a2a21);color:#fff3dd;font-size:28px;font-weight:900;height:64px;box-shadow:inset 0 2px 0 #8a6a54,0 5px 0 #241912;touch-action:manipulation}
-  button:active{transform:translateY(3px);box-shadow:inset 0 2px 0 #8a6a54,0 2px 0 #241912}
-  .spacer{visibility:hidden}
-  .mini{font-size:12px;opacity:.82;text-align:center;margin-top:8px;line-height:1.35}
-  .win{position:fixed;inset:0;background:#000a;display:none;align-items:center;justify-content:center;padding:24px;z-index:20}
-  .card{width:min(340px,90vw);background:linear-gradient(#4d301f,#2a1a12);border:3px solid #7f5738;border-radius:22px;padding:24px;text-align:center;box-shadow:0 20px 50px #000b}
-  .card h2{margin:0 0 8px;color:#ffd25d;font-size:30px}.card p{margin:0 0 18px;color:#f1dfcf}
-  .card button{width:100%;height:54px;font-size:18px}
-  @media (max-height:760px){.controls{margin-top:8px}.controls button{height:54px}.app{padding-top:2px}.top{margin-top:2px}.mini{display:none}}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
+  html,body{height:100%}
+  body{
+    margin:0;
+    font-family: ui-rounded, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    color:var(--cream);
+    background:
+      radial-gradient(circle at 20% 0%, #55322055, transparent 35%),
+      radial-gradient(circle at 80% 10%, #4a261855, transparent 30%),
+      radial-gradient(circle at 50% 100%, #8a4b2218, transparent 40%),
+      linear-gradient(180deg,var(--bg1),var(--bg2) 72%);
+    display:flex;
+    justify-content:center;
+    overflow:hidden;
+  }
+  .app{
+    width:min(100vw,560px);
+    min-height:100vh;
+    padding: calc(env(safe-area-inset-top) + 10px) 14px calc(env(safe-area-inset-bottom) + 14px);
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .topbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .logo{
+    margin-right:auto;
+    display:flex;align-items:center;gap:10px;
+    padding:8px 14px;
+    border-radius:18px;
+    background:linear-gradient(180deg,#593624,#2d1911);
+    border:2px solid #875a3d;
+    box-shadow: inset 0 2px 0 #9f7250, 0 10px 24px #0005;
+  }
+  .logo .pick{font-size:18px;opacity:.9}
+  .logo .text{
+    font-weight:1000;
+    letter-spacing:.6px;
+    line-height:1;
+    color:var(--gold);
+    text-shadow:0 2px 0 #693a17;
+    font-size:22px;
+  }
+  .pill{
+    display:flex;align-items:center;gap:8px;
+    padding:8px 12px;
+    border-radius:16px;
+    background:linear-gradient(180deg,#5a3724,#2f1c14);
+    border:2px solid #7a5035;
+    box-shadow:inset 0 2px 0 #9a7050;
+    font-weight:900;
+  }
+  .pill .icon{font-size:20px}
+  .board-shell{
+    position:relative;
+    background:linear-gradient(180deg,#3a2118,#23120d);
+    border:3px solid #7b5338;
+    border-radius:24px;
+    padding:10px;
+    box-shadow: inset 0 0 0 2px #2a180f, 0 20px 36px #0008;
+  }
+  .board-shell::before,
+  .board-shell::after{
+    content:"";
+    position:absolute;
+    width:16px;height:16px;border-radius:50%;
+    background:radial-gradient(circle at 35% 35%,#ffd27d,#8b542c 72%);
+    top:8px;
+    box-shadow:0 0 0 2px #472818;
+  }
+  .board-shell::before{left:8px}
+  .board-shell::after{right:8px}
+  #board{
+    display:grid;
+    grid-template-columns:repeat(10,1fr);
+    gap:2px;
+    aspect-ratio:10/14;
+    border-radius:16px;
+    overflow:hidden;
+    background:
+      linear-gradient(180deg,#120b08,#090504);
+    touch-action:none;
+  }
+  .cell{
+    position:relative;
+    min-height:24px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+  }
+  .wall{
+    background:
+      linear-gradient(180deg,#6e655f,#4e4844);
+    box-shadow:inset 0 1px 0 #c8c1bc33, inset 0 -2px 0 #0005;
+  }
+  .wall::before{
+    content:""; position:absolute; inset:2px;
+    background:
+      radial-gradient(circle at 22% 24%, #dfd7d055 0 6%, transparent 7%),
+      radial-gradient(circle at 70% 68%, #ffffff22 0 5%, transparent 6%),
+      radial-gradient(circle at 44% 72%, #2e292677 0 6%, transparent 7%),
+      linear-gradient(180deg,#736a64,#5a534f);
+    border-radius:4px;
+  }
+  .dirt{
+    background:
+      radial-gradient(circle at 24% 26%, #d9a06a 0 5%, transparent 6%),
+      radial-gradient(circle at 70% 60%, #855130 0 5%, transparent 6%),
+      radial-gradient(circle at 38% 76%, #5f351f 0 4%, transparent 5%),
+      linear-gradient(180deg,var(--soil1),var(--soil2));
+    box-shadow:inset 0 -3px 0 #6a4025aa;
+  }
+  .empty{
+    background:
+      radial-gradient(circle at 50% 35%, #3c2417 0, #20120c 55%, #130b08 100%);
+  }
+  .empty::after{
+    content:"";
+    position:absolute; inset:0;
+    background: linear-gradient(180deg,transparent,#00000022 90%);
+    pointer-events:none;
+  }
+  .rock::before{
+    content:"";
+    width:80%;height:80%;
+    border-radius:45% 50% 47% 52%;
+    background:
+      radial-gradient(circle at 30% 28%, var(--stone1) 0 18%, transparent 19%),
+      radial-gradient(circle at 62% 42%, #d6cfca55 0 12%, transparent 13%),
+      linear-gradient(145deg,var(--stone1),var(--stone2) 54%,var(--stone3));
+    box-shadow:inset -6px -6px 0 #494340aa, inset 4px 4px 0 #ffffff22, 0 2px 4px #0007;
+  }
+  .gem::before{
+    content:"";
+    width:58%;height:74%;
+    clip-path:polygon(50% 0%, 82% 23%, 100% 49%, 70% 100%, 30% 100%, 0 49%, 18% 23%);
+    background:
+      linear-gradient(145deg,var(--gem1),var(--gem2) 55%,var(--gem3));
+    box-shadow:0 0 14px #43d5ffcc, 0 0 22px #43d5ff77;
+    animation: sparkle 1.8s ease-in-out infinite;
+  }
+  .gem::after{
+    content:"";
+    position:absolute; width:20%; height:18%; top:22%; left:33%;
+    background:#ffffffaa; border-radius:50%; filter:blur(1px);
+  }
+  @keyframes sparkle{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+  .exit::before{
+    content:"";
+    width:70%;height:78%;
+    border-radius:14px 14px 8px 8px;
+    background:
+      linear-gradient(180deg,#8d613d,#4f2f1d);
+    border:2px solid #c39a6d;
+    box-shadow: inset 0 0 0 2px #6a4026, inset 0 -8px 0 #38211788;
+  }
+  .exit::after{
+    content:"";
+    position:absolute;width:8%;height:8%;right:31%;top:49%;
+    border-radius:50%;background:#f0d4a4;box-shadow:0 0 0 1px #754b2c;
+  }
+  .exit.open::before{
+    background:linear-gradient(180deg,#ffe7ad,#e7b94f);
+    border-color:#fff2cc;
+    box-shadow:0 0 18px #ffd76ccc, inset 0 0 16px #fff7c2, inset 0 -8px 0 #bb8d2d88;
+  }
+  .enemy::before{
+    content:"";
+    width:72%; height:48%;
+    border-radius:999px;
+    background:repeating-linear-gradient(90deg,#56406b 0 7px,#6d5484 7px 14px);
+    box-shadow:0 2px 4px #0007;
+  }
+  .enemy::after{
+    content:"!";
+    position:absolute; right:10%; top:10%; font-weight:1000; color:var(--danger);
+    text-shadow:0 0 8px #ff97a0;
+  }
+  .enemy .eye,.mole .eye{position:absolute;border-radius:50%;background:#fff}
+  .enemy .eye::after,.mole .eye::after{content:"";position:absolute;border-radius:50%;background:#111}
+  .enemy-wrap{position:relative;width:72%;height:48%}
+  .enemy-wrap .body{position:absolute;inset:0;border-radius:999px;background:repeating-linear-gradient(90deg,#56406b 0 7px,#6d5484 7px 14px);box-shadow:0 2px 4px #0007}
+  .enemy-wrap .eye{width:20%;height:34%;top:22%;background:#fff}
+  .enemy-wrap .eye.left{left:22%}.enemy-wrap .eye.right{right:22%}
+  .enemy-wrap .eye::after{width:46%;height:46%;left:32%;top:30%;background:#1a1420}
+  .enemy-wrap .leg{position:absolute;width:14%;height:18%;bottom:-8%;background:#4d385d;border-radius:999px}
+  .enemy-wrap .l1{left:10%}.enemy-wrap .l2{left:30%}.enemy-wrap .l3{right:30%}.enemy-wrap .l4{right:10%}
+  .player{z-index:3}
+  .mole{
+    width:84%; height:84%; position:relative;
+    border-radius:46% 46% 42% 42% / 44% 44% 56% 56%;
+    background: radial-gradient(circle at 50% 54%, #cda987 0 22%, #8a6248 23% 70%, #654431 71% 100%);
+    box-shadow:0 4px 8px #0006;
+  }
+  .mole .helmet{
+    position:absolute; width:68%; height:28%; left:16%; top:14%;
+    background:linear-gradient(180deg,#ffd85a,#d89d1d);
+    border-radius:55% 55% 35% 35%;
+    box-shadow: inset 0 -3px 0 #a36a10, 0 1px 0 #fff3af77;
+  }
+  .mole .lamp{
+    position:absolute; width:18%; height:18%; left:41%; top:9%; border-radius:50%;
+    background:radial-gradient(circle,#fff9d0 0 35%,#fff17e 36% 58%,#b98a21 59% 100%);
+    box-shadow:0 0 10px #fff0a8, 0 0 18px #fff0a855;
+  }
+  .mole .face{
+    position:absolute; left:23%; top:38%; width:54%; height:34%;
+  }
+  .mole .eye{width:18%;height:28%;top:2%;background:#fff}
+  .mole .eye.left{left:12%}.mole .eye.right{right:12%}
+  .mole .eye::after{width:46%;height:46%;left:28%;top:28%;background:#1f130d}
+  .mole .nose{position:absolute;left:42%;top:40%;width:16%;height:18%;border-radius:50%;background:#f5a0ab;box-shadow:inset 0 -2px 0 #d57e87}
+  .mole .belly{position:absolute;left:28%;bottom:6%;width:44%;height:32%;border-radius:50%;background:#dec0a0cc}
+  .mole .paw{position:absolute;width:16%;height:14%;background:#f3e1cf;border-radius:42% 42% 60% 60%}
+  .mole .paw.left{left:12%;bottom:10%;transform:rotate(-24deg)}
+  .mole .paw.right{right:12%;bottom:10%;transform:rotate(24deg)}
+  .hud{
+    display:grid;grid-template-columns:1fr auto; gap:8px;
+    align-items:stretch;
+  }
+  .status,.subpill{
+    background:linear-gradient(180deg,#3a2117,#24130e);
+    border:2px solid #69442d;border-radius:16px;
+    box-shadow:inset 0 2px 0 #8b6248;
+  }
+  .status{padding:12px 14px;font-weight:700;line-height:1.3;color:#f5e8d8}
+  .subpill{padding:12px 14px;font-weight:900;display:flex;align-items:center;justify-content:center;min-width:92px;color:#ffd68a}
+  .controls{
+    display:grid;
+    grid-template-columns:repeat(3,78px);
+    justify-content:center;
+    gap:8px;
+    margin-top:2px;
+  }
+  button{
+    appearance:none;border:0;cursor:pointer;
+    border-radius:20px;
+    background:linear-gradient(180deg,#8f6a54,#5b3f31);
+    color:#fff7ee;
+    font-size:28px;font-weight:1000;
+    height:68px;
+    box-shadow:inset 0 2px 0 #d8b49a77, 0 6px 0 #2d1d15, 0 12px 18px #0005;
+  }
+  button:active{transform:translateY(4px);box-shadow:inset 0 2px 0 #d8b49a77,0 2px 0 #2d1d15,0 6px 10px #0005}
+  .ghost{visibility:hidden}
+  .help{font-size:12px; text-align:center; opacity:.86; line-height:1.35; padding-bottom:4px}
+  .badge-row{display:flex; gap:8px; flex-wrap:wrap}
+  .badge{
+    padding:7px 10px; border-radius:999px; background:#ffffff10; border:1px solid #ffffff18;
+    font-size:12px; font-weight:800; letter-spacing:.2px;
+  }
+  .win{
+    position:fixed; inset:0; display:none; align-items:center; justify-content:center; padding:22px;
+    background:#000a; z-index:30;
+  }
+  .card{
+    width:min(360px,92vw);
+    background:linear-gradient(180deg,#5a3625,#2d1911);
+    border:3px solid #85593b;
+    border-radius:24px;
+    padding:22px;
+    text-align:center;
+    box-shadow:0 24px 50px #000b;
+  }
+  .card img{width:118px; max-width:38vw; display:block; margin:0 auto 10px; filter:drop-shadow(0 10px 18px #0008)}
+  .card h2{margin:0 0 8px; font-size:30px; color:#ffd56b; line-height:1}
+  .card p{margin:0 0 16px; color:#f3decb}
+  .card button{width:100%; height:56px; font-size:18px}
+  @media (max-height:760px){
+    .app{gap:8px;padding-top:calc(env(safe-area-inset-top) + 6px)}
+    .controls{grid-template-columns:repeat(3,70px)}
+    button{height:58px;font-size:24px}
+    .logo .text{font-size:20px}
+    .status,.subpill{padding:10px 12px}
+  }
 </style>
 </head>
 <body>
 <div class="app">
-  <div class="top">
-    <div class="logo">⛏ MOLE QUEST</div>
-    <div class="pill">💎 <span id="gems">0</span>/<span id="total">0</span></div>
-    <div class="pill">❤️ <span id="lives">3</span></div>
+  <div class="topbar">
+    <div class="logo">
+      <div class="pick">⛏️</div>
+      <div class="text">MOLE QUEST</div>
+    </div>
+    <div class="pill"><span class="icon">💎</span> <span id="gems">0</span>/<span id="total">0</span></div>
+    <div class="pill"><span class="icon">❤️</span> <span id="lives">3</span></div>
   </div>
-  <div class="board-wrap"><div id="board"></div></div>
-  <div class="hudline"><div class="status" id="status">Kristalleri topla. Tümünü bulunca çıkış açılacak.</div></div>
+
+  <div class="board-shell">
+    <div id="board"></div>
+  </div>
+
+  <div class="hud">
+    <div class="status" id="status">Kristalleri topla. Hepsini bulunca çıkış kapısı açılacak.</div>
+    <div class="subpill" id="levelLabel">Level 1-1</div>
+  </div>
+
+  <div class="badge-row">
+    <div class="badge">🐾 Sevimli köstebek prototipi</div>
+    <div class="badge">💎 6 kristal</div>
+    <div class="badge">🪨 Düşen taşlara dikkat</div>
+  </div>
+
   <div class="controls">
-    <span class="spacer"></span><button data-dir="up">▲</button><span class="spacer"></span>
+    <span class="ghost"></span><button data-dir="up">▲</button><span class="ghost"></span>
     <button data-dir="left">◀</button><button data-dir="down">▼</button><button data-dir="right">▶</button>
   </div>
-  <div class="mini">iPad'de dokunmatik okları kullan. Klavyede de yön tuşları çalışır.</div>
+  <div class="help">iPad'de ok tuşlarına dokun. Klavyede yön tuşları da çalışır.</div>
 </div>
-<div class="win" id="win"><div class="card"><h2>Level Complete! ✨</h2><p>Köstebek tüm kristalleri buldu ve çıkışa ulaştı.</p><button id="again">Tekrar Oyna</button></div></div>
+
+<div class="win" id="win">
+  <div class="card">
+    <img src="assets/mole-quest-character.png" alt="Mole Quest karakteri" />
+    <h2>Harika! ✨</h2>
+    <p>Tüm kristaller bulundu ve köstebek güvenle çıkışa ulaştı.</p>
+    <button id="again">Tekrar Oyna</button>
+  </div>
+</div>
+
 <script>
-const W=10,H=14;
+const W=10, H=14;
 const initial=[
-"##########",
-"#..dGdR..#",
-"#dRdddddG#",
-"#dd..d...#",
-"#dGdPdRdd#",
-"#ddd.dddd#",
-"#..Rdd.dE#",
-"#ddddGddd#",
-"#dRdddddX#",
-"#ddddRddd#",
-"#GddddddG#",
-"#dddRdddd#",
-"#dddddddd#",
-"##########"
+  "##########",
+  "#..dGdR..#",
+  "#dRdddddG#",
+  "#dd..d...#",
+  "#dGdPdRdd#",
+  "#ddd.dddd#",
+  "#..Rdd.dE#",
+  "#ddddGddd#",
+  "#dRdddddX#",
+  "#ddddRddd#",
+  "#GddddddG#",
+  "#dddRdddd#",
+  "#dddddddd#",
+  "##########"
 ];
-let map,px,py,gems,total,lives=3,open=false,locked=false;
+
+let map, px, py, gems, total, lives=3, open=false, locked=false;
 const board=document.getElementById('board');
-const gemEl=document.getElementById('gems'),totalEl=document.getElementById('total'),lifeEl=document.getElementById('lives'),statusEl=document.getElementById('status');
+const gemEl=document.getElementById('gems');
+const totalEl=document.getElementById('total');
+const lifeEl=document.getElementById('lives');
+const statusEl=document.getElementById('status');
+const winEl=document.getElementById('win');
+
 function reset(full=false){
-  map=initial.map(r=>r.split('')); gems=0; open=false; locked=false; if(full) lives=3;
-  total=0;
-  for(let y=0;y<H;y++)for(let x=0;x<W;x++){if(map[y][x]==='P'){px=x;py=y;map[y][x]='.'} if(map[y][x]==='G') total++;}
-  totalEl.textContent=total; gemEl.textContent=gems; lifeEl.textContent=lives; statusEl.textContent='Kristalleri topla. Tümünü bulunca çıkış açılacak.'; render();
+  map = initial.map(r=>r.split(''));
+  gems = 0;
+  open = false;
+  locked = false;
+  if(full) lives = 3;
+  total = 0;
+  for(let y=0; y<H; y++){
+    for(let x=0; x<W; x++){
+      if(map[y][x]==='P'){ px=x; py=y; map[y][x]='.'; }
+      if(map[y][x]==='G') total++;
+    }
+  }
+  totalEl.textContent = total;
+  gemEl.textContent = gems;
+  lifeEl.textContent = lives;
+  statusEl.textContent = 'Kristalleri topla. Hepsini bulunca çıkış kapısı açılacak.';
+  render();
 }
+
+function makeMole(){
+  const m = document.createElement('div');
+  m.className='mole';
+  m.innerHTML = `
+    <div class="helmet"></div>
+    <div class="lamp"></div>
+    <div class="face">
+      <div class="eye left"></div>
+      <div class="eye right"></div>
+      <div class="nose"></div>
+    </div>
+    <div class="belly"></div>
+    <div class="paw left"></div>
+    <div class="paw right"></div>
+  `;
+  return m;
+}
+
+function makeEnemy(){
+  const e = document.createElement('div');
+  e.className='enemy-wrap';
+  e.innerHTML = `
+    <div class="body"></div>
+    <div class="eye left"></div>
+    <div class="eye right"></div>
+    <div class="leg l1"></div><div class="leg l2"></div><div class="leg l3"></div><div class="leg l4"></div>
+  `;
+  return e;
+}
+
 function render(){
   board.innerHTML='';
-  for(let y=0;y<H;y++)for(let x=0;x<W;x++){
-    const c=document.createElement('div'); c.className='cell'; const t=map[y][x];
-    if(x===px&&y===py){c.classList.add('empty','player'); const m=document.createElement('div');m.className='mole';const l=document.createElement('div');l.className='lamp';m.appendChild(l);c.appendChild(m)}
-    else if(t==='#') c.classList.add('wall');
-    else if(t==='d') c.classList.add('dirt');
-    else if(t==='R') c.classList.add('empty','rock');
-    else if(t==='G') c.classList.add('empty','gem');
-    else if(t==='E'){c.classList.add('empty','exit'); if(open)c.classList.add('open')}
-    else if(t==='X') c.classList.add('empty','enemy');
-    else c.classList.add('empty');
-    board.appendChild(c);
+  for(let y=0; y<H; y++){
+    for(let x=0; x<W; x++){
+      const c=document.createElement('div');
+      c.className='cell';
+      const t=map[y][x];
+
+      if(x===px && y===py){
+        c.classList.add('empty','player');
+        c.appendChild(makeMole());
+      } else if(t==='#'){
+        c.classList.add('wall');
+      } else if(t==='d'){
+        c.classList.add('dirt');
+      } else if(t==='R'){
+        c.classList.add('empty','rock');
+      } else if(t==='G'){
+        c.classList.add('empty','gem');
+      } else if(t==='E'){
+        c.classList.add('empty','exit');
+        if(open) c.classList.add('open');
+      } else if(t==='X'){
+        c.classList.add('empty','enemy');
+        c.appendChild(makeEnemy());
+      } else {
+        c.classList.add('empty');
+      }
+      board.appendChild(c);
+    }
   }
 }
+
 function move(dx,dy){
-  if(locked)return; const nx=px+dx,ny=py+dy; if(nx<0||ny<0||nx>=W||ny>=H)return;
-  const t=map[ny][nx]; if(t==='#'||t==='R') return;
-  if(t==='X'){hurt('Bir yeraltı böceğine yakalandın!');return}
-  if(t==='E'&&!open){statusEl.textContent='Çıkış kilitli. Önce tüm kristalleri bul!';return}
-  px=nx;py=ny;
+  if(locked) return;
+  const nx=px+dx, ny=py+dy;
+  if(nx<0 || ny<0 || nx>=W || ny>=H) return;
+  const t = map[ny][nx];
+  if(t==='#' || t==='R') return;
+  if(t==='X'){ hurt('Yeraltı böceğine yakalandın!'); return; }
+  if(t==='E' && !open){ statusEl.textContent='Çıkış kapısı hâlâ kilitli. Önce bütün kristalleri topla!'; return; }
+
+  px=nx; py=ny;
   if(t==='d') map[ny][nx]='.';
-  if(t==='G'){map[ny][nx]='.';gems++;gemEl.textContent=gems;statusEl.textContent='Kristal bulundu! 💎';if(gems===total){open=true;statusEl.textContent='Tüm kristaller tamam! Çıkış açıldı ✨';}}
-  if(t==='E'&&open){render();document.getElementById('win').style.display='flex';return}
-  rocksFall(); render();
+  if(t==='G'){
+    map[ny][nx]='.';
+    gems++;
+    gemEl.textContent=gems;
+    statusEl.textContent='Bir kristal daha bulundu! 💎';
+    if(gems===total){
+      open=true;
+      statusEl.textContent='Harika! Tüm kristaller tamamlandı, çıkış açıldı ✨';
+    }
+  }
+  if(t==='E' && open){
+    render();
+    winEl.style.display='flex';
+    return;
+  }
+  rocksFall();
+  render();
 }
+
 function rocksFall(){
-  // bottom-up: each rock can drop one cell if empty; player under it gets hit
-  for(let y=H-2;y>=1;y--)for(let x=1;x<W-1;x++) if(map[y][x]==='R'){
-    const by=y+1;
-    if(px===x&&py===by){ map[y][x]='.'; map[by][x]='R'; hurt('Taş kafana düştü!'); return; }
-    if(map[by][x]==='.') {map[by][x]='R';map[y][x]='.';}
+  for(let y=H-2; y>=1; y--){
+    for(let x=1; x<W-1; x++){
+      if(map[y][x]==='R'){
+        const by=y+1;
+        if(px===x && py===by){
+          map[y][x]='.';
+          map[by][x]='R';
+          hurt('Taş başına düştü!');
+          return;
+        }
+        if(map[by][x]==='.'){
+          map[by][x]='R';
+          map[y][x]='.';
+        }
+      }
+    }
   }
 }
+
 function hurt(msg){
-  if(locked)return; locked=true; lives--;lifeEl.textContent=lives;statusEl.textContent=msg;
-  setTimeout(()=>{if(lives<=0){reset(true);statusEl.textContent='Yeni oyun başladı. Dikkatli kaz!';}else{const oldLives=lives;reset(false);lives=oldLives;lifeEl.textContent=lives;statusEl.textContent='Bir can gitti. Tekrar dene!';}locked=false;},450);
+  if(locked) return;
+  locked=true;
+  lives--;
+  lifeEl.textContent=lives;
+  statusEl.textContent=msg;
+  setTimeout(()=>{
+    if(lives<=0){
+      reset(true);
+      statusEl.textContent='Tüm canlar bitti. Yeni oyun başladı!';
+    } else {
+      const remaining=lives;
+      reset(false);
+      lives=remaining;
+      lifeEl.textContent=lives;
+      statusEl.textContent='Bir can gitti. Tekrar dene!';
+    }
+    locked=false;
+  }, 420);
 }
-document.querySelectorAll('button[data-dir]').forEach(b=>b.addEventListener('pointerdown',e=>{e.preventDefault();const d=b.dataset.dir;if(d==='up')move(0,-1);if(d==='down')move(0,1);if(d==='left')move(-1,0);if(d==='right')move(1,0)}));
-addEventListener('keydown',e=>{const k=e.key;if(k==='ArrowUp')move(0,-1);if(k==='ArrowDown')move(0,1);if(k==='ArrowLeft')move(-1,0);if(k==='ArrowRight')move(1,0)});
-document.getElementById('again').onclick=()=>{document.getElementById('win').style.display='none';reset(true)};
+
+document.querySelectorAll('button[data-dir]').forEach(b=>{
+  b.addEventListener('pointerdown', e=>{
+    e.preventDefault();
+    const d=b.dataset.dir;
+    if(d==='up') move(0,-1);
+    if(d==='down') move(0,1);
+    if(d==='left') move(-1,0);
+    if(d==='right') move(1,0);
+  });
+});
+
+addEventListener('keydown', e=>{
+  if(e.key==='ArrowUp') move(0,-1);
+  if(e.key==='ArrowDown') move(0,1);
+  if(e.key==='ArrowLeft') move(-1,0);
+  if(e.key==='ArrowRight') move(1,0);
+});
+
+document.getElementById('again').onclick=()=>{
+  winEl.style.display='none';
+  reset(true);
+};
+
 reset(true);
 </script>
 </body>
