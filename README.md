@@ -1,6 +1,10 @@
-# Mole Quest v6.2.1
+Mole Quest v5.5.1 — Clean Level 10
 
-- Level 10 patrol yoluna düşen kaya kaldırıldı.
-- Böcek rotası engel çıkarsa bir sonraki açık patrol karesine devam eder.
-- v6.2 hizalama assetleri geri alındı; görünür ve stabil v6.1 gem/mole/enemy/rock assetleri kullanılıyor.
-- Gem/player/enemy/rock hücre içinde center/100% ile sabitlendi.
+- v5.5 stable/polished base retained for Levels 1–9.
+- Level 10 rebuilt from scratch.
+- Level 10 enemy uses an 8-cell open loop and moves one cell on every successful player move.
+- No rocks are placed above or on the enemy patrol loop.
+- Level 10 test button and ?level=10 supported.
+- Hold movement slightly faster.
+
+This build intentionally avoids the later v6 asset experiments.
