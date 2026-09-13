@@ -1,5 +1,7 @@
-Mole Quest v5.6 – Palette C + Level 10
+Mole Quest v5.7 — Mockup Style + Enemy Fix
 
-- Palette C oyuna uygulandı: bal tonlu toprak, koyu mocha duvar, açık taupe tünel, nötr gri kaya.
-- Level 10 eklendi: şalter + zorunlu çöken köprü + düşen kaya riski + devriye böceği.
-- Test menüsünde 10 var; ?level=10 ile doğrudan açılabilir.
+- Onaylanan mockup görünümündeki duvar, toprak, açık tünel, kristal ve EXIT görselleri gerçek oyun assetlerine taşındı.
+- Açık tüneller krem/bej; toprak sıcak bal-kahve; duvar koyu mocha olacak şekilde ayrıştırıldı.
+- EXIT artık mockup'taki sıcak, yapraklı ve parlayan kapı görünümüne çok daha yakın.
+- Level 10 böceği her başarılı hamlede ilerler ve açık devriye hattında başlar.
+- Devriye kodu rota hücresi durumuna karşı daha dayanıklı hale getirildi.
