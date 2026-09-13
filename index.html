@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
 <meta name="theme-color" content="#2b170f" />
-<title>Mole Quest — v5.5.7 Fragile Ground Fix</title>
+<title>Mole Quest — v5.5.9 Warm Palette</title>
 <style>
   :root{
     --cream:#efe4d3;
@@ -96,13 +96,13 @@
   }
   .cell{position:relative;overflow:hidden;background:#1c110c center/cover no-repeat}
   .cell::after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 0 1px rgba(48,27,15,.38), inset 0 1px 0 rgba(255,233,198,.06);pointer-events:none}
-  .wall{background-image:url('wall-tile.png');filter:brightness(.92) saturate(.90) contrast(1.14)}
-  .dirt{background-image:url('dirt-tile.png');filter:saturate(1.06) brightness(1.05) contrast(1.08)}
-  .fragile{background-image:url('dirt-tile.png');filter:saturate(1.12) brightness(.98) contrast(1.14);box-shadow:inset 0 0 0 2px rgba(255,232,196,.18), inset 0 0 0 4px rgba(137,72,28,.22), 0 0 0 2px rgba(255,185,86,.52), 0 0 14px rgba(255,165,58,.18)}
+  .wall{background-image:url('wall-tile.png');filter:brightness(1.00) saturate(1.00) contrast(1.06)}
+  .dirt{background-image:url('dirt-tile.png');filter:saturate(1.02) brightness(1.00) contrast(1.05)}
+  .fragile{background-image:url('dirt-tile.png');filter:saturate(.98) brightness(.94) contrast(1.12);box-shadow:inset 0 0 0 2px rgba(246,211,161,.16), inset 0 0 0 4px rgba(106,55,24,.26), 0 0 0 2px rgba(183,111,46,.44), 0 0 12px rgba(154,83,31,.16)}
   .fragile::before{content:"";position:absolute;z-index:2;inset:5%;background:linear-gradient(62deg,transparent 43%,rgba(70,34,16,.98) 44% 50%,transparent 51%) 44% 18%/76% 70% no-repeat,linear-gradient(118deg,transparent 43%,rgba(78,38,18,.96) 44% 50%,transparent 51%) 58% 58%/82% 72% no-repeat,linear-gradient(18deg,transparent 43%,rgba(38,18,10,.94) 44% 50%,transparent 51%) 34% 76%/68% 50% no-repeat,repeating-linear-gradient(135deg,rgba(255,210,126,.22) 0 8px,rgba(141,72,27,.10) 8px 16px);opacity:.98;mix-blend-mode:multiply}
   .collapsed{background:radial-gradient(circle at 50% 48%,#050404 0 30%,#120d0b 31% 52%,#5b3826 53% 66%,#2a1d17 67% 100%);box-shadow:inset 0 0 18px rgba(0,0,0,.88), inset 0 0 0 2px rgba(255,185,104,.14)}
   .collapsed::before{content:"";position:absolute;inset:10%;background:radial-gradient(circle at 18% 24%,#a66b49 0 5%,transparent 6%),radial-gradient(circle at 72% 62%,#8a5a3d 0 6%,transparent 7%),radial-gradient(circle at 43% 78%,#b8825f 0 4%,transparent 5%),radial-gradient(circle at 50% 55%,rgba(0,0,0,.32) 0 44%,transparent 45%);opacity:.9}
-  .empty{background-image:url('tunnel-tile.png');filter:saturate(.82) brightness(1.03) contrast(1.06)}
+  .empty{background-image:url('tunnel-tile.png');filter:saturate(.92) brightness(1.00) contrast(1.03)}
   .rock{background-image:url('rock-v556.png'),url('tunnel-tile.png');background-size:82% 82%,100% 100%;background-position:center,center;background-repeat:no-repeat;filter:none}
   .rock.falling{animation:rockDrop .18s ease-out;filter:brightness(1.04)}
   .gem{background-image:url('gem-v556.png'),url('dirt-tile.png');background-size:88% 88%,100% 100%;background-position:40% 54%,center;background-repeat:no-repeat;animation:gemPulse 1.8s ease-in-out infinite;filter:none}
@@ -120,8 +120,9 @@
   .plate.active::before{background:linear-gradient(180deg,#98a46e,#55683f);border-color:#c7d894;box-shadow:inset 0 -3px 0 rgba(41,58,30,.88),0 0 10px rgba(184,222,118,.22)}
   .gate{background-image:url('tunnel-tile.png');box-shadow:inset 0 0 0 2px rgba(160,164,170,.16), inset 0 0 16px rgba(0,0,0,.18)}
   .gate::before{content:"";position:absolute;z-index:2;inset:7% 13%;border-left:5px solid #7e8185;border-right:5px solid #7e8185;background:linear-gradient(180deg,rgba(18,17,19,.64),rgba(9,8,10,.82)),repeating-linear-gradient(90deg,transparent 0 15%,#9fa3a6 15% 26%,transparent 26% 41%);box-shadow:inset 0 0 0 2px #35373a,0 0 10px rgba(0,0,0,.46)}
-  .gate.open::before{opacity:.22;transform:translateY(-74%) scaleY(.84);transition:transform .2s ease,opacity .2s ease}
-  .gate.open::after{content:"";position:absolute;z-index:2;inset:6% 10% 9%;border-left:4px solid #8f9296;border-right:4px solid #8f9296;border-top:4px solid #a8abb0;border-radius:7px 7px 0 0;background:linear-gradient(180deg,rgba(255,226,165,.10),rgba(255,226,165,0) 44%);box-shadow:0 0 7px rgba(0,0,0,.42), inset 0 0 0 1px rgba(255,255,255,.10), inset 0 -8px 12px rgba(255,223,154,.12)}
+  .gate.open{background-image:url('tunnel-tile.png');filter:saturate(.92) brightness(1.00) contrast(1.03);box-shadow:inset 0 0 0 1px rgba(80,50,28,.22)}
+  .gate.open::before{opacity:0;transform:none}
+  .gate.open::after{content:"";position:absolute;z-index:2;inset:6% 9%;border-left:3px solid rgba(105,109,114,.70);border-right:3px solid rgba(105,109,114,.70);border-top:3px solid rgba(140,145,150,.78);border-radius:7px 7px 0 0;box-shadow:inset 0 0 0 1px rgba(255,255,255,.05);opacity:.72;pointer-events:none}
   .brittle{background-image:url('wall-tile.png');filter:brightness(.78) saturate(.6)}
   .brittle::before{content:"";position:absolute;z-index:2;inset:8%;background:linear-gradient(62deg,transparent 45%,#27140d 46% 51%,transparent 52%) 48% 22%/55% 55% no-repeat,linear-gradient(118deg,transparent 45%,#27140d 46% 51%,transparent 52%) 56% 58%/64% 58% no-repeat,linear-gradient(20deg,transparent 44%,#160b08 45% 50%,transparent 51%) 38% 72%/55% 42% no-repeat;opacity:.92;filter:drop-shadow(0 1px 0 rgba(209,154,115,.25))}
   .player{background-image:url('mole-tile.png');background-size:126% 126%;background-position:50% 53%;z-index:3;animation:playerStep .16s ease-out;filter:drop-shadow(0 2px 3px rgba(0,0,0,.55))}
@@ -223,7 +224,7 @@
     <button id="testAddHints">+10 HINT</button>
   </div>
   <div class="economy-note">Prototype economy • 5 can • 20 dakikada 1 can • 3 başlangıç hinti</div>
-  <div class="build">v5.5.7 • Fragile Ground Fix + Visual Clarity</div>
+  <div class="build">v5.5.9 • Warm Palette + Gate Fix</div>
 </div>
 
 <div class="win" id="win">
@@ -265,7 +266,7 @@ const W=10,H=14;
 const MAX_LIVES=5;
 const REFILL_MS=20*60*1000;
 const START_HINTS=3;
-const STORAGE_PREFIX='mq_v557_';
+const STORAGE_PREFIX='mq_v559_';
 function readStore(key,fallback){try{const v=localStorage.getItem(STORAGE_PREFIX+key);return v===null?fallback:Number(v)}catch(e){return fallback}}
 function writeStore(key,value){try{localStorage.setItem(STORAGE_PREFIX+key,String(value))}catch(e){}}
 let lives=Math.max(0,Math.min(MAX_LIVES,readStore('lives',MAX_LIVES)));

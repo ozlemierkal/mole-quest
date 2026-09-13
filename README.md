@@ -1,12 +1,13 @@
-Mole Quest v5.5.7 — Fragile Ground Fix + Visual Clarity
+Mole Quest v5.5.9 — Warm Palette + Gate Fix
 
-Bu sürüm v5.5.6 tabanı üstüne hazırlanmıştır.
+Bu sürüm v5.5.8 tabanı üstüne hazırlanmıştır.
 
 Değişiklikler:
-- v5.5.6’daki no-softlock ve görsel obje düzeltmeleri korunur.
-- Kayan/çatlak toprak artık normal topraktan daha belirgin: daha görünür çatlaklar, uyarı çerçevesi ve daha net doku.
-- Çökmüş zemin (geride kalan delik) daha koyu ve daha okunur hale getirildi.
-- Metal geçidin kapalı/açık hali daha net görünsün diye kapı animasyonu ve çerçevesi güçlendirildi.
-- Elmas kare içinde biraz daha sola alındı.
-- EXIT kapısı biraz daha belirgin ve sıcak parıltılı hale getirildi.
-- Kayıt anahtarı mq_v557_ olarak güncellendi; böylece tarayıcı eski localStorage verisiyle karışmaz.
+- Duvarlar koyu mocha tona çekildi.
+- Normal kazılabilir toprak sıcak bal/karamel kahvesine çekildi.
+- Açılmış yol/tünel beyaz yerine krem-bej tona getirildi.
+- Açık yol hafif taş dokulu bırakıldı; düz beyaz karo görünümü azaltıldı.
+- Kayan/çatlak toprak normal toprakla aynı renk ailesinde tutuldu, farkı çatlaklardan ve çerçeveden anlaşılır.
+- v5.5.8 kapı açık/kapalı düzeltmesi korunur.
+- Level 10 no-softlock ve uzun böcek devriyesi korunur.
+- Storage prefix mq_v559_ olarak güncellendi.
