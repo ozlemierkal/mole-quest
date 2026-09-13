@@ -1,3 +1,3 @@
-Mole Quest v5.1.2
+Mole Quest v5.2
 
-Level 6 yeniden tasarlandı: daha görünür çıkış kapısı, daha uzun devriye hattı, ek kaya ve daha iyi yerleşim.
+Sonuç ekranı Türkçeleştirildi, karakter yüzü düzeltildi, basılı tutarak hareket eklendi ve Level 7 uzun devriye rotasıyla eklendi.
