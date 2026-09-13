@@ -1,7 +1,6 @@
-# Mole Quest v6.2 – Alignment + Enemy Fix
+# Mole Quest v6.2.1
 
-- Mole, enemy, gem and rock use clean centered assets.
-- Alert animation no longer wiggles the bug inside one cell.
-- Loop enemies now move exactly one grid cell per enemy turn.
-- Level 10 still uses enemyEvery:1.
-- New asset filenames avoid browser cache confusion.
+- Level 10 patrol yoluna düşen kaya kaldırıldı.
+- Böcek rotası engel çıkarsa bir sonraki açık patrol karesine devam eder.
+- v6.2 hizalama assetleri geri alındı; görünür ve stabil v6.1 gem/mole/enemy/rock assetleri kullanılıyor.
+- Gem/player/enemy/rock hücre içinde center/100% ile sabitlendi.
