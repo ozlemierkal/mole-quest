@@ -1,10 +1,9 @@
-Mole Quest v5.5.1 — Clean Level 10
+Mole Quest v5.5.3 — Corrected Long Patrol
 
-- v5.5 stable/polished base retained for Levels 1–9.
-- Level 10 rebuilt from scratch.
-- Level 10 enemy uses an 8-cell open loop and moves one cell on every successful player move.
-- No rocks are placed above or on the enemy patrol loop.
-- Level 10 test button and ?level=10 supported.
-- Hold movement slightly faster.
-
-This build intentionally avoids the later v6 asset experiments.
+- This package is based on the stable v5.5 line.
+- All version markers are now consistent: title, footer, README and storage prefix use v5.5.3.
+- Level 10 enemy uses a 12-cell open patrol loop on the right side.
+- The enemy moves one grid cell on every successful player move.
+- No rock is placed on or above the patrol loop.
+- Level 10 can be opened directly with ?level=10.
+- This package intentionally does NOT use the later v6 asset experiments.

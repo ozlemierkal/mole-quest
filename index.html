@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
 <meta name="theme-color" content="#24130d" />
-<title>Mole Quest — v5.5.1 Clean Level 10</title>
+<title>Mole Quest — v5.5.3 Corrected Long Patrol</title>
 <style>
   :root{
     --cream:#efe4d3;
@@ -219,7 +219,7 @@
     <button id="testAddHints">+10 HINT</button>
   </div>
   <div class="economy-note">Prototype economy • 5 can • 20 dakikada 1 can • 3 başlangıç hinti</div>
-  <div class="build">v5.5.2 • Long Patrol + Visual Clarity</div>
+  <div class="build">v5.5.3 • Corrected Long Patrol</div>
 </div>
 
 <div class="win" id="win">
@@ -261,7 +261,7 @@ const W=10,H=14;
 const MAX_LIVES=5;
 const REFILL_MS=20*60*1000;
 const START_HINTS=3;
-const STORAGE_PREFIX='mq_v551_';
+const STORAGE_PREFIX='mq_v553_';
 function readStore(key,fallback){try{const v=localStorage.getItem(STORAGE_PREFIX+key);return v===null?fallback:Number(v)}catch(e){return fallback}}
 function writeStore(key,value){try{localStorage.setItem(STORAGE_PREFIX+key,String(value))}catch(e){}}
 let lives=Math.max(0,Math.min(MAX_LIVES,readStore('lives',MAX_LIVES)));
