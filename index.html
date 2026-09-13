@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
 <meta name="theme-color" content="#24130d" />
-<title>Mole Quest — v5.6 Palette C + Level 10</title>
+<title>Mole Quest — v5.6.1 Level 10 Fix</title>
 <style>
   :root{
     --cream:#efe4d3;
@@ -219,7 +219,7 @@
     <button id="testAddHints">+10 HINT</button>
   </div>
   <div class="economy-note">Prototype economy • 5 can • 20 dakikada 1 can • 3 başlangıç hinti</div>
-  <div class="build">v5.6 • Palette C • Level 10</div>
+  <div class="build">v5.6.1 • Level 10 Düzeltme</div>
 </div>
 
 <div class="win" id="win">
@@ -261,7 +261,7 @@ const W=10,H=14;
 const MAX_LIVES=5;
 const REFILL_MS=20*60*1000;
 const START_HINTS=3;
-const STORAGE_PREFIX='mq_v56_';
+const STORAGE_PREFIX='mq_v561_';
 function readStore(key,fallback){try{const v=localStorage.getItem(STORAGE_PREFIX+key);return v===null?fallback:Number(v)}catch(e){return fallback}}
 function writeStore(key,value){try{localStorage.setItem(STORAGE_PREFIX+key,String(value))}catch(e){}}
 let lives=Math.max(0,Math.min(MAX_LIVES,readStore('lives',MAX_LIVES)));
@@ -498,29 +498,29 @@ const levels=[
   }
   ,{
     id:'1–10',
-    intro:'Level 10: Şalteri aç, tek kullanımlık çatlak köprüden geç ve sağ bölgedeki kaya koridorlarıyla devriye böceğini birlikte yönet.',
-    hint:'Level 10: Şalter köprünün kapısını açar. Çatlak köprü geri dönüşü kapatır; sağ tarafta bazı kayalar ancak altlarını kazınca düşer.',
-    hints:['Önce şalteri aç. Kapıya giden çatlak köprü tek kullanımlık; üzerinden ayrıldığın kareler çöker.','Sağ tarafta kayaların altındaki toprağı kazınca kaya hemen değil, altından çıktıktan sonra düşer. Kaçış yönünü önceden seç.','Mor böcek sağ alt koridorda tur atar. Son kristallere giderken kaya düşüşünü ve böceğin ritmini aynı anda takip et.'],
+    intro:'Level 10: Solda kristalleri toparla, şalteri aç ve tek kullanımlık çatlak köprüden geç. Sağ bölümde ise daha kapalı koridorlarda devriye böceği ve kaya düşüşlerini birlikte yönet.',
+    hint:'Level 10: Soldaki kristalleri geçmeden köprüye girme. Şalter kapıyı açar; çatlak köprü ise dönüşü kapatır.',
+    hints:['Önce soldaki kristalleri ve şalteri tamamla. Çatlak köprüden geçince geri dönüş neredeyse kapanır.','Sağ taraf artık tamamen açık başlamıyor; devriye böceğinin koridorunu adım adım okuyarak ilerle.','Kayaların altını açmadan önce kaçış yönünü düşün. Son kristaller sağ alanda ama hepsi köşede değil.'],
     enemyMode:'loop',
-    enemyPath:[[6,8],[7,8],[8,8],[8,9],[8,10],[7,10],[6,10],[6,9]],
+    enemyPath:[[6,7],[7,7],[8,7],[8,8],[8,9],[7,9],[6,9],[6,8]],
     requiresKey:false,
     requiresSwitch:true,
     requiresPlate:false,
     collapsingGround:true,
     map:[
       "##########",
-      "#Pddd#...#",
-      "#dRdd#RdG#",
+      "#PddG#ddd#",
+      "#dRdd#dGd#",
       "#ddSd#ddd#",
-      "#dddd#G..#",
-      "##cccD...#",
-      "#dddd#dG.#",
-      "#dRdd#Rdd#",
-      "#dddd#X..#",
-      "#dddd#..G#",
+      "#Gddd#Gdd#",
+      "##cccDddd#",
+      "#dddd#dRd#",
+      "#dRdd#...#",
+      "#dddd#.X.#",
       "#dddd#...#",
-      "#dddd#G.E#",
-      "#dddd#...#",
+      "#dddd#dGd#",
+      "#dddd#ddE#",
+      "#dddd#Gdd#",
       "##########"
     ]
   }
