@@ -1,5 +1,5 @@
-Mole Quest v5.2.2
+Mole Quest v5.3
 
-- Basılı tutma hareketi daha da hızlandırıldı.
-- Level 7 şalteri başlangıç noktasından uzağa taşındı.
-- Görsel stil ve önceki mekanikler korunuyor.
+- Basılı tutma hareketi bir miktar daha hızlandırıldı.
+- Otomatik çözüm ipuçları kaldırıldı; detaylı yönlendirme HINT düğmesine taşındı.
+- Level 8 eklendi: şalter + anahtar + uzun devriye hattı kombinasyonu.

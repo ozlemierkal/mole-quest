@@ -208,11 +208,12 @@
     <button data-test-level="4">5</button>
     <button data-test-level="5">6</button>
     <button data-test-level="6">7</button>
+    <button data-test-level="7">8</button>
     <button id="testFillLives">CAN DOLDUR</button>
     <button id="testAddHints">+10 HINT</button>
   </div>
   <div class="economy-note">Prototype economy • 5 can • 20 dakikada 1 can • 3 başlangıç hinti</div>
-  <div class="build">v5.2.2 • Levels 1–7 • Faster Hold + Switch Reposition</div>
+  <div class="build">v5.3 • Levels 1–8 • Faster Hold + Cleaner Guidance</div>
 </div>
 
 <div class="win" id="win">
@@ -254,13 +255,13 @@ const W=10,H=14;
 const MAX_LIVES=5;
 const REFILL_MS=20*60*1000;
 const START_HINTS=3;
-const STORAGE_PREFIX='mq_v522_';
+const STORAGE_PREFIX='mq_v53_';
 function readStore(key,fallback){try{const v=localStorage.getItem(STORAGE_PREFIX+key);return v===null?fallback:Number(v)}catch(e){return fallback}}
 function writeStore(key,value){try{localStorage.setItem(STORAGE_PREFIX+key,String(value))}catch(e){}}
 let lives=Math.max(0,Math.min(MAX_LIVES,readStore('lives',MAX_LIVES)));
 let nextLifeAt=Math.max(0,readStore('nextLifeAt',0));
 let hintCredits=Math.max(0,readStore('hints',START_HINTS));
-let hintSteps=[0,0,0,0,0];
+let hintSteps=Array(40).fill(0);
 const levels=[
   {
     id:'1–1',
@@ -438,6 +439,33 @@ const levels=[
       "##########"
     ]
   }
+  ,{
+    id:'1–8',
+    intro:'Şalteri bul, kristalleri topla ve çıkışa ulaş.',
+    hint:'Level 8: Önce sol taraftaki şalteri bul. Geçit açıldıktan sonra sağ bölgedeki anahtarı ve kristalleri devriye böceğini zamanlayarak topla.',
+    hints:['Şalter başlangıca yakın değil; sol bölümün alt tarafında. Geçidi açmadan sağ bölgeye geçemezsin.','Sağ odadaki böcek uzun bir çevrim izler. Kapıdan çıkar çıkmaz koşmak yerine turunun boş bıraktığı hattı kullan.','Çıkış için bu bölümde üç koşul var: bütün kristaller, aktif şalter ve altın anahtar.'],
+    enemyMode:'loop',
+    enemyPath:[[5,5],[6,5],[7,5],[8,5],[8,6],[8,7],[8,8],[8,9],[7,9],[6,9],[5,9],[5,8],[5,7],[5,6]],
+    requiresKey:true,
+    requiresSwitch:true,
+    requiresPlate:false,
+    map:[
+      "##########",
+      "#Gdd#ddGd#",
+      "#ddd#dRdd#",
+      "#dP.#dddd#",
+      "#d..D...G#",
+      "#dd.#....#",
+      "#G..#X...#",
+      "#dRd#....#",
+      "#.dG#....#",
+      "#dS.#....#",
+      "#..d#dKdE#",
+      "#Gdd#ddGd#",
+      "#ddG#dd..#",
+      "##########"
+    ]
+  }
 ];
 
 let currentLevel=0;
@@ -476,8 +504,12 @@ function loadLevel(index,{freshRun=false,retry=false}={}){
   platePill.style.display=level.requiresPlate?'block':'none';
   plateState.textContent=plateOn?'ON':'OFF';
   levelLabel.textContent=level.id;
-  hintEl.textContent=level.hint;
-  statusEl.textContent=level.intro;
+  hintEl.textContent='Kristalleri topla ve çıkışa ulaş. Takılırsan HINT kullan.';
+  if(level.requiresKey && level.requiresSwitch) statusEl.textContent='Şalteri bul, anahtarı al ve kristalleri tamamla.';
+  else if(level.requiresKey) statusEl.textContent='Kristalleri ve anahtarı bul.';
+  else if(level.requiresSwitch) statusEl.textContent='Şalteri bul ve geçidi aç.';
+  else if(level.requiresPlate) statusEl.textContent='Geçit mekanizmasını çöz ve kristalleri topla.';
+  else statusEl.textContent='Kristalleri topla ve çıkışa ulaş.';
   updatePlateState();
   render();
   if(lives<=0){locked=true;moveLock=true;showOutOfLives();}
@@ -648,7 +680,8 @@ function completeLevel(){
   else if(currentLevel===3) winText.textContent='Şalteri etkinleştirdin, metal geçidi açtın ve dördüncü bölümü tamamladın.';
   else if(currentLevel===4) winText.textContent='Düşen kayayı kullanarak çatlak duvarı kırdın ve beşinci bölümü tamamladın.';
   else if(currentLevel===5) winText.textContent='Kayayı basınç plakasının üstüne oturtup geçidi açık tuttun ve altıncı bölümü tamamladın.';
-  else winText.textContent='Devriye hattını zamanlayıp riskli kristalleri topladın ve yedinci bölümü tamamladın.';
+  else if(currentLevel===6) winText.textContent='Devriye hattını zamanlayıp riskli kristalleri topladın ve yedinci bölümü tamamladın.';
+  else winText.textContent='Şalteri açtın, anahtarı buldun ve devriye bölgesini geçerek sekizinci bölümü tamamladın.';
   nextBtn.textContent=isLast?'Baştan Oyna':'Sonraki Bölüm →';
   if(currentLevel===1) nextBtn.textContent='Sonraki Bölüm →';
   winEl.style.display='flex';
@@ -827,11 +860,11 @@ function go(d){
   if(d==='down')moved=move(0,1);
   if(d==='left')moved=move(-1,0);
   if(d==='right')moved=move(1,0);
-  setTimeout(()=>{if(!locked)moveLock=false},moved?72:42);
+  setTimeout(()=>{if(!locked)moveLock=false},moved?62:36);
 }
 
-const HOLD_DELAY=130;
-const HOLD_INTERVAL=82;
+const HOLD_DELAY=105;
+const HOLD_INTERVAL=68;
 let holdTimer=null, holdInterval=null, heldButton=null;
 
 function stopHold(){
@@ -903,7 +936,7 @@ document.querySelectorAll('[data-test-level]').forEach(btn=>{
 });
 
 syncRefill();
-// İstersen adresin sonuna ?level=7 yazarak direkt Level 7 açılabilir.
+// İstersen adresin sonuna ?level=8 yazarak direkt Level 7 açılabilir.
 const params=new URLSearchParams(location.search);
 const requestedLevel=Number(params.get('level'));
 if(Number.isInteger(requestedLevel) && requestedLevel>=1 && requestedLevel<=levels.length){
