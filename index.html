@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
 <meta name="theme-color" content="#2b170f" />
-<title>Mole Quest — v5.5.9 Warm Palette</title>
+<title>Mole Quest — v5.6.0 Code Visual Reset</title>
 <style>
   :root{
     --cream:#efe4d3;
@@ -18,7 +18,27 @@
     --wood:#5c3b27;
     --wood2:#2d1d14;
     --glow:#74b7ff;
-    --danger:#c76c6c;
+--danger:#c76c6c;
+--wallTile:
+  linear-gradient(180deg, rgba(255,235,210,.08), transparent 22%),
+  radial-gradient(circle at 22% 28%, rgba(139,92,62,.72) 0 7%, transparent 8%),
+  radial-gradient(circle at 74% 32%, rgba(68,36,24,.52) 0 12%, transparent 13%),
+  radial-gradient(circle at 34% 74%, rgba(26,13,9,.42) 0 12%, transparent 13%),
+  radial-gradient(circle at 78% 78%, rgba(165,108,67,.24) 0 6%, transparent 7%),
+  linear-gradient(180deg, #6e402b 0%, #4a281c 54%, #301813 100%);
+--dirtTile:
+  linear-gradient(180deg, rgba(255,244,226,.18), transparent 24%),
+  radial-gradient(circle at 24% 28%, rgba(255,220,164,.46) 0 5%, transparent 6%),
+  radial-gradient(circle at 70% 34%, rgba(121,73,43,.70) 0 5%, transparent 6%),
+  radial-gradient(circle at 74% 72%, rgba(90,55,36,.56) 0 7%, transparent 8%),
+  radial-gradient(circle at 34% 78%, rgba(229,194,132,.28) 0 4%, transparent 5%),
+  linear-gradient(180deg, #e19858 0%, #c67741 52%, #aa6136 100%);
+--tunnelTile:
+  linear-gradient(180deg, rgba(255,255,255,.14), transparent 22%),
+  radial-gradient(circle at 26% 26%, rgba(255,255,255,.26) 0 4%, transparent 5%),
+  radial-gradient(circle at 72% 34%, rgba(197,179,155,.34) 0 4%, transparent 5%),
+  radial-gradient(circle at 34% 76%, rgba(176,158,136,.26) 0 5%, transparent 6%),
+  linear-gradient(180deg, #f2e7d8 0%, #e8dbc9 54%, #ddd0bb 100%);
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
   html,body{min-height:100%;margin:0}
@@ -26,7 +46,7 @@
     font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
     color:var(--cream);
     background:
-      linear-gradient(rgba(18,8,5,.74), rgba(7,4,3,.86)),
+      linear-gradient(rgba(18,8,5,.70), rgba(7,4,3,.84)),
       url('mine-bg.jpg') center top / cover no-repeat fixed,
       linear-gradient(180deg,#24130d,#090607 78%);
     display:flex;justify-content:center;
@@ -94,47 +114,50 @@
     background:#140d09;touch-action:none;position:relative;
     box-shadow:inset 0 0 0 1px rgba(255,227,185,.06), inset 0 0 40px rgba(0,0,0,.25);
   }
-  .cell{position:relative;overflow:hidden;background:#1c110c center/cover no-repeat}
-  .cell::after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 0 1px rgba(48,27,15,.38), inset 0 1px 0 rgba(255,233,198,.06);pointer-events:none}
-  .wall{background-image:url('wall-tile.png');filter:brightness(1.00) saturate(1.00) contrast(1.06)}
-  .dirt{background-image:url('dirt-tile.png');filter:saturate(1.02) brightness(1.00) contrast(1.05)}
-  .fragile{background-image:url('dirt-tile.png');filter:saturate(.98) brightness(.94) contrast(1.12);box-shadow:inset 0 0 0 2px rgba(246,211,161,.16), inset 0 0 0 4px rgba(106,55,24,.26), 0 0 0 2px rgba(183,111,46,.44), 0 0 12px rgba(154,83,31,.16)}
-  .fragile::before{content:"";position:absolute;z-index:2;inset:5%;background:linear-gradient(62deg,transparent 43%,rgba(70,34,16,.98) 44% 50%,transparent 51%) 44% 18%/76% 70% no-repeat,linear-gradient(118deg,transparent 43%,rgba(78,38,18,.96) 44% 50%,transparent 51%) 58% 58%/82% 72% no-repeat,linear-gradient(18deg,transparent 43%,rgba(38,18,10,.94) 44% 50%,transparent 51%) 34% 76%/68% 50% no-repeat,repeating-linear-gradient(135deg,rgba(255,210,126,.22) 0 8px,rgba(141,72,27,.10) 8px 16px);opacity:.98;mix-blend-mode:multiply}
-  .collapsed{background:radial-gradient(circle at 50% 48%,#050404 0 30%,#120d0b 31% 52%,#5b3826 53% 66%,#2a1d17 67% 100%);box-shadow:inset 0 0 18px rgba(0,0,0,.88), inset 0 0 0 2px rgba(255,185,104,.14)}
-  .collapsed::before{content:"";position:absolute;inset:10%;background:radial-gradient(circle at 18% 24%,#a66b49 0 5%,transparent 6%),radial-gradient(circle at 72% 62%,#8a5a3d 0 6%,transparent 7%),radial-gradient(circle at 43% 78%,#b8825f 0 4%,transparent 5%),radial-gradient(circle at 50% 55%,rgba(0,0,0,.32) 0 44%,transparent 45%);opacity:.9}
-  .empty{background-image:url('tunnel-tile.png');filter:saturate(.92) brightness(1.00) contrast(1.03)}
-  .rock{background-image:url('rock-v556.png'),url('tunnel-tile.png');background-size:82% 82%,100% 100%;background-position:center,center;background-repeat:no-repeat;filter:none}
-  .rock.falling{animation:rockDrop .18s ease-out;filter:brightness(1.04)}
-  .gem{background-image:url('gem-v556.png'),url('dirt-tile.png');background-size:88% 88%,100% 100%;background-position:40% 54%,center;background-repeat:no-repeat;animation:gemPulse 1.8s ease-in-out infinite;filter:none}
-  .key{background-image:url('tunnel-tile.png');animation:keyPulse 1.3s ease-in-out infinite alternate}
-  .key::before{content:"";position:absolute;z-index:2;width:34%;height:34%;left:14%;top:31%;border:4px solid #e7bb5b;border-radius:50%;box-shadow:0 0 10px rgba(231,187,91,.35),inset 0 0 5px rgba(255,243,175,.4)}
-  .key::after{content:"";position:absolute;z-index:2;width:50%;height:22%;left:43%;top:42%;background:linear-gradient(180deg,#eecf84,#c88c2e);clip-path:polygon(0 28%,68% 28%,68% 0,81% 0,81% 28%,100% 28%,100% 72%,85% 72%,85% 100%,72% 100%,72% 72%,0 72%);border-radius:999px;box-shadow:0 0 9px rgba(231,187,91,.28)}
-  .switch{background-image:url('tunnel-tile.png')}
-  .switch::before{content:"";position:absolute;z-index:2;left:18%;right:18%;bottom:19%;height:28%;border-radius:8px;background:linear-gradient(180deg,#75787a,#434548);border:2px solid #9c9fa1;box-shadow:inset 0 -4px 0 #2e3032,0 2px 4px #0008}
-  .switch::after{content:"";position:absolute;z-index:3;width:24%;height:24%;left:38%;top:26%;border-radius:50%;background:radial-gradient(circle at 35% 30%,#f4d49a,#bb7d29 58%,#6a4212 60%);box-shadow:0 0 10px rgba(240,180,61,.35)}
-  .switch.active::before{background:linear-gradient(180deg,#526f59,#2f4c37);border-color:#7fac87}
-  .switch.active::after{background:radial-gradient(circle at 35% 30%,#d7ffd9,#62c878 58%,#256335 60%);box-shadow:0 0 13px rgba(109,229,132,.45)}
-  .plate{background-image:url('tunnel-tile.png')}
-  .plate::before{content:"";position:absolute;z-index:2;left:15%;right:15%;bottom:22%;height:20%;border-radius:999px;background:linear-gradient(180deg,#888b8f,#51545a);border:2px solid #a2a5a8;box-shadow:inset 0 -3px 0 rgba(31,33,36,.85),0 2px 4px rgba(0,0,0,.6)}
-  .plate::after{content:"";position:absolute;z-index:2;left:32%;right:32%;top:20%;height:18%;border-radius:999px;background:linear-gradient(180deg,#46484d,#24262a);opacity:.6}
-  .plate.active::before{background:linear-gradient(180deg,#98a46e,#55683f);border-color:#c7d894;box-shadow:inset 0 -3px 0 rgba(41,58,30,.88),0 0 10px rgba(184,222,118,.22)}
-  .gate{background-image:url('tunnel-tile.png');box-shadow:inset 0 0 0 2px rgba(160,164,170,.16), inset 0 0 16px rgba(0,0,0,.18)}
-  .gate::before{content:"";position:absolute;z-index:2;inset:7% 13%;border-left:5px solid #7e8185;border-right:5px solid #7e8185;background:linear-gradient(180deg,rgba(18,17,19,.64),rgba(9,8,10,.82)),repeating-linear-gradient(90deg,transparent 0 15%,#9fa3a6 15% 26%,transparent 26% 41%);box-shadow:inset 0 0 0 2px #35373a,0 0 10px rgba(0,0,0,.46)}
-  .gate.open{background-image:url('tunnel-tile.png');filter:saturate(.92) brightness(1.00) contrast(1.03);box-shadow:inset 0 0 0 1px rgba(80,50,28,.22)}
-  .gate.open::before{opacity:0;transform:none}
-  .gate.open::after{content:"";position:absolute;z-index:2;inset:6% 9%;border-left:3px solid rgba(105,109,114,.70);border-right:3px solid rgba(105,109,114,.70);border-top:3px solid rgba(140,145,150,.78);border-radius:7px 7px 0 0;box-shadow:inset 0 0 0 1px rgba(255,255,255,.05);opacity:.72;pointer-events:none}
-  .brittle{background-image:url('wall-tile.png');filter:brightness(.78) saturate(.6)}
-  .brittle::before{content:"";position:absolute;z-index:2;inset:8%;background:linear-gradient(62deg,transparent 45%,#27140d 46% 51%,transparent 52%) 48% 22%/55% 55% no-repeat,linear-gradient(118deg,transparent 45%,#27140d 46% 51%,transparent 52%) 56% 58%/64% 58% no-repeat,linear-gradient(20deg,transparent 44%,#160b08 45% 50%,transparent 51%) 38% 72%/55% 42% no-repeat;opacity:.92;filter:drop-shadow(0 1px 0 rgba(209,154,115,.25))}
-  .player{background-image:url('mole-tile.png');background-size:126% 126%;background-position:50% 53%;z-index:3;animation:playerStep .16s ease-out;filter:drop-shadow(0 2px 3px rgba(0,0,0,.55))}
-  .enemy{background-image:url('enemy-v556.png'),url('tunnel-tile.png');background-size:82% auto,100% 100%;background-position:50% 76%,center;background-repeat:no-repeat;filter:none}
-  .enemy.alert{background-size:82% auto,100% 100%;background-position:50% 76%,center;filter:none;box-shadow:inset 0 0 12px rgba(199,108,108,.24);z-index:2}
-  .exit{background-image:url('exit-v556.png'),url('tunnel-tile.png');background-size:106% 106%,100% 100%;background-position:50% 53%,center;background-repeat:no-repeat;filter:saturate(1.06) brightness(1.05);box-shadow:inset 0 0 0 2px rgba(247,223,161,.30),0 0 16px rgba(255,193,72,.24);z-index:2}
-  .exit::before{content:"";position:absolute;inset:8%;border-radius:12px;box-shadow:inset 0 0 0 1px rgba(255,236,190,.20)}
-  .exit.open{filter:saturate(1.14) brightness(1.14) contrast(1.10);box-shadow:inset 0 0 20px rgba(255,223,129,.58),0 0 20px rgba(255,206,88,.48),0 0 0 2px rgba(255,238,194,.30);z-index:2;animation:exitGlow .9s ease-in-out infinite alternate}
-  @keyframes gemPulse{0%,100%{filter:brightness(.96);transform:scale(1)}50%{filter:brightness(1.15);transform:scale(1.035)}}
+.cell{position:relative;overflow:hidden;background:#1c110c center/cover no-repeat}
+.cell::after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 0 1px rgba(67,42,28,.34), inset 0 1px 0 rgba(255,241,217,.14);pointer-events:none}
+.wall{background:var(--wallTile);filter:saturate(1.03) contrast(1.06)}
+.dirt{background:var(--dirtTile);filter:saturate(1.02) brightness(1.01)}
+.fragile{background:var(--dirtTile);filter:saturate(1.00) brightness(.98) contrast(1.06);box-shadow:inset 0 0 0 2px rgba(255,227,177,.16), inset 0 0 0 4px rgba(114,67,36,.18), 0 0 0 2px rgba(177,110,56,.34)}
+.fragile::before{content:"";position:absolute;z-index:2;inset:12%;background:linear-gradient(50deg,transparent 43%,rgba(86,43,22,.96) 44% 49%,transparent 50%) center/100% 100% no-repeat,linear-gradient(-38deg,transparent 44%,rgba(104,52,24,.92) 45% 50%,transparent 51%) center/100% 100% no-repeat,linear-gradient(90deg,transparent 0 46%,rgba(78,38,17,.75) 46% 54%,transparent 54%) center/78% 28% no-repeat;opacity:.95;mix-blend-mode:multiply}
+.collapsed{background:radial-gradient(circle at 50% 46%,#080605 0 24%,#17100c 25% 42%,transparent 43%),var(--tunnelTile);box-shadow:inset 0 0 18px rgba(0,0,0,.84), inset 0 0 0 2px rgba(199,133,81,.18)}
+.collapsed::before{content:"";position:absolute;inset:10%;background:radial-gradient(circle at 18% 24%,#b27a56 0 5%,transparent 6%),radial-gradient(circle at 72% 62%,#946447 0 6%,transparent 7%),radial-gradient(circle at 43% 78%,#c4916c 0 4%,transparent 5%),radial-gradient(circle at 50% 55%,rgba(0,0,0,.34) 0 40%,transparent 41%);opacity:.9}
+.empty,.key,.switch,.plate,.gate{background:var(--tunnelTile)}
+.empty{filter:saturate(.97) brightness(1.01) contrast(1.02)}
+.rock{background:var(--tunnelTile);filter:none}
+.rock::before{content:"";position:absolute;z-index:2;inset:10%;background:url('rock-v556.png') center/78% 78% no-repeat;filter:drop-shadow(0 3px 5px rgba(0,0,0,.38))}
+.rock.falling{animation:rockDrop .18s ease-out;filter:brightness(1.04)}
+.gem{background:var(--dirtTile);filter:none}
+.gem::before{content:"";position:absolute;z-index:2;inset:6%;background:url('gem-v556.png') 42% 56%/76% 76% no-repeat;animation:gemPulse 1.8s ease-in-out infinite;filter:drop-shadow(0 0 7px rgba(55,190,255,.24))}
+.key{animation:keyPulse 1.3s ease-in-out infinite alternate}
+.key::before{content:"";position:absolute;z-index:2;width:34%;height:34%;left:14%;top:31%;border:4px solid #e7bb5b;border-radius:50%;box-shadow:0 0 10px rgba(231,187,91,.35),inset 0 0 5px rgba(255,243,175,.4)}
+.key::after{content:"";position:absolute;z-index:2;width:50%;height:22%;left:43%;top:42%;background:linear-gradient(180deg,#eecf84,#c88c2e);clip-path:polygon(0 28%,68% 28%,68% 0,81% 0,81% 28%,100% 28%,100% 72%,85% 72%,85% 100%,72% 100%,72% 72%,0 72%);border-radius:999px;box-shadow:0 0 9px rgba(231,187,91,.28)}
+.switch::before{content:"";position:absolute;z-index:2;left:18%;right:18%;bottom:19%;height:28%;border-radius:8px;background:linear-gradient(180deg,#75787a,#434548);border:2px solid #9c9fa1;box-shadow:inset 0 -4px 0 #2e3032,0 2px 4px #0008}
+.switch::after{content:"";position:absolute;z-index:3;width:24%;height:24%;left:38%;top:26%;border-radius:50%;background:radial-gradient(circle at 35% 30%,#f4d49a,#bb7d29 58%,#6a4212 60%);box-shadow:0 0 10px rgba(240,180,61,.35)}
+.switch.active::before{background:linear-gradient(180deg,#526f59,#2f4c37);border-color:#7fac87}
+.switch.active::after{background:radial-gradient(circle at 35% 30%,#d7ffd9,#62c878 58%,#256335 60%);box-shadow:0 0 13px rgba(109,229,132,.45)}
+.plate::before{content:"";position:absolute;z-index:2;left:15%;right:15%;bottom:22%;height:20%;border-radius:999px;background:linear-gradient(180deg,#888b8f,#51545a);border:2px solid #a2a5a8;box-shadow:inset 0 -3px 0 rgba(31,33,36,.85),0 2px 4px rgba(0,0,0,.6)}
+.plate::after{content:"";position:absolute;z-index:2;left:32%;right:32%;top:20%;height:18%;border-radius:999px;background:linear-gradient(180deg,#46484d,#24262a);opacity:.6}
+.plate.active::before{background:linear-gradient(180deg,#98a46e,#55683f);border-color:#c7d894;box-shadow:inset 0 -3px 0 rgba(41,58,30,.88),0 0 10px rgba(184,222,118,.22)}
+.gate{box-shadow:inset 0 0 0 2px rgba(160,164,170,.16), inset 0 0 16px rgba(0,0,0,.12)}
+.gate::before{content:"";position:absolute;z-index:2;inset:6% 14%;border-radius:8px 8px 4px 4px;background:linear-gradient(180deg,rgba(18,17,19,.10),rgba(9,8,10,.30)),repeating-linear-gradient(90deg,transparent 0 14%,#9ca0a4 14% 24%,transparent 24% 38%);border-left:4px solid #7f8388;border-right:4px solid #7f8388;border-top:4px solid #aeb3b8;box-shadow:inset 0 0 0 2px rgba(52,55,59,.86),0 0 10px rgba(0,0,0,.18)}
+.gate.open{box-shadow:inset 0 0 0 1px rgba(108,84,60,.20), inset 0 10px 14px rgba(255,255,255,.04)}
+.gate.open::before{opacity:.20;transform:translateY(-58%)}
+.gate.open::after{content:"";position:absolute;z-index:2;inset:8% 14% 10%;border-left:3px solid rgba(108,112,118,.58);border-right:3px solid rgba(108,112,118,.58);border-top:5px solid rgba(135,140,146,.74);border-radius:8px 8px 0 0;box-shadow:inset 0 0 0 1px rgba(255,255,255,.05);opacity:.78;pointer-events:none}
+.brittle{background:var(--wallTile);filter:brightness(.82) saturate(.82)}
+.brittle::before{content:"";position:absolute;z-index:2;inset:8%;background:linear-gradient(62deg,transparent 45%,#27140d 46% 51%,transparent 52%) 48% 22%/55% 55% no-repeat,linear-gradient(118deg,transparent 45%,#27140d 46% 51%,transparent 52%) 56% 58%/64% 58% no-repeat,linear-gradient(20deg,transparent 44%,#160b08 45% 50%,transparent 51%) 38% 72%/55% 42% no-repeat;opacity:.92;filter:drop-shadow(0 1px 0 rgba(209,154,115,.25))}
+.player{background:var(--tunnelTile);z-index:3;animation:playerStep .16s ease-out;filter:none}
+.player::before{content:"";position:absolute;z-index:3;inset:4%;background:url('mole-tile.png') 50% 56%/112% 112% no-repeat;-webkit-mask-image:radial-gradient(ellipse 48% 50% at 50% 54%,#000 0 72%,transparent 92%);mask-image:radial-gradient(ellipse 48% 50% at 50% 54%,#000 0 72%,transparent 92%);filter:drop-shadow(0 3px 4px rgba(0,0,0,.48))}
+.enemy{background:var(--tunnelTile);filter:none;z-index:2}
+.enemy::before{content:"";position:absolute;z-index:3;inset:6%;background:url('enemy-v556.png') center 70%/78% auto no-repeat;-webkit-mask-image:linear-gradient(to bottom,#000 0 72%,rgba(0,0,0,.92) 82%,transparent 94%);mask-image:linear-gradient(to bottom,#000 0 72%,rgba(0,0,0,.92) 82%,transparent 94%);filter:drop-shadow(0 2px 3px rgba(0,0,0,.42))}
+.enemy.alert{box-shadow:inset 0 0 12px rgba(199,108,108,.24)}
+.exit{background:url('exit-v556.png') 48% 55%/96% 96% no-repeat,var(--tunnelTile);filter:saturate(1.06) brightness(1.05);box-shadow:inset 0 0 0 2px rgba(247,223,161,.22),0 0 16px rgba(255,193,72,.20);z-index:2}
+.exit::before{content:"";position:absolute;inset:10%;border-radius:12px;box-shadow:inset 0 0 0 1px rgba(255,236,190,.18)}
+.exit.open{filter:saturate(1.14) brightness(1.12) contrast(1.08);box-shadow:inset 0 0 20px rgba(255,223,129,.54),0 0 20px rgba(255,206,88,.44),0 0 0 2px rgba(255,238,194,.26);z-index:2;animation:exitGlow .9s ease-in-out infinite alternate}
+@keyframes gemPulse{0%,100%{transform:scale(1);filter:brightness(.98) drop-shadow(0 0 7px rgba(55,190,255,.24))}50%{transform:scale(1.04);filter:brightness(1.15) drop-shadow(0 0 10px rgba(55,190,255,.32))}}
   @keyframes keyPulse{0%{filter:brightness(.96);transform:scale(.97)}100%{filter:brightness(1.12);transform:scale(1.03)}}
   @keyframes rockDrop{0%{transform:translateY(-32%)}100%{transform:translateY(0)}}
-  @keyframes playerStep{0%{background-size:112% 112%;filter:brightness(1.12) drop-shadow(0 2px 3px rgba(0,0,0,.55))}100%{background-size:126% 126%;filter:brightness(1) drop-shadow(0 2px 3px rgba(0,0,0,.55))}}
+  @keyframes playerStep{0%{transform:translateY(2px)}100%{transform:translateY(0)}}
   @keyframes enemyWiggle{0%{transform:translateX(-1px) rotate(-1deg)}100%{transform:translateX(1px) rotate(1deg)}}
   @keyframes exitGlow{0%{filter:saturate(1.02) brightness(.98)}100%{filter:saturate(1.18) brightness(1.18);box-shadow:inset 0 0 18px rgba(255,226,141,.55),0 0 18px rgba(255,209,95,.32)}}
   .score-fx,.exit-fx{position:absolute;z-index:15;transform:translate(-50%,-50%);pointer-events:none;font-weight:1000;text-shadow:0 2px 4px rgba(0,0,0,.8),0 0 12px currentColor;animation:floatFx .72s ease-out forwards}
@@ -224,7 +247,7 @@
     <button id="testAddHints">+10 HINT</button>
   </div>
   <div class="economy-note">Prototype economy • 5 can • 20 dakikada 1 can • 3 başlangıç hinti</div>
-  <div class="build">v5.5.9 • Warm Palette + Gate Fix</div>
+  <div class="build">v5.6.0 • Code Visual Reset</div>
 </div>
 
 <div class="win" id="win">
@@ -266,7 +289,7 @@ const W=10,H=14;
 const MAX_LIVES=5;
 const REFILL_MS=20*60*1000;
 const START_HINTS=3;
-const STORAGE_PREFIX='mq_v559_';
+const STORAGE_PREFIX='mq_v560_';
 function readStore(key,fallback){try{const v=localStorage.getItem(STORAGE_PREFIX+key);return v===null?fallback:Number(v)}catch(e){return fallback}}
 function writeStore(key,value){try{localStorage.setItem(STORAGE_PREFIX+key,String(value))}catch(e){}}
 let lives=Math.max(0,Math.min(MAX_LIVES,readStore('lives',MAX_LIVES)));

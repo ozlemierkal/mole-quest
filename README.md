@@ -1,13 +1,16 @@
-Mole Quest v5.5.9 — Warm Palette + Gate Fix
+MoleQuest v5.6.0 — Code Visual Reset
 
-Bu sürüm v5.5.8 tabanı üstüne hazırlanmıştır.
+Base: v5.5.9 WarmPalette logic.
 
-Değişiklikler:
-- Duvarlar koyu mocha tona çekildi.
-- Normal kazılabilir toprak sıcak bal/karamel kahvesine çekildi.
-- Açılmış yol/tünel beyaz yerine krem-bej tona getirildi.
-- Açık yol hafif taş dokulu bırakıldı; düz beyaz karo görünümü azaltıldı.
-- Kayan/çatlak toprak normal toprakla aynı renk ailesinde tutuldu, farkı çatlaklardan ve çerçeveden anlaşılır.
-- v5.5.8 kapı açık/kapalı düzeltmesi korunur.
-- Level 10 no-softlock ve uzun böcek devriyesi korunur.
-- Storage prefix mq_v559_ olarak güncellendi.
+What changed:
+- Kept gameplay / levels / gate logic / no-softlock behavior.
+- Rebuilt tile visuals in CSS instead of depending on the previous flat tile images.
+- Warmer wall / dirt / tunnel palette.
+- More visible fragile ground.
+- Gate open state made more readable.
+- Gem / rock / exit positioning adjusted.
+- Enemy rendered cleaner inside the tile using CSS masking so the brown patch is less dominant.
+- New storage prefix: mq_v560_
+
+Run:
+- Open index.html in a local static server or upload the folder contents to GitHub Pages.
