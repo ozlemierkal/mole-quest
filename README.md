@@ -1,5 +1,5 @@
-Mole Quest v5.2.1
+Mole Quest v5.2.2
 
-- Level 7 yeniden dengelendi: açılışta boşlukta kaya yok, kristaller daha dağınık ve asimetrik yerleşti.
-- Basılı tutma hareketi hızlandırıldı.
-- Sağ oda, devriye böceği ve düşen kaya riski daha belirgin olacak şekilde ayarlandı.
+- Basılı tutma hareketi daha da hızlandırıldı.
+- Level 7 şalteri başlangıç noktasından uzağa taşındı.
+- Görsel stil ve önceki mekanikler korunuyor.
