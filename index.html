@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
 <meta name="theme-color" content="#24130d" />
-<title>Mole Quest — v5.2.2 Level 7 Tuning</title>
+<title>Mole Quest — v5.5 Polish Pass</title>
 <style>
   :root{
     --cream:#efe4d3;
@@ -95,8 +95,8 @@
   .cell::after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 0 1px rgba(0,0,0,.18);pointer-events:none}
   .wall{background-image:url('wall-tile.png');filter:brightness(.75) saturate(.78)}
   .dirt{background-image:url('dirt-tile.png');filter:saturate(.88) brightness(.90)}
-  .fragile{background-image:url('dirt-tile.png');filter:saturate(.72) brightness(.82)}
-  .fragile::before{content:"";position:absolute;z-index:2;inset:9%;background:linear-gradient(62deg,transparent 45%,rgba(48,28,18,.95) 46% 51%,transparent 52%) 48% 22%/58% 58% no-repeat,linear-gradient(118deg,transparent 45%,rgba(48,28,18,.9) 46% 51%,transparent 52%) 56% 60%/68% 60% no-repeat,linear-gradient(18deg,transparent 44%,rgba(36,20,14,.92) 45% 50%,transparent 51%) 35% 72%/58% 44% no-repeat;opacity:.9}
+  .fragile{background-image:url('dirt-tile.png');filter:saturate(.85) brightness(.92);box-shadow:inset 0 0 0 2px rgba(236,182,106,.18),0 0 10px rgba(255,187,90,.08)}
+  .fragile::before{content:"";position:absolute;z-index:2;inset:6%;background:linear-gradient(62deg,transparent 44%,rgba(61,27,13,.98) 45% 51%,transparent 52%) 46% 18%/70% 66% no-repeat,linear-gradient(118deg,transparent 44%,rgba(73,33,16,.96) 45% 51%,transparent 52%) 58% 60%/78% 68% no-repeat,linear-gradient(18deg,transparent 43%,rgba(38,18,10,.94) 44% 50%,transparent 51%) 34% 74%/64% 48% no-repeat,radial-gradient(circle at 62% 30%,rgba(255,207,123,.25) 0 12%,transparent 13%);opacity:.98}
   .collapsed{background:radial-gradient(circle at 50% 48%,#0c0908 0 35%,#17100d 36% 62%,#2a1d17 63% 100%);box-shadow:inset 0 0 18px rgba(0,0,0,.85)}
   .collapsed::before{content:"";position:absolute;inset:12%;background:radial-gradient(circle at 18% 25%,#5d4636 0 6%,transparent 7%),radial-gradient(circle at 72% 62%,#4b382d 0 7%,transparent 8%),radial-gradient(circle at 43% 78%,#6a4d3c 0 5%,transparent 6%);opacity:.8}
   .empty{background-image:url('tunnel-tile.png');filter:brightness(.88)}
@@ -218,7 +218,7 @@
     <button id="testAddHints">+10 HINT</button>
   </div>
   <div class="economy-note">Prototype economy • 5 can • 20 dakikada 1 can • 3 başlangıç hinti</div>
-  <div class="build">v5.4 • Levels 1–9 • Collapsing Ground • Faster Hold + Cleaner Guidance</div>
+  <div class="build">v5.5 • Level Polish Pass • Levels 6–9 refreshed</div>
 </div>
 
 <div class="win" id="win">
@@ -260,7 +260,7 @@ const W=10,H=14;
 const MAX_LIVES=5;
 const REFILL_MS=20*60*1000;
 const START_HINTS=3;
-const STORAGE_PREFIX='mq_v54_';
+const STORAGE_PREFIX='mq_v55_';
 function readStore(key,fallback){try{const v=localStorage.getItem(STORAGE_PREFIX+key);return v===null?fallback:Number(v)}catch(e){return fallback}}
 function writeStore(key,value){try{localStorage.setItem(STORAGE_PREFIX+key,String(value))}catch(e){}}
 let lives=Math.max(0,Math.min(MAX_LIVES,readStore('lives',MAX_LIVES)));
@@ -390,38 +390,36 @@ const levels=[
       "#ddddGddd#",
       "##########"
     ]
-  }
-  ,{
+  }  ,{
     id:'1–6',
-    intro:'Level 6: İlk kayayı basınç plakasına indir. Sonra daha uzun devriye hattındaki böceği zamanlayarak kristalleri topla.',
-    hint:'Level 6: İlk hedef basınç plakasını kalıcı olarak etkinleştirmek. Sonra sağ-alt odadaki devriye bölgesine geç.',
-    hints:['Üstteki ilk kaya doğrudan basınç plakası için tasarlandı. Altını kontrollü kaz ve yana çekil.','Basınç plakası etkin kalınca kapı açık kalır. Sonra alttaki açık koridorda gezen böceğin ritmini izle.','Ek kaya ve açık koridor sadece süs değil: yol baskısı yaratıyor. Önce güvenli kristalleri, sonra riskli olanları al.'],
+    intro:'Level 6: İlk kayayı basınç plakasına indir. Kapı açık kalınca böceğin devriyesini zamanlayıp dağınık kristalleri topla.',
+    hint:'Level 6: Basınç plakasını kaya ile kalıcı aç; sonra sağ taraftaki devriyeyi takip ederek ilerle.',
+    hints:['Üstteki kaya plaka için. Altını açıp yana kaçtığında plakanın üstüne oturacak.','Kapı açıldıktan sonra her kristal köşede değil; önce güvenli olanları, sonra böceğe yakın olanları topla.','Alt bölümdeki ikinci kaya sadece tehdit değil, rota baskısı yaratıyor. Kristali aldıktan sonra düşüş hattında kalma.'],
     enemyMode:'patrol',
     requiresKey:false,
     requiresSwitch:false,
     requiresPlate:true,
     map:[
       "##########",
-      "#GddRdddG#",
-      "#ddddddd.#",
-      "#dPdd..Gd#",
-      "#dddTA...#",
-      "#Gdd###.E#",
-      "#ddd...dd#",
-      "####..X..#",
-      "#dGR..d..#",
-      "#d.ddd.Gd#",
-      "#Gdddd..d#",
-      "#dddRdddG#",
+      "#ddRddGdd#",
+      "#Gddd.ddd#",
+      "#dPdd..dd#",
+      "#dddTA.Gd#",
+      "#dd.###.E#",
+      "#Gdd...dd#",
+      "####..XG.#",
+      "#ddR..d..#",
+      "#.ddd..d.#",
+      "#dGddd..d#",
+      "#dddR.Gdd#",
       "#dddddddd#",
       "##########"
     ]
-  }
-  ,{
+  }  ,{
     id:'1–7',
-    intro:'Level 7: Şalter artık başlangıçta değil; önce sol bölgeyi geç, şalteri bul, sonra merkez geçitten sağ bölgeye sız.',
-    hint:'Level 7: İlk hedef şalter. Sonra sağ odada böceğin turunu ve kayaların düşüş hattını birlikte okuyarak ilerle.',
-    hints:['Şalter başlangıç noktasında değil. Önce sol bölümde aşağı inip onu bul; sonra metal geçidi kullan.','Sağ odadaki mor böcek çevrimsel bir rota izler; dar geçitten çıkarken onun sadece mevcut yerini değil, bir sonraki adımını da düşün.','İki kayanın altındaki kristaller alınınca düşüş başlar. Kristali aldıktan sonra aynı hatta kalma.'],
+    intro:'Level 7: Önce şalteri bul. Sonra sağ bölgedeki devriye ve düşen kayalar arasında asimetrik kristal yerleşimini temizle.',
+    hint:'Level 7: Şalteri açtıktan sonra sağ odadaki devriyenin ritmini izle; kristallerin bir kısmı kaya tehdidiyle birlikte düşünülmeli.',
+    hints:['Şalter başlangıçta değil. Sol tarafta aşağı inip aktif et; sonra metal geçidi kullan.','Sağ odadaki mor böcek çevrimsel rota izler. Dar alana girerken mevcut yerini değil, bir sonraki karesini düşün.','Kayaların altındaki kristaller bedava değil; aldıktan hemen sonra aynı hatta kalma.'],
     enemyMode:'loop',
     enemyPath:[[5,4],[6,4],[7,4],[8,4],[8,5],[8,6],[8,7],[7,7],[6,7],[5,7],[5,6],[5,5]],
     requiresKey:false,
@@ -429,26 +427,25 @@ const levels=[
     requiresPlate:false,
     map:[
       "##########",
-      "#dGd#d..G#",
-      "#ddR#..d.#",
-      "#Pdd#Gdd.#",
-      "#d.d#X...#",
-      "#dR.#....#",
-      "#GS.D....#",
-      "#.d.#....#",
-      "#dG.#.RR.#",
-      "#..d#.GG.#",
+      "#d..#Gd..#",
+      "#ddR#..dG#",
+      "#Pdd#d.d.#",
+      "#dG.#X...#",
+      "#dd.#..R.#",
+      "#dS.D..d.#",
+      "#.d.#.G..#",
+      "#d..#.RR.#",
+      "#..d#..G.#",
       "#G..#..dE#",
-      "#ddG#dd..#",
-      "#d.R#..G.#",
+      "#ddd#Gd..#",
+      "#d.R#....#",
       "##########"
     ]
-  }
-  ,{
+  }  ,{
     id:'1–8',
-    intro:'Şalteri bul, kristalleri topla ve çıkışa ulaş.',
-    hint:'Level 8: Önce sol taraftaki şalteri bul. Geçit açıldıktan sonra sağ bölgedeki anahtarı ve kristalleri devriye böceğini zamanlayarak topla.',
-    hints:['Şalter başlangıca yakın değil; sol bölümün alt tarafında. Geçidi açmadan sağ bölgeye geçemezsin.','Sağ odadaki böcek uzun bir çevrim izler. Kapıdan çıkar çıkmaz koşmak yerine turunun boş bıraktığı hattı kullan.','Çıkış için bu bölümde üç koşul var: bütün kristaller, aktif şalter ve altın anahtar.'],
+    intro:'Level 8: Şalter, anahtar ve devriye bölgesini birlikte okuyup çıkışa ulaş.',
+    hint:'Level 8: Önce şalter. Sonra sağ bölgedeki anahtarı ve dağınık kristalleri böceğin turuna göre topla.',
+    hints:['Şalter sol tarafta aşağıda. Geçit açılmadan sağ bölgeye geçemezsin.','Sağ odadaki böcek uzun bir çevrim izler. Kapıdan çıkar çıkmaz koşmak yerine boş bıraktığı hattı kullan.','Bu bölümde çıkış için üç koşul var: bütün kristaller, aktif şalter ve altın anahtar.'],
     enemyMode:'loop',
     enemyPath:[[5,5],[6,5],[7,5],[8,5],[8,6],[8,7],[8,8],[8,9],[7,9],[6,9],[5,9],[5,8],[5,7],[5,6]],
     requiresKey:true,
@@ -456,46 +453,45 @@ const levels=[
     requiresPlate:false,
     map:[
       "##########",
-      "#Gdd#ddGd#",
-      "#ddd#dRdd#",
-      "#dP.#dddd#",
-      "#d..D...G#",
-      "#dd.#....#",
+      "#dGd#..d.#",
+      "#dd.#dR.G#",
+      "#dP.#....#",
+      "#..dD.G..#",
       "#G..#X...#",
-      "#dRd#....#",
-      "#.dG#....#",
-      "#dS.#....#",
-      "#..d#dKdE#",
-      "#Gdd#ddGd#",
-      "#ddG#dd..#",
+      "#dR.#..d.#",
+      "#..G#....#",
+      "#dS.#.G..#",
+      "#...#..K.#",
+      "#Gdd#d..E#",
+      "#dd.#...G#",
+      "#..G#R...#",
       "##########"
     ]
-  }
-  ,{
+  }  ,{
     id:'1–9',
-    intro:'Kristalleri topla ve çıkışa ulaş.',
-    hint:'Level 9: Çatlak görünen toprak yalnızca bir kez kullanılabilir. Üzerinden ayrıldığında çöker ve geri dönüşü kapatır.',
-    hints:['Çatlak toprakta ileri gitmeden önce geri dönmen gerekip gerekmediğini düşün. Ayrıldığın kare çöker.','Sol üstteki kristalleri toplamadan orta geçişi tüketme. Çöken yol tek yönlüdür.','Mor böcek açık alt koridorda devriye gezer. Son bölgeye geçtikten sonra onun ritmini kullan.'],
+    intro:'Level 9: Çöken toprak bu kez zorunlu. Dar çatlak köprüyü kullanıp sağ bölgeye geç, sonra devriye tehdidini aş.',
+    hint:'Level 9: Sağ tarafa ulaşmanın tek yolu çatlak toprak köprüsü. Ayrıldığın kare çökeceği için sırayı düşün.',
+    hints:['Çatlak toprak artık isteğe bağlı değil; sağ bölgeye geçmek için kullanman gerekiyor. Üzerinden ayrıldığında geri kapanır.','Sol taraftaki kristalleri toplamadan köprüye dalma. İlk geçişten sonra geri dönüş zorlaşır.','Sağ odada devriye gezen böceği bekle; köprüden çıktıktan sonra rahat bir tur yerine zamanlama istiyor.'],
     enemyMode:'loop',
-    enemyPath:[[2,9],[3,9],[4,9],[5,9],[6,9],[7,9],[8,9],[8,10],[7,10],[6,10],[5,10],[4,10],[3,10],[2,10]],
+    enemyPath:[[5,8],[6,8],[7,8],[8,8],[8,9],[8,10],[7,10],[6,10],[5,10],[5,9]],
     requiresKey:false,
     requiresSwitch:false,
     requiresPlate:false,
     collapsingGround:true,
     map:[
       "##########",
-      "#GddRdddG#",
-      "#dddddGdd#",
-      "#dPdddddd#",
-      "#dddcccdd#",
-      "#Gdd###dd#",
-      "#dddcccGd#",
-      "#ddR###dd#",
-      "#GddddddE#",
-      "#dX......#",
-      "#........#",
-      "#ddGddRdd#",
-      "#dddddddd#",
+      "#dGdRdddG#",
+      "#dccc###d#",
+      "#dP.d###d#",
+      "#Gdc...Gd#",
+      "#d##c##dd#",
+      "#d##c##.E#",
+      "#d..c....#",
+      "#dR.c..X.#",
+      "#d##c....#",
+      "#G..c.G..#",
+      "#d##c##dd#",
+      "#dddRdd..#",
       "##########"
     ]
   }
