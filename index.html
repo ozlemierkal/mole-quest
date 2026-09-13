@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
 <meta name="theme-color" content="#24130d" />
-<title>Mole Quest — v5.6.1 Level 10 Fix</title>
+<title>Mole Quest — v5.6.2 Palette C + Enemy Fix</title>
 <style>
   :root{
     --cream:#efe4d3;
@@ -93,29 +93,29 @@
   }
   .cell{position:relative;overflow:hidden;background:#1c110c center/cover no-repeat}
   .cell::after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 0 1px rgba(0,0,0,.18);pointer-events:none}
-  .wall{background-image:url('wall-tile.png');filter:brightness(.96) saturate(.92)}
-  .dirt{background-image:url('dirt-tile.png');filter:saturate(1.02) brightness(1.02)}
+  .wall{background-image:url('wall-tile.png');filter:brightness(.98) saturate(.92)}
+  .dirt{background-image:url('dirt-tile.png');filter:saturate(1.05) brightness(1.03)}
   .fragile{background-image:url('dirt-tile.png');filter:saturate(1.08) brightness(1.06);box-shadow:inset 0 0 0 3px rgba(255,213,137,.28),0 0 12px rgba(255,193,99,.14)}
   .fragile::before{content:"";position:absolute;z-index:2;inset:6%;background:linear-gradient(62deg,transparent 44%,rgba(61,27,13,.98) 45% 51%,transparent 52%) 46% 18%/70% 66% no-repeat,linear-gradient(118deg,transparent 44%,rgba(73,33,16,.96) 45% 51%,transparent 52%) 58% 60%/78% 68% no-repeat,linear-gradient(18deg,transparent 43%,rgba(38,18,10,.94) 44% 50%,transparent 51%) 34% 74%/64% 48% no-repeat,radial-gradient(circle at 62% 30%,rgba(255,207,123,.25) 0 12%,transparent 13%);opacity:.98}
   .collapsed{background:radial-gradient(circle at 50% 48%,#0c0908 0 35%,#17100d 36% 62%,#2a1d17 63% 100%);box-shadow:inset 0 0 18px rgba(0,0,0,.85)}
   .collapsed::before{content:"";position:absolute;inset:12%;background:radial-gradient(circle at 18% 25%,#5d4636 0 6%,transparent 7%),radial-gradient(circle at 72% 62%,#4b382d 0 7%,transparent 8%),radial-gradient(circle at 43% 78%,#6a4d3c 0 5%,transparent 6%);opacity:.8}
-  .empty{background-image:url('tunnel-tile.png');filter:brightness(1.02) saturate(.88)}
-  .rock{background-image:url('rock-tile.png');filter:saturate(.35) brightness(1.02)}
+  .empty{background-image:url('tunnel-tile.png');filter:brightness(1.08) saturate(.80)}
+  .rock{background-image:url('rock-tile.png');filter:saturate(.18) brightness(1.04)}
   .rock.falling{animation:rockDrop .18s ease-out;filter:brightness(1.04)}
   .gem{background-image:url('gem-tile.png');animation:gemPulse 1.8s ease-in-out infinite;filter:saturate(.9) brightness(.95)}
   .key{background-image:url('tunnel-tile.png');animation:keyPulse 1.3s ease-in-out infinite alternate}
   .key::before{content:"";position:absolute;z-index:2;width:34%;height:34%;left:14%;top:31%;border:4px solid #e7bb5b;border-radius:50%;box-shadow:0 0 10px rgba(231,187,91,.35),inset 0 0 5px rgba(255,243,175,.4)}
   .key::after{content:"";position:absolute;z-index:2;width:50%;height:22%;left:43%;top:42%;background:linear-gradient(180deg,#eecf84,#c88c2e);clip-path:polygon(0 28%,68% 28%,68% 0,81% 0,81% 28%,100% 28%,100% 72%,85% 72%,85% 100%,72% 100%,72% 72%,0 72%);border-radius:999px;box-shadow:0 0 9px rgba(231,187,91,.28)}
-  .switch{background-image:url('tunnel-tile.png')}
+  .switch{background-image:url('tunnel-tile.png');filter:brightness(1.07) saturate(.82)}
   .switch::before{content:"";position:absolute;z-index:2;left:18%;right:18%;bottom:19%;height:28%;border-radius:8px;background:linear-gradient(180deg,#75787a,#434548);border:2px solid #9c9fa1;box-shadow:inset 0 -4px 0 #2e3032,0 2px 4px #0008}
   .switch::after{content:"";position:absolute;z-index:3;width:24%;height:24%;left:38%;top:26%;border-radius:50%;background:radial-gradient(circle at 35% 30%,#f4d49a,#bb7d29 58%,#6a4212 60%);box-shadow:0 0 10px rgba(240,180,61,.35)}
   .switch.active::before{background:linear-gradient(180deg,#526f59,#2f4c37);border-color:#7fac87}
   .switch.active::after{background:radial-gradient(circle at 35% 30%,#d7ffd9,#62c878 58%,#256335 60%);box-shadow:0 0 13px rgba(109,229,132,.45)}
-  .plate{background-image:url('tunnel-tile.png')}
+  .plate{background-image:url('tunnel-tile.png');filter:brightness(1.07) saturate(.82)}
   .plate::before{content:"";position:absolute;z-index:2;left:15%;right:15%;bottom:22%;height:20%;border-radius:999px;background:linear-gradient(180deg,#888b8f,#51545a);border:2px solid #a2a5a8;box-shadow:inset 0 -3px 0 rgba(31,33,36,.85),0 2px 4px rgba(0,0,0,.6)}
   .plate::after{content:"";position:absolute;z-index:2;left:32%;right:32%;top:20%;height:18%;border-radius:999px;background:linear-gradient(180deg,#46484d,#24262a);opacity:.6}
   .plate.active::before{background:linear-gradient(180deg,#98a46e,#55683f);border-color:#c7d894;box-shadow:inset 0 -3px 0 rgba(41,58,30,.88),0 0 10px rgba(184,222,118,.22)}
-  .gate{background-image:url('tunnel-tile.png')}
+  .gate{background-image:url('tunnel-tile.png');filter:brightness(1.05) saturate(.80)}
   .gate::before{content:"";position:absolute;z-index:2;inset:7% 13%;border-left:5px solid #7e8185;border-right:5px solid #7e8185;background:repeating-linear-gradient(90deg,transparent 0 15%,#93979a 15% 26%,transparent 26% 41%);box-shadow:inset 0 0 0 2px #35373a,0 0 8px rgba(0,0,0,.45)}
   .gate.open::before{opacity:.18;transform:translateY(-70%);transition:transform .2s ease,opacity .2s ease}
   .brittle{background-image:url('wall-tile.png');filter:brightness(.78) saturate(.6)}
@@ -219,7 +219,7 @@
     <button id="testAddHints">+10 HINT</button>
   </div>
   <div class="economy-note">Prototype economy • 5 can • 20 dakikada 1 can • 3 başlangıç hinti</div>
-  <div class="build">v5.6.1 • Level 10 Düzeltme</div>
+  <div class="build">v5.6.2 • Palette C + Level 10 Enemy Fix</div>
 </div>
 
 <div class="win" id="win">
@@ -261,7 +261,7 @@ const W=10,H=14;
 const MAX_LIVES=5;
 const REFILL_MS=20*60*1000;
 const START_HINTS=3;
-const STORAGE_PREFIX='mq_v561_';
+const STORAGE_PREFIX='mq_v562_';
 function readStore(key,fallback){try{const v=localStorage.getItem(STORAGE_PREFIX+key);return v===null?fallback:Number(v)}catch(e){return fallback}}
 function writeStore(key,value){try{localStorage.setItem(STORAGE_PREFIX+key,String(value))}catch(e){}}
 let lives=Math.max(0,Math.min(MAX_LIVES,readStore('lives',MAX_LIVES)));
@@ -515,8 +515,8 @@ const levels=[
       "#Gddd#Gdd#",
       "##cccDddd#",
       "#dddd#dRd#",
-      "#dRdd#...#",
-      "#dddd#.X.#",
+      "#dRdd#X..#",
+      "#dddd#...#",
       "#dddd#...#",
       "#dddd#dGd#",
       "#dddd#ddE#",
