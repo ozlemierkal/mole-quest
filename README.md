@@ -1,10 +1,8 @@
-# Mole Quest v6.0 — Clean Warm Mine
+# Mole Quest v6.1 — Mockup Art
 
-Temiz toparlama sürümü.
-- v5.5 stabil mekanik tabanı kullanıldı.
-- 1–10 tek kod hattında.
-- Sıcak maden arka planı ve kontrollü renk düzeni.
-- Mockup'tan asset kesilmedi; mevcut stabil assetler kontrollü renklendirildi.
-- Level 10 yeniden kuruldu.
-- Level 10 böceği açık 8-kare devriye halkasında her başarılı hamlede 1 kare ilerler.
-- Elmas/rock/exit CSS hizaları temizlendi.
+This build uses tile art cropped directly from the approved warm mockup, with versioned asset filenames to avoid Safari/GitHub Pages image caching.
+
+- Warm mine background from the approved mockup
+- Mockup-derived wall, dirt, tunnel, rock, gem, mole, enemy and exit assets
+- Gems centered in their cells
+- Level 10 enemy uses deterministic authored patrol path and moves every successful player step

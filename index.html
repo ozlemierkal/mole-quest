@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
 <meta name="theme-color" content="#24130d" />
-<title>Mole Quest — v6.0 Clean Warm Mine</title>
+<title>Mole Quest — v6.1 Mockup Art</title>
 <style>
   :root{
     --cream:#efe4d3;
@@ -94,37 +94,37 @@
   }
   .cell{position:relative;overflow:hidden;background:#2b1c14 center/cover no-repeat;border-radius:3px}
   .cell::after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 0 1px rgba(0,0,0,.18);pointer-events:none}
-  .wall{background-image:url('wall-tile.png');filter:brightness(.75) saturate(.78)}
-  .dirt{background-image:url('dirt-tile.png');filter:saturate(.88) brightness(.90)}
-  .fragile{background-image:url('dirt-tile.png');filter:saturate(.85) brightness(.92);box-shadow:inset 0 0 0 2px rgba(236,182,106,.18),0 0 10px rgba(255,187,90,.08)}
+  .wall{background-image:url('wall-v61.png');filter:brightness(.75) saturate(.78)}
+  .dirt{background-image:url('dirt-v61.png');filter:saturate(.88) brightness(.90)}
+  .fragile{background-image:url('dirt-v61.png');filter:saturate(.85) brightness(.92);box-shadow:inset 0 0 0 2px rgba(236,182,106,.18),0 0 10px rgba(255,187,90,.08)}
   .fragile::before{content:"";position:absolute;z-index:2;inset:6%;background:linear-gradient(62deg,transparent 44%,rgba(61,27,13,.98) 45% 51%,transparent 52%) 46% 18%/70% 66% no-repeat,linear-gradient(118deg,transparent 44%,rgba(73,33,16,.96) 45% 51%,transparent 52%) 58% 60%/78% 68% no-repeat,linear-gradient(18deg,transparent 43%,rgba(38,18,10,.94) 44% 50%,transparent 51%) 34% 74%/64% 48% no-repeat,radial-gradient(circle at 62% 30%,rgba(255,207,123,.25) 0 12%,transparent 13%);opacity:.98}
   .collapsed{background:radial-gradient(circle at 50% 48%,#0c0908 0 35%,#17100d 36% 62%,#2a1d17 63% 100%);box-shadow:inset 0 0 18px rgba(0,0,0,.85)}
   .collapsed::before{content:"";position:absolute;inset:12%;background:radial-gradient(circle at 18% 25%,#5d4636 0 6%,transparent 7%),radial-gradient(circle at 72% 62%,#4b382d 0 7%,transparent 8%),radial-gradient(circle at 43% 78%,#6a4d3c 0 5%,transparent 6%);opacity:.8}
-  .empty{background-image:url('tunnel-tile.png');filter:brightness(.88)}
-  .rock{background-image:url('rock-tile.png');filter:saturate(.78) brightness(.95)}
+  .empty{background-image:url('tunnel-v61.png');filter:brightness(.88)}
+  .rock{background-image:url('rock-v61.png');filter:saturate(.78) brightness(.95)}
   .rock.falling{animation:rockDrop .18s ease-out;filter:brightness(1.04)}
-  .gem{background-image:url('gem-tile.png');background-size:100% 100%;background-position:center;animation:gemPulse 1.8s ease-in-out infinite;filter:none}
-  .key{background-image:url('tunnel-tile.png');animation:keyPulse 1.3s ease-in-out infinite alternate}
+  .gem{background-image:url('gem-v61.png');background-size:100% 100%;background-position:center;animation:gemPulse 1.8s ease-in-out infinite;filter:none}
+  .key{background-image:url('tunnel-v61.png');animation:keyPulse 1.3s ease-in-out infinite alternate}
   .key::before{content:"";position:absolute;z-index:2;width:34%;height:34%;left:14%;top:31%;border:4px solid #e7bb5b;border-radius:50%;box-shadow:0 0 10px rgba(231,187,91,.35),inset 0 0 5px rgba(255,243,175,.4)}
   .key::after{content:"";position:absolute;z-index:2;width:50%;height:22%;left:43%;top:42%;background:linear-gradient(180deg,#eecf84,#c88c2e);clip-path:polygon(0 28%,68% 28%,68% 0,81% 0,81% 28%,100% 28%,100% 72%,85% 72%,85% 100%,72% 100%,72% 72%,0 72%);border-radius:999px;box-shadow:0 0 9px rgba(231,187,91,.28)}
-  .switch{background-image:url('tunnel-tile.png')}
+  .switch{background-image:url('tunnel-v61.png')}
   .switch::before{content:"";position:absolute;z-index:2;left:18%;right:18%;bottom:19%;height:28%;border-radius:8px;background:linear-gradient(180deg,#75787a,#434548);border:2px solid #9c9fa1;box-shadow:inset 0 -4px 0 #2e3032,0 2px 4px #0008}
   .switch::after{content:"";position:absolute;z-index:3;width:24%;height:24%;left:38%;top:26%;border-radius:50%;background:radial-gradient(circle at 35% 30%,#f4d49a,#bb7d29 58%,#6a4212 60%);box-shadow:0 0 10px rgba(240,180,61,.35)}
   .switch.active::before{background:linear-gradient(180deg,#526f59,#2f4c37);border-color:#7fac87}
   .switch.active::after{background:radial-gradient(circle at 35% 30%,#d7ffd9,#62c878 58%,#256335 60%);box-shadow:0 0 13px rgba(109,229,132,.45)}
-  .plate{background-image:url('tunnel-tile.png')}
+  .plate{background-image:url('tunnel-v61.png')}
   .plate::before{content:"";position:absolute;z-index:2;left:15%;right:15%;bottom:22%;height:20%;border-radius:999px;background:linear-gradient(180deg,#888b8f,#51545a);border:2px solid #a2a5a8;box-shadow:inset 0 -3px 0 rgba(31,33,36,.85),0 2px 4px rgba(0,0,0,.6)}
   .plate::after{content:"";position:absolute;z-index:2;left:32%;right:32%;top:20%;height:18%;border-radius:999px;background:linear-gradient(180deg,#46484d,#24262a);opacity:.6}
   .plate.active::before{background:linear-gradient(180deg,#98a46e,#55683f);border-color:#c7d894;box-shadow:inset 0 -3px 0 rgba(41,58,30,.88),0 0 10px rgba(184,222,118,.22)}
-  .gate{background-image:url('tunnel-tile.png')}
+  .gate{background-image:url('tunnel-v61.png')}
   .gate::before{content:"";position:absolute;z-index:2;inset:7% 13%;border-left:5px solid #7e8185;border-right:5px solid #7e8185;background:repeating-linear-gradient(90deg,transparent 0 15%,#93979a 15% 26%,transparent 26% 41%);box-shadow:inset 0 0 0 2px #35373a,0 0 8px rgba(0,0,0,.45)}
   .gate.open::before{opacity:.18;transform:translateY(-70%);transition:transform .2s ease,opacity .2s ease}
-  .brittle{background-image:url('wall-tile.png');filter:brightness(.78) saturate(.6)}
+  .brittle{background-image:url('wall-v61.png');filter:brightness(.78) saturate(.6)}
   .brittle::before{content:"";position:absolute;z-index:2;inset:8%;background:linear-gradient(62deg,transparent 45%,#27140d 46% 51%,transparent 52%) 48% 22%/55% 55% no-repeat,linear-gradient(118deg,transparent 45%,#27140d 46% 51%,transparent 52%) 56% 58%/64% 58% no-repeat,linear-gradient(20deg,transparent 44%,#160b08 45% 50%,transparent 51%) 38% 72%/55% 42% no-repeat;opacity:.92;filter:drop-shadow(0 1px 0 rgba(209,154,115,.25))}
-  .player{background-image:url('mole-tile.png');background-size:118% 118%;background-position:50% 58%;z-index:3;animation:playerStep .16s ease-out;filter:drop-shadow(0 2px 3px rgba(0,0,0,.48))}
-  .enemy{background-image:url('enemy-tile.png');background-size:112% 112%;background-position:50% 72%;filter:saturate(.92) brightness(1.00)}
+  .player{background-image:url('mole-v61.png');background-size:118% 118%;background-position:50% 58%;z-index:3;animation:playerStep .16s ease-out;filter:drop-shadow(0 2px 3px rgba(0,0,0,.48))}
+  .enemy{background-image:url('enemy-v61.png');background-size:112% 112%;background-position:50% 72%;filter:saturate(.92) brightness(1.00)}
   .enemy.alert{background-size:100% 100%;background-position:center;filter:none;animation:enemyWiggle .48s ease-in-out infinite alternate;box-shadow:inset 0 0 12px rgba(199,108,108,.33);z-index:2}
-  .exit{background-image:url('exit-tile.png');background-size:110% 110%;background-position:center;filter:saturate(1.07) brightness(1.08) contrast(1.04);box-shadow:inset 0 0 0 2px rgba(255,235,184,.34),0 0 18px rgba(255,190,72,.28);z-index:2}
+  .exit{background-image:url('exit-v61.png');background-size:110% 110%;background-position:center;filter:saturate(1.07) brightness(1.08) contrast(1.04);box-shadow:inset 0 0 0 2px rgba(255,235,184,.34),0 0 18px rgba(255,190,72,.28);z-index:2}
   .exit::before{content:"";position:absolute;inset:8%;border-radius:12px;box-shadow:inset 0 0 0 1px rgba(255,236,190,.20)}
   .exit.open{filter:saturate(1.12) brightness(1.12) contrast(1.08);box-shadow:inset 0 0 18px rgba(255,223,129,.56),0 0 18px rgba(255,206,88,.42),0 0 0 2px rgba(255,238,194,.28);z-index:2;animation:exitGlow .9s ease-in-out infinite alternate}
   @keyframes gemPulse{0%,100%{filter:brightness(.96);transform:scale(1)}50%{filter:brightness(1.15);transform:scale(1.035)}}
@@ -172,6 +172,27 @@
   .hint-flash{animation:hintFlash .72s ease-in-out 2}@keyframes hintFlash{0%,100%{box-shadow:inset 0 0 0 0 rgba(244,205,122,0)}50%{box-shadow:inset 0 0 0 3px rgba(244,205,122,.4),0 0 22px rgba(244,205,122,.18)}}
   @media(max-width:560px){.topbar{grid-template-columns:1fr repeat(3,1fr);}.brand{grid-column:1/-1}.pill{min-height:42px;font-size:14px}.controls{grid-template-columns:repeat(3,72px)}button{height:60px}}
   @media(max-height:780px){.app{padding-top:calc(env(safe-area-inset-top) + 4px)}.topbar,.utilitybar{margin-bottom:8px}.hud{margin-top:6px}.controls{margin-top:8px;grid-template-columns:repeat(3,68px)}button{height:56px}.hint{display:none}}
+
+  /* v6.1 — direct art extraction from the approved warm mockup */
+  body{
+    background:#160d09 url('mine-bg-v61.jpg') center top/cover fixed no-repeat;
+  }
+  .app{background:rgba(13,8,6,.16);border-radius:28px}
+  .brand{
+    background:transparent url('brand-v61.png') center/contain no-repeat !important;
+    border:0 !important; box-shadow:none !important; min-height:62px; color:transparent !important; font-size:0 !important;
+  }
+  .brand::before{display:none !important}
+  #board{background:#2a160d;gap:1px;border-radius:18px}
+  .cell{border-radius:2px;background-position:center;background-repeat:no-repeat;background-size:100% 100%}
+  .wall,.dirt,.empty,.rock,.gem,.switch,.plate,.gate,.exit{background-position:center !important;background-size:100% 100% !important}
+  .player{background-size:100% 100% !important;background-position:center !important}
+  .enemy{background-size:100% 100% !important;background-position:center !important;filter:none !important}
+  .gem{filter:none !important}
+  .rock{filter:none !important}
+  .exit{filter:none !important;box-shadow:0 0 16px rgba(255,184,62,.28),inset 0 0 0 1px rgba(255,238,190,.25) !important}
+  .exit.open{filter:brightness(1.12) saturate(1.07) !important}
+
 </style>
 </head>
 <body>
@@ -220,7 +241,7 @@
     <button id="testAddHints">+10 HINT</button>
   </div>
   <div class="economy-note">Prototype economy • 5 can • 20 dakikada 1 can • 3 başlangıç hinti</div>
-  <div class="build">v6.0 • Clean Warm Mine • Levels 1–10</div>
+  <div class="build">v6.1 • Mockup Art • Levels 1–10</div>
 </div>
 
 <div class="win" id="win">
@@ -262,7 +283,7 @@ const W=10,H=14;
 const MAX_LIVES=5;
 const REFILL_MS=20*60*1000;
 const START_HINTS=3;
-const STORAGE_PREFIX='mq_v60_';
+const STORAGE_PREFIX='mq_v61_';
 function readStore(key,fallback){try{const v=localStorage.getItem(STORAGE_PREFIX+key);return v===null?fallback:Number(v)}catch(e){return fallback}}
 function writeStore(key,value){try{localStorage.setItem(STORAGE_PREFIX+key,String(value))}catch(e){}}
 let lives=Math.max(0,Math.min(MAX_LIVES,readStore('lives',MAX_LIVES)));
@@ -531,7 +552,7 @@ const levels=[
 let currentLevel=0;
 let map,px,py,startX,startY,gems,total,score=0,levelStartScore=0,open=false,locked=false,moveLock=false,enemyAlert=false,hasKey=false,switchOn=false,plateOn=false;
 let fallingRocks=new Set();
-let enemyTick=0,enemyDir=1;
+let enemyTick=0,enemyDir=1,enemyPathIndex=0;
 
 const board=document.getElementById('board');
 const gemEl=document.getElementById('gems'), totalEl=document.getElementById('total'), scoreEl=document.getElementById('score'), lifeEl=document.getElementById('lives');
@@ -551,7 +572,7 @@ function loadLevel(index,{freshRun=false,retry=false}={}){
   syncRefill();
   const level=levels[currentLevel];
   map=level.map.map(r=>r.split(''));
-  gems=0;total=0;open=false;locked=false;moveLock=false;enemyAlert=false;hasKey=false;switchOn=false;plateOn=false;fallingRocks=new Set();enemyTick=0;enemyDir=1;
+  gems=0;total=0;open=false;locked=false;moveLock=false;enemyAlert=false;hasKey=false;switchOn=false;plateOn=false;fallingRocks=new Set();enemyTick=0;enemyDir=1;enemyPathIndex=0;
   for(let y=0;y<H;y++)for(let x=0;x<W;x++){
     if(map[y][x]==='P'){px=x;py=y;startX=x;startY=y;map[y][x]='.'}
     if(map[y][x]==='G') total++;
@@ -694,23 +715,24 @@ function enemyTurn(){
 
   if(mode==='loop' && Array.isArray(level.enemyPath) && level.enemyPath.length){
     const path=level.enemyPath;
-    let idx=path.findIndex(([x,y])=>x===e.x&&y===e.y);
-    if(idx<0){
-      // Harita ile rota bir an uyumsuzlaşırsa en yakın rota karesinden devam et.
-      idx=path.reduce((best,p,i)=>{
-        const d=Math.abs(p[0]-e.x)+Math.abs(p[1]-e.y);
-        return d<best.d?{i,d}:best;
-      },{i:0,d:Infinity}).i;
+    const currentIdx=path.findIndex(([x,y])=>x===e.x&&y===e.y);
+    if(currentIdx>=0) enemyPathIndex=currentIdx;
+    let nextIdx=enemyPathIndex, nx=e.x, ny=e.y, tries=0;
+    while(tries<path.length){
+      nextIdx=(nextIdx+1)%path.length;
+      [nx,ny]=path[nextIdx];
+      const cell=map[ny] && map[ny][nx];
+      if((nx===px&&ny===py) || cell==='.' || cell==='d') break;
+      tries++;
     }
-    const [nx,ny]=path[(idx+1)%path.length];
     if(nx===px&&ny===py){
-      map[e.y][e.x]='.';map[ny][nx]='X';enemyAlert=true;render();
+      map[e.y][e.x]='.';map[ny][nx]='X';enemyPathIndex=nextIdx;enemyAlert=true;render();
       hurt('Devriye böceği sana çarptı!');
       return true;
     }
     const nextCell=map[ny] && map[ny][nx];
     if(nextCell==='.' || nextCell==='d'){
-      map[e.y][e.x]='.';map[ny][nx]='X';
+      map[e.y][e.x]='.';map[ny][nx]='X';enemyPathIndex=nextIdx;
       const newMd=Math.abs(px-nx)+Math.abs(py-ny);enemyAlert=(newMd<=2);
       statusEl.textContent=enemyAlert?'Devriye böceği yaklaşıyor.':'Böcek devriye turuna devam ediyor.';
     }
