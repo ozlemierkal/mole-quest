@@ -1,6 +1,5 @@
-Mole Quest v5.5 – Polish Pass
+Mole Quest v5.6 – Palette C + Level 10
 
-Bu pakette özellikle 6–9. bölümler elden geçirildi.
-- Elmaslar daha asimetrik ve daha doğal dağıtıldı.
-- Level 9 çöken toprak mekaniği artık zorunlu ve daha görünür.
-- 1–5 tutorial doğasını koruyor; büyük polish turu 6–9 üzerinde yapıldı.
+- Palette C oyuna uygulandı: bal tonlu toprak, koyu mocha duvar, açık taupe tünel, nötr gri kaya.
+- Level 10 eklendi: şalter + zorunlu çöken köprü + düşen kaya riski + devriye böceği.
+- Test menüsünde 10 var; ?level=10 ile doğrudan açılabilir.

@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
 <meta name="theme-color" content="#24130d" />
-<title>Mole Quest — v5.5 Polish Pass</title>
+<title>Mole Quest — v5.6 Palette C + Level 10</title>
 <style>
   :root{
     --cream:#efe4d3;
@@ -93,14 +93,14 @@
   }
   .cell{position:relative;overflow:hidden;background:#1c110c center/cover no-repeat}
   .cell::after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 0 1px rgba(0,0,0,.18);pointer-events:none}
-  .wall{background-image:url('wall-tile.png');filter:brightness(.75) saturate(.78)}
-  .dirt{background-image:url('dirt-tile.png');filter:saturate(.88) brightness(.90)}
-  .fragile{background-image:url('dirt-tile.png');filter:saturate(.85) brightness(.92);box-shadow:inset 0 0 0 2px rgba(236,182,106,.18),0 0 10px rgba(255,187,90,.08)}
+  .wall{background-image:url('wall-tile.png');filter:brightness(.96) saturate(.92)}
+  .dirt{background-image:url('dirt-tile.png');filter:saturate(1.02) brightness(1.02)}
+  .fragile{background-image:url('dirt-tile.png');filter:saturate(1.08) brightness(1.06);box-shadow:inset 0 0 0 3px rgba(255,213,137,.28),0 0 12px rgba(255,193,99,.14)}
   .fragile::before{content:"";position:absolute;z-index:2;inset:6%;background:linear-gradient(62deg,transparent 44%,rgba(61,27,13,.98) 45% 51%,transparent 52%) 46% 18%/70% 66% no-repeat,linear-gradient(118deg,transparent 44%,rgba(73,33,16,.96) 45% 51%,transparent 52%) 58% 60%/78% 68% no-repeat,linear-gradient(18deg,transparent 43%,rgba(38,18,10,.94) 44% 50%,transparent 51%) 34% 74%/64% 48% no-repeat,radial-gradient(circle at 62% 30%,rgba(255,207,123,.25) 0 12%,transparent 13%);opacity:.98}
   .collapsed{background:radial-gradient(circle at 50% 48%,#0c0908 0 35%,#17100d 36% 62%,#2a1d17 63% 100%);box-shadow:inset 0 0 18px rgba(0,0,0,.85)}
   .collapsed::before{content:"";position:absolute;inset:12%;background:radial-gradient(circle at 18% 25%,#5d4636 0 6%,transparent 7%),radial-gradient(circle at 72% 62%,#4b382d 0 7%,transparent 8%),radial-gradient(circle at 43% 78%,#6a4d3c 0 5%,transparent 6%);opacity:.8}
-  .empty{background-image:url('tunnel-tile.png');filter:brightness(.88)}
-  .rock{background-image:url('rock-tile.png');filter:saturate(.78) brightness(.95)}
+  .empty{background-image:url('tunnel-tile.png');filter:brightness(1.02) saturate(.88)}
+  .rock{background-image:url('rock-tile.png');filter:saturate(.35) brightness(1.02)}
   .rock.falling{animation:rockDrop .18s ease-out;filter:brightness(1.04)}
   .gem{background-image:url('gem-tile.png');animation:gemPulse 1.8s ease-in-out infinite;filter:saturate(.9) brightness(.95)}
   .key{background-image:url('tunnel-tile.png');animation:keyPulse 1.3s ease-in-out infinite alternate}
@@ -214,11 +214,12 @@
     <button data-test-level="6">7</button>
     <button data-test-level="7">8</button>
     <button data-test-level="8">9</button>
+    <button data-test-level="9">10</button>
     <button id="testFillLives">CAN DOLDUR</button>
     <button id="testAddHints">+10 HINT</button>
   </div>
   <div class="economy-note">Prototype economy • 5 can • 20 dakikada 1 can • 3 başlangıç hinti</div>
-  <div class="build">v5.5 • Level Polish Pass • Levels 6–9 refreshed</div>
+  <div class="build">v5.6 • Palette C • Level 10</div>
 </div>
 
 <div class="win" id="win">
@@ -260,7 +261,7 @@ const W=10,H=14;
 const MAX_LIVES=5;
 const REFILL_MS=20*60*1000;
 const START_HINTS=3;
-const STORAGE_PREFIX='mq_v55_';
+const STORAGE_PREFIX='mq_v56_';
 function readStore(key,fallback){try{const v=localStorage.getItem(STORAGE_PREFIX+key);return v===null?fallback:Number(v)}catch(e){return fallback}}
 function writeStore(key,value){try{localStorage.setItem(STORAGE_PREFIX+key,String(value))}catch(e){}}
 let lives=Math.max(0,Math.min(MAX_LIVES,readStore('lives',MAX_LIVES)));
@@ -495,6 +496,34 @@ const levels=[
       "##########"
     ]
   }
+  ,{
+    id:'1–10',
+    intro:'Level 10: Şalteri aç, tek kullanımlık çatlak köprüden geç ve sağ bölgedeki kaya koridorlarıyla devriye böceğini birlikte yönet.',
+    hint:'Level 10: Şalter köprünün kapısını açar. Çatlak köprü geri dönüşü kapatır; sağ tarafta bazı kayalar ancak altlarını kazınca düşer.',
+    hints:['Önce şalteri aç. Kapıya giden çatlak köprü tek kullanımlık; üzerinden ayrıldığın kareler çöker.','Sağ tarafta kayaların altındaki toprağı kazınca kaya hemen değil, altından çıktıktan sonra düşer. Kaçış yönünü önceden seç.','Mor böcek sağ alt koridorda tur atar. Son kristallere giderken kaya düşüşünü ve böceğin ritmini aynı anda takip et.'],
+    enemyMode:'loop',
+    enemyPath:[[6,8],[7,8],[8,8],[8,9],[8,10],[7,10],[6,10],[6,9]],
+    requiresKey:false,
+    requiresSwitch:true,
+    requiresPlate:false,
+    collapsingGround:true,
+    map:[
+      "##########",
+      "#Pddd#...#",
+      "#dRdd#RdG#",
+      "#ddSd#ddd#",
+      "#dddd#G..#",
+      "##cccD...#",
+      "#dddd#dG.#",
+      "#dRdd#Rdd#",
+      "#dddd#X..#",
+      "#dddd#..G#",
+      "#dddd#...#",
+      "#dddd#G.E#",
+      "#dddd#...#",
+      "##########"
+    ]
+  }
 ];
 
 let currentLevel=0;
@@ -713,7 +742,8 @@ function completeLevel(){
   else if(currentLevel===5) winText.textContent='Kayayı basınç plakasının üstüne oturtup geçidi açık tuttun ve altıncı bölümü tamamladın.';
   else if(currentLevel===6) winText.textContent='Devriye hattını zamanlayıp riskli kristalleri topladın ve yedinci bölümü tamamladın.';
   else if(currentLevel===7) winText.textContent='Şalteri açtın, anahtarı buldun ve devriye bölgesini geçerek sekizinci bölümü tamamladın.';
-  else winText.textContent='Çöken topraklarda doğru rotayı seçip dokuzuncu bölümü tamamladın.';
+  else if(currentLevel===8) winText.textContent='Çöken topraklarda doğru rotayı seçip dokuzuncu bölümü tamamladın.';
+  else winText.textContent='Çatlak köprüyü geçip kaya koridorlarını ve devriyeyi aşarak onuncu bölümü tamamladın.';
   nextBtn.textContent=isLast?'Baştan Oyna':'Sonraki Bölüm →';
   if(currentLevel===1) nextBtn.textContent='Sonraki Bölüm →';
   winEl.style.display='flex';
@@ -973,7 +1003,7 @@ document.querySelectorAll('[data-test-level]').forEach(btn=>{
 });
 
 syncRefill();
-// İstersen adresin sonuna ?level=9 yazarak direkt Level 7 açılabilir.
+// İstersen adresin sonuna ?level=10 yazarak direkt Level 10 açılabilir.
 const params=new URLSearchParams(location.search);
 const requestedLevel=Number(params.get('level'));
 if(Number.isInteger(requestedLevel) && requestedLevel>=1 && requestedLevel<=levels.length){
