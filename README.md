@@ -1,9 +1,15 @@
-Mole Quest v5.5.3 — Corrected Long Patrol
+Mole Quest v5.5.5 — Visual Polish + No Softlock
 
-- This package is based on the stable v5.5 line.
-- All version markers are now consistent: title, footer, README and storage prefix use v5.5.3.
-- Level 10 enemy uses a 12-cell open patrol loop on the right side.
-- The enemy moves one grid cell on every successful player move.
-- No rock is placed on or above the patrol loop.
-- Level 10 can be opened directly with ?level=10.
-- This package intentionally does NOT use the later v6 asset experiments.
+Bu sürüm v5.5.4 tabanı üstüne hazırlanmıştır.
+
+Dahil edilen düzeltmeler:
+- Level 10 softlock düzeltildi; sağ tarafa geçince geri dönüş mümkün.
+- Uzun böcek devriyesi korunur.
+- Genel görsel düzenleme eklendi.
+- Arka plan daha sıcak maden atmosferine çekildi.
+- Zemin / yol / duvar ayrımı daha net hale getirildi.
+- Tünel (boş yol) açık krem tonlu, duvar daha koyu, toprak daha sıcak yapıldı.
+
+Not:
+- Mekanik olarak güvenli taban yine v5.5.x çizgisidir.
+- Bu paket tek zip olarak yüklenebilir.

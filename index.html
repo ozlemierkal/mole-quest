@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
-<meta name="theme-color" content="#24130d" />
-<title>Mole Quest — v5.5.3 Corrected Long Patrol</title>
+<meta name="theme-color" content="#2b170f" />
+<title>Mole Quest — v5.5.5 Visual Polish</title>
 <style>
   :root{
     --cream:#efe4d3;
@@ -26,10 +26,9 @@
     font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
     color:var(--cream);
     background:
-      radial-gradient(circle at 50% -10%, #473322 0%, rgba(71,51,34,.0) 35%),
-      radial-gradient(circle at 18% 28%, rgba(80,120,180,.12) 0%, rgba(80,120,180,0) 22%),
-      radial-gradient(circle at 82% 18%, rgba(80,120,180,.10) 0%, rgba(80,120,180,0) 20%),
-      linear-gradient(180deg,#120f11,#070608 72%);
+      linear-gradient(rgba(18,8,5,.74), rgba(7,4,3,.86)),
+      url('mine-bg.jpg') center top / cover no-repeat fixed,
+      linear-gradient(180deg,#24130d,#090607 78%);
     display:flex;justify-content:center;
   }
   .app{
@@ -38,10 +37,12 @@
     position:relative;
   }
   .app::before{
-    content:"";position:fixed;inset:0;pointer-events:none;opacity:.16;
+    content:"";position:fixed;inset:0;pointer-events:none;opacity:.22;
     background:
-      radial-gradient(circle at 50% 12%, rgba(255,210,140,.18), transparent 22%),
-      linear-gradient(90deg, transparent 0 6%, rgba(255,255,255,.02) 6% 7%, transparent 7% 13%, rgba(255,255,255,.015) 13% 14%, transparent 14% 86%, rgba(255,255,255,.015) 86% 87%, transparent 87% 93%, rgba(255,255,255,.02) 93% 94%, transparent 94% 100%);
+      radial-gradient(circle at 18% 18%, rgba(255,182,82,.22), transparent 16%),
+      radial-gradient(circle at 82% 21%, rgba(255,182,82,.20), transparent 16%),
+      radial-gradient(circle at 12% 82%, rgba(72,196,255,.12), transparent 14%),
+      radial-gradient(circle at 88% 84%, rgba(72,196,255,.10), transparent 14%);
     mix-blend-mode:screen;
   }
   .topbar{display:grid;grid-template-columns:1.2fr repeat(5, minmax(74px,1fr));gap:8px;margin-bottom:10px;align-items:stretch}
@@ -82,24 +83,26 @@
   .utilitybar .count{color:#f0c57a;font-weight:1000}
   .shell{
     position:relative;padding:10px;border-radius:24px;
-    background:linear-gradient(180deg,#5e412d,#32231a 30%, #241914 100%);
-    border:1px solid #8c684a;
-    box-shadow:inset 0 0 0 1px rgba(255,230,200,.08), 0 18px 42px rgba(0,0,0,.45);
+    background:linear-gradient(180deg,rgba(110,71,40,.90),rgba(60,34,21,.94) 34%, rgba(34,20,14,.96) 100%);
+    border:1px solid rgba(170,123,79,.92);
+    box-shadow:inset 0 0 0 1px rgba(255,229,194,.10), 0 20px 44px rgba(0,0,0,.42), 0 0 0 1px rgba(0,0,0,.2);
+    backdrop-filter:blur(2px);
   }
   #board{
     display:grid;grid-template-columns:repeat(10,1fr);gap:1px;aspect-ratio:10/14;
     overflow:hidden;border-radius:16px;
-    background:#0f0c0d;touch-action:none;position:relative;
+    background:#140d09;touch-action:none;position:relative;
+    box-shadow:inset 0 0 0 1px rgba(255,227,185,.06), inset 0 0 40px rgba(0,0,0,.25);
   }
   .cell{position:relative;overflow:hidden;background:#1c110c center/cover no-repeat}
-  .cell::after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 0 1px rgba(0,0,0,.18);pointer-events:none}
-  .wall{background-image:url('wall-tile.png');filter:brightness(.75) saturate(.78)}
-  .dirt{background-image:url('dirt-tile.png');filter:saturate(1.02) brightness(1.08) contrast(1.04)}
+  .cell::after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 0 1px rgba(48,27,15,.38), inset 0 1px 0 rgba(255,233,198,.06);pointer-events:none}
+  .wall{background-image:url('wall-tile.png');filter:brightness(.92) saturate(.90) contrast(1.14)}
+  .dirt{background-image:url('dirt-tile.png');filter:saturate(1.06) brightness(1.05) contrast(1.08)}
   .fragile{background-image:url('dirt-tile.png');filter:saturate(.85) brightness(.92);box-shadow:inset 0 0 0 2px rgba(236,182,106,.18),0 0 10px rgba(255,187,90,.08)}
   .fragile::before{content:"";position:absolute;z-index:2;inset:6%;background:linear-gradient(62deg,transparent 44%,rgba(61,27,13,.98) 45% 51%,transparent 52%) 46% 18%/70% 66% no-repeat,linear-gradient(118deg,transparent 44%,rgba(73,33,16,.96) 45% 51%,transparent 52%) 58% 60%/78% 68% no-repeat,linear-gradient(18deg,transparent 43%,rgba(38,18,10,.94) 44% 50%,transparent 51%) 34% 74%/64% 48% no-repeat,radial-gradient(circle at 62% 30%,rgba(255,207,123,.25) 0 12%,transparent 13%);opacity:.98}
   .collapsed{background:radial-gradient(circle at 50% 48%,#0c0908 0 35%,#17100d 36% 62%,#2a1d17 63% 100%);box-shadow:inset 0 0 18px rgba(0,0,0,.85)}
   .collapsed::before{content:"";position:absolute;inset:12%;background:radial-gradient(circle at 18% 25%,#5d4636 0 6%,transparent 7%),radial-gradient(circle at 72% 62%,#4b382d 0 7%,transparent 8%),radial-gradient(circle at 43% 78%,#6a4d3c 0 5%,transparent 6%);opacity:.8}
-  .empty{background-image:url('tunnel-tile.png');filter:saturate(.38) brightness(1.72) contrast(.88)}
+  .empty{background-image:url('tunnel-tile.png');filter:saturate(.72) brightness(1.06) contrast(1.03)}
   .rock{background-image:url('rock-tile.png');filter:saturate(.78) brightness(.95)}
   .rock.falling{animation:rockDrop .18s ease-out;filter:brightness(1.04)}
   .gem{background-image:url('gem-tile.png');background-size:92% 92%;background-position:center;animation:gemPulse 1.8s ease-in-out infinite;filter:saturate(1.12) brightness(1.08)}
@@ -136,14 +139,14 @@
   .score-fx{color:#f0cf8a;font-size:16px}.exit-fx{color:#f3d99b;font-size:18px;white-space:nowrap}
   @keyframes floatFx{0%{opacity:0;transform:translate(-50%,-35%) scale(.72)}22%{opacity:1;transform:translate(-50%,-58%) scale(1.05)}100%{opacity:0;transform:translate(-50%,-125%) scale(.95)}}
   .hud{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:10px}
-  .status,.level{border-radius:15px;background:linear-gradient(180deg,#231d1a,#161214);border:1px solid #4a4038;box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}
+  .status,.level{border-radius:15px;background:linear-gradient(180deg,rgba(42,28,22,.95),rgba(22,16,18,.95));border:1px solid #5a463c;box-shadow:inset 0 1px 0 rgba(255,255,255,.06)}
   .status{padding:12px 14px;font-size:13px;font-weight:700;line-height:1.35;color:#d5c6b4}
   .level{padding:11px 13px;min-width:94px;text-align:center;font-weight:900;color:#ebc474;display:flex;align-items:center;justify-content:center;letter-spacing:.04em}
   .controls{display:grid;grid-template-columns:repeat(3,78px);gap:8px;justify-content:center;margin-top:14px}
   button{height:66px;border-radius:18px;background:linear-gradient(180deg,#3e3a37,#292623 70%, #1c1a18);font-size:26px;box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 4px 12px rgba(0,0,0,.24);border:1px solid #615c57}
   button:active{transform:translateY(2px);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 2px 6px rgba(0,0,0,.28)}
   .ghost{visibility:hidden}
-  .hint{text-align:center;font-size:12px;opacity:.72;margin-top:10px;color:#bba994;line-height:1.35}
+  .hint{text-align:center;font-size:12px;opacity:.88;margin-top:10px;color:#d0b99b;line-height:1.35}
   .death-note{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.92);z-index:12;padding:14px 18px;border-radius:18px;background:rgba(33,21,18,.92);border:1px solid #8f6b56;color:#fff4e8;font-weight:1000;font-size:17px;box-shadow:0 14px 34px rgba(0,0,0,.65),0 0 18px rgba(255,136,85,.18);opacity:0;pointer-events:none;transition:opacity .12s ease,transform .12s ease}
   .death-note.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
   .shell.hurt{animation:shellShake .24s ease-in-out 1}
@@ -219,7 +222,7 @@
     <button id="testAddHints">+10 HINT</button>
   </div>
   <div class="economy-note">Prototype economy • 5 can • 20 dakikada 1 can • 3 başlangıç hinti</div>
-  <div class="build">v5.5.3 • Corrected Long Patrol</div>
+  <div class="build">v5.5.5 • No Softlock + Visual Polish</div>
 </div>
 
 <div class="win" id="win">
@@ -261,7 +264,7 @@ const W=10,H=14;
 const MAX_LIVES=5;
 const REFILL_MS=20*60*1000;
 const START_HINTS=3;
-const STORAGE_PREFIX='mq_v553_';
+const STORAGE_PREFIX='mq_v555_';
 function readStore(key,fallback){try{const v=localStorage.getItem(STORAGE_PREFIX+key);return v===null?fallback:Number(v)}catch(e){return fallback}}
 function writeStore(key,value){try{localStorage.setItem(STORAGE_PREFIX+key,String(value))}catch(e){}}
 let lives=Math.max(0,Math.min(MAX_LIVES,readStore('lives',MAX_LIVES)));
@@ -498,23 +501,23 @@ const levels=[
   },
   {
     id:'1–10',
-    intro:'Level 10: Soldaki kristalleri ve şalteri tamamla. Çatlak köprüden geçtikten sonra sağdaki devriye halkasını zamanlayarak çıkışa ulaş.',
-    hint:'Level 10: Böcek sağ bölümde gerçek bir halka üzerinde her başarılı hamlede bir kare ilerler. Önce sol tarafı tamamla, sonra geçide gir.',
-    hints:['Önce soldaki kristalleri ve şalteri tamamla. Geçide erken girme.','Sağdaki böcek daha uzun bir devriye turu atar ve her başarılı hamlende bir kare ilerler.','Böceğin bulunduğu kareye değil, bir sonraki kareye bakarak hareket et.'],
+    intro:'Level 10: Soldaki kristalleri ve şalteri tamamla. Geçitten sonra sağdaki devriye halkasını zamanlayarak çıkışa ulaş.',
+    hint:'Level 10: Böcek sağ bölümde gerçek bir halka üzerinde her başarılı hamlede bir kare ilerler. Geçitten iki yönde de dönebilirsin.',
+    hints:['Şalter geçidi açar; geçit artık dönüş yolunu kapatmaz. Soldaki kristalleri kaçırırsan geri dönebilirsin.','Sağdaki böcek daha uzun bir devriye turu atar ve her başarılı hamlende bir kare ilerler.','Böceğin bulunduğu kareye değil, bir sonraki kareye bakarak hareket et.'],
     enemyMode:'loop',
     enemyEvery:1,
     enemyPath:[[8,7],[8,8],[8,9],[8,10],[7,10],[6,10],[6,9],[6,8],[6,7],[6,6],[7,6],[8,6]],
     requiresKey:false,
     requiresSwitch:true,
     requiresPlate:false,
-    collapsingGround:true,
+    collapsingGround:false,
     map:[
       "##########",
       "#PddG#ddd#",
       "#dRdd#dGd#",
       "#ddSd#ddd#",
       "#Gddd#Gdd#",
-      "#dcccD...#",
+      "#d...D...#",
       "#ddG.#...#",
       "#dR..#..X#",
       "#....#...#",
