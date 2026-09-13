@@ -95,6 +95,10 @@
   .cell::after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 0 1px rgba(0,0,0,.18);pointer-events:none}
   .wall{background-image:url('wall-tile.png');filter:brightness(.75) saturate(.78)}
   .dirt{background-image:url('dirt-tile.png');filter:saturate(.88) brightness(.90)}
+  .fragile{background-image:url('dirt-tile.png');filter:saturate(.72) brightness(.82)}
+  .fragile::before{content:"";position:absolute;z-index:2;inset:9%;background:linear-gradient(62deg,transparent 45%,rgba(48,28,18,.95) 46% 51%,transparent 52%) 48% 22%/58% 58% no-repeat,linear-gradient(118deg,transparent 45%,rgba(48,28,18,.9) 46% 51%,transparent 52%) 56% 60%/68% 60% no-repeat,linear-gradient(18deg,transparent 44%,rgba(36,20,14,.92) 45% 50%,transparent 51%) 35% 72%/58% 44% no-repeat;opacity:.9}
+  .collapsed{background:radial-gradient(circle at 50% 48%,#0c0908 0 35%,#17100d 36% 62%,#2a1d17 63% 100%);box-shadow:inset 0 0 18px rgba(0,0,0,.85)}
+  .collapsed::before{content:"";position:absolute;inset:12%;background:radial-gradient(circle at 18% 25%,#5d4636 0 6%,transparent 7%),radial-gradient(circle at 72% 62%,#4b382d 0 7%,transparent 8%),radial-gradient(circle at 43% 78%,#6a4d3c 0 5%,transparent 6%);opacity:.8}
   .empty{background-image:url('tunnel-tile.png');filter:brightness(.88)}
   .rock{background-image:url('rock-tile.png');filter:saturate(.78) brightness(.95)}
   .rock.falling{animation:rockDrop .18s ease-out;filter:brightness(1.04)}
@@ -209,11 +213,12 @@
     <button data-test-level="5">6</button>
     <button data-test-level="6">7</button>
     <button data-test-level="7">8</button>
+    <button data-test-level="8">9</button>
     <button id="testFillLives">CAN DOLDUR</button>
     <button id="testAddHints">+10 HINT</button>
   </div>
   <div class="economy-note">Prototype economy • 5 can • 20 dakikada 1 can • 3 başlangıç hinti</div>
-  <div class="build">v5.3 • Levels 1–8 • Faster Hold + Cleaner Guidance</div>
+  <div class="build">v5.4 • Levels 1–9 • Collapsing Ground • Faster Hold + Cleaner Guidance</div>
 </div>
 
 <div class="win" id="win">
@@ -255,7 +260,7 @@ const W=10,H=14;
 const MAX_LIVES=5;
 const REFILL_MS=20*60*1000;
 const START_HINTS=3;
-const STORAGE_PREFIX='mq_v53_';
+const STORAGE_PREFIX='mq_v54_';
 function readStore(key,fallback){try{const v=localStorage.getItem(STORAGE_PREFIX+key);return v===null?fallback:Number(v)}catch(e){return fallback}}
 function writeStore(key,value){try{localStorage.setItem(STORAGE_PREFIX+key,String(value))}catch(e){}}
 let lives=Math.max(0,Math.min(MAX_LIVES,readStore('lives',MAX_LIVES)));
@@ -466,6 +471,34 @@ const levels=[
       "##########"
     ]
   }
+  ,{
+    id:'1–9',
+    intro:'Kristalleri topla ve çıkışa ulaş.',
+    hint:'Level 9: Çatlak görünen toprak yalnızca bir kez kullanılabilir. Üzerinden ayrıldığında çöker ve geri dönüşü kapatır.',
+    hints:['Çatlak toprakta ileri gitmeden önce geri dönmen gerekip gerekmediğini düşün. Ayrıldığın kare çöker.','Sol üstteki kristalleri toplamadan orta geçişi tüketme. Çöken yol tek yönlüdür.','Mor böcek açık alt koridorda devriye gezer. Son bölgeye geçtikten sonra onun ritmini kullan.'],
+    enemyMode:'loop',
+    enemyPath:[[2,9],[3,9],[4,9],[5,9],[6,9],[7,9],[8,9],[8,10],[7,10],[6,10],[5,10],[4,10],[3,10],[2,10]],
+    requiresKey:false,
+    requiresSwitch:false,
+    requiresPlate:false,
+    collapsingGround:true,
+    map:[
+      "##########",
+      "#GddRdddG#",
+      "#dddddGdd#",
+      "#dPdddddd#",
+      "#dddcccdd#",
+      "#Gdd###dd#",
+      "#dddcccGd#",
+      "#ddR###dd#",
+      "#GddddddE#",
+      "#dX......#",
+      "#........#",
+      "#ddGddRdd#",
+      "#dddddddd#",
+      "##########"
+    ]
+  }
 ];
 
 let currentLevel=0;
@@ -522,6 +555,8 @@ function render(){
     if(x===px&&y===py)c.classList.add('player');
     else if(t==='#')c.classList.add('wall');
     else if(t==='d')c.classList.add('dirt');
+    else if(t==='c')c.classList.add('fragile');
+    else if(t==='Z')c.classList.add('collapsed');
     else if(t==='R' || t==='Q'){c.classList.add('rock');if(fallingRocks.has(`${x},${y}`))c.classList.add('falling')}
     else if(t==='G')c.classList.add('gem');
     else if(t==='K')c.classList.add('key');
@@ -681,7 +716,8 @@ function completeLevel(){
   else if(currentLevel===4) winText.textContent='Düşen kayayı kullanarak çatlak duvarı kırdın ve beşinci bölümü tamamladın.';
   else if(currentLevel===5) winText.textContent='Kayayı basınç plakasının üstüne oturtup geçidi açık tuttun ve altıncı bölümü tamamladın.';
   else if(currentLevel===6) winText.textContent='Devriye hattını zamanlayıp riskli kristalleri topladın ve yedinci bölümü tamamladın.';
-  else winText.textContent='Şalteri açtın, anahtarı buldun ve devriye bölgesini geçerek sekizinci bölümü tamamladın.';
+  else if(currentLevel===7) winText.textContent='Şalteri açtın, anahtarı buldun ve devriye bölgesini geçerek sekizinci bölümü tamamladın.';
+  else winText.textContent='Çöken topraklarda doğru rotayı seçip dokuzuncu bölümü tamamladın.';
   nextBtn.textContent=isLast?'Baştan Oyna':'Sonraki Bölüm →';
   if(currentLevel===1) nextBtn.textContent='Sonraki Bölüm →';
   winEl.style.display='flex';
@@ -721,7 +757,7 @@ function move(dx,dy){
   const nx=px+dx,ny=py+dy;
   if(nx<0||ny<0||nx>=W||ny>=H)return false;
   const t=map[ny][nx];
-  if(t==='#'||t==='R'||t==='Q')return false;
+  if(t==='#'||t==='R'||t==='Q'||t==='Z')return false;
   if(t==='B'){statusEl.textContent='Bu duvar kazılamıyor. Onu kırmak için düşen bir kaya kullanmalısın.';return false}
   if(t==='D'&&!switchOn){statusEl.textContent='Metal geçit kapalı. Önce SWITCH noktasını etkinleştir.';return false}
   if(t==='A'&&!plateOn){statusEl.textContent='Bu geçit yalnızca basınç plakası aktifken açılır.';return false}
@@ -729,7 +765,12 @@ function move(dx,dy){
   if(t==='E'&&!open){statusEl.textContent=lockedExitMessage();return false}
 
   let collected=false,collectedKey=false,activatedSwitch=false,openedNow=false;
+  const oldX=px,oldY=py;
   px=nx;py=ny;
+  if(levels[currentLevel].collapsingGround && map[oldY] && map[oldY][oldX]==='c'){
+    map[oldY][oldX]='Z';
+    statusEl.textContent='Arkadaki çatlak toprak çöktü. Geri dönüş kapandı.';
+  }
   if(t==='d')map[ny][nx]='.';
   if(t==='G'){
     map[ny][nx]='.';gems++;score+=100;gemEl.textContent=gems;scoreEl.textContent=score;collected=true;
@@ -936,7 +977,7 @@ document.querySelectorAll('[data-test-level]').forEach(btn=>{
 });
 
 syncRefill();
-// İstersen adresin sonuna ?level=8 yazarak direkt Level 7 açılabilir.
+// İstersen adresin sonuna ?level=9 yazarak direkt Level 7 açılabilir.
 const params=new URLSearchParams(location.search);
 const requestedLevel=Number(params.get('level'));
 if(Number.isInteger(requestedLevel) && requestedLevel>=1 && requestedLevel<=levels.length){

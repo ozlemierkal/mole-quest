@@ -1,5 +1,3 @@
-Mole Quest v5.3
+Mole Quest v5.4
 
-- Basılı tutma hareketi bir miktar daha hızlandırıldı.
-- Otomatik çözüm ipuçları kaldırıldı; detaylı yönlendirme HINT düğmesine taşındı.
-- Level 8 eklendi: şalter + anahtar + uzun devriye hattı kombinasyonu.
+Level 9 eklendi: çöken toprak. Çatlak kareden ayrılınca zemin çöker ve geri dönüş kapanır. Test menüsünde 9 bulunur.
