@@ -1,6 +1,10 @@
-Mole Quest v5.6.3 Recovery Fix
+# Mole Quest v6.0 — Clean Warm Mine
 
-- v5.7.1'in yeni yapay tile görselleri kaldırıldı; v5.6.2 görsellerine geri dönüldü.
-- Level 10 böceği artık devriye rotasının tam üstünden başlar.
-- Level 10 böceği her başarılı oyuncu hamlesinde 1 kare ilerler.
-- Devriye kodu, böcek rota dışına çıkarsa en yakın rota karesine toparlanacak şekilde güçlendirildi.
+Temiz toparlama sürümü.
+- v5.5 stabil mekanik tabanı kullanıldı.
+- 1–10 tek kod hattında.
+- Sıcak maden arka planı ve kontrollü renk düzeni.
+- Mockup'tan asset kesilmedi; mevcut stabil assetler kontrollü renklendirildi.
+- Level 10 yeniden kuruldu.
+- Level 10 böceği açık 8-kare devriye halkasında her başarılı hamlede 1 kare ilerler.
+- Elmas/rock/exit CSS hizaları temizlendi.

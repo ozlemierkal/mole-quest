@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
 <meta name="theme-color" content="#24130d" />
-<title>Mole Quest — v5.6.3 Recovery Fix</title>
+<title>Mole Quest — v6.0 Clean Warm Mine</title>
 <style>
   :root{
     --cream:#efe4d3;
@@ -26,10 +26,10 @@
     font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
     color:var(--cream);
     background:
-      radial-gradient(circle at 50% -10%, #473322 0%, rgba(71,51,34,.0) 35%),
-      radial-gradient(circle at 18% 28%, rgba(80,120,180,.12) 0%, rgba(80,120,180,0) 22%),
-      radial-gradient(circle at 82% 18%, rgba(80,120,180,.10) 0%, rgba(80,120,180,0) 20%),
-      linear-gradient(180deg,#120f11,#070608 72%);
+      radial-gradient(circle at 12% 15%, rgba(255,179,81,.24) 0 4%, rgba(255,179,81,.07) 9%, transparent 18%),
+      radial-gradient(circle at 88% 23%, rgba(255,185,88,.20) 0 3%, rgba(255,185,88,.06) 8%, transparent 17%),
+      radial-gradient(circle at 50% -8%, #6a4228 0%, #3b261b 28%, rgba(59,38,27,0) 55%),
+      linear-gradient(180deg,#261a15,#100d0d 68%,#080708);
     display:flex;justify-content:center;
   }
   .app{
@@ -87,43 +87,44 @@
     box-shadow:inset 0 0 0 1px rgba(255,230,200,.08), 0 18px 42px rgba(0,0,0,.45);
   }
   #board{
-    display:grid;grid-template-columns:repeat(10,1fr);gap:1px;aspect-ratio:10/14;
+    display:grid;grid-template-columns:repeat(10,1fr);gap:2px;aspect-ratio:10/14;
     overflow:hidden;border-radius:16px;
-    background:#0f0c0d;touch-action:none;position:relative;
+    background:#3b271b;touch-action:none;position:relative;
+    box-shadow:inset 0 0 0 1px rgba(255,221,171,.08);
   }
-  .cell{position:relative;overflow:hidden;background:#1c110c center/cover no-repeat}
+  .cell{position:relative;overflow:hidden;background:#2b1c14 center/cover no-repeat;border-radius:3px}
   .cell::after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 0 1px rgba(0,0,0,.18);pointer-events:none}
-  .wall{background-image:url('wall-tile.png');filter:brightness(.98) saturate(.92)}
-  .dirt{background-image:url('dirt-tile.png');filter:saturate(1.05) brightness(1.03)}
-  .fragile{background-image:url('dirt-tile.png');filter:saturate(1.08) brightness(1.06);box-shadow:inset 0 0 0 3px rgba(255,213,137,.28),0 0 12px rgba(255,193,99,.14)}
+  .wall{background-image:url('wall-tile.png');filter:brightness(.75) saturate(.78)}
+  .dirt{background-image:url('dirt-tile.png');filter:saturate(.88) brightness(.90)}
+  .fragile{background-image:url('dirt-tile.png');filter:saturate(.85) brightness(.92);box-shadow:inset 0 0 0 2px rgba(236,182,106,.18),0 0 10px rgba(255,187,90,.08)}
   .fragile::before{content:"";position:absolute;z-index:2;inset:6%;background:linear-gradient(62deg,transparent 44%,rgba(61,27,13,.98) 45% 51%,transparent 52%) 46% 18%/70% 66% no-repeat,linear-gradient(118deg,transparent 44%,rgba(73,33,16,.96) 45% 51%,transparent 52%) 58% 60%/78% 68% no-repeat,linear-gradient(18deg,transparent 43%,rgba(38,18,10,.94) 44% 50%,transparent 51%) 34% 74%/64% 48% no-repeat,radial-gradient(circle at 62% 30%,rgba(255,207,123,.25) 0 12%,transparent 13%);opacity:.98}
   .collapsed{background:radial-gradient(circle at 50% 48%,#0c0908 0 35%,#17100d 36% 62%,#2a1d17 63% 100%);box-shadow:inset 0 0 18px rgba(0,0,0,.85)}
   .collapsed::before{content:"";position:absolute;inset:12%;background:radial-gradient(circle at 18% 25%,#5d4636 0 6%,transparent 7%),radial-gradient(circle at 72% 62%,#4b382d 0 7%,transparent 8%),radial-gradient(circle at 43% 78%,#6a4d3c 0 5%,transparent 6%);opacity:.8}
-  .empty{background-image:url('tunnel-tile.png');filter:brightness(1.08) saturate(.80)}
-  .rock{background-image:url('rock-tile.png');filter:saturate(.18) brightness(1.04)}
+  .empty{background-image:url('tunnel-tile.png');filter:brightness(.88)}
+  .rock{background-image:url('rock-tile.png');filter:saturate(.78) brightness(.95)}
   .rock.falling{animation:rockDrop .18s ease-out;filter:brightness(1.04)}
-  .gem{background-image:url('gem-tile.png');animation:gemPulse 1.8s ease-in-out infinite;filter:saturate(.9) brightness(.95)}
+  .gem{background-image:url('gem-tile.png');background-size:100% 100%;background-position:center;animation:gemPulse 1.8s ease-in-out infinite;filter:none}
   .key{background-image:url('tunnel-tile.png');animation:keyPulse 1.3s ease-in-out infinite alternate}
   .key::before{content:"";position:absolute;z-index:2;width:34%;height:34%;left:14%;top:31%;border:4px solid #e7bb5b;border-radius:50%;box-shadow:0 0 10px rgba(231,187,91,.35),inset 0 0 5px rgba(255,243,175,.4)}
   .key::after{content:"";position:absolute;z-index:2;width:50%;height:22%;left:43%;top:42%;background:linear-gradient(180deg,#eecf84,#c88c2e);clip-path:polygon(0 28%,68% 28%,68% 0,81% 0,81% 28%,100% 28%,100% 72%,85% 72%,85% 100%,72% 100%,72% 72%,0 72%);border-radius:999px;box-shadow:0 0 9px rgba(231,187,91,.28)}
-  .switch{background-image:url('tunnel-tile.png');filter:brightness(1.07) saturate(.82)}
+  .switch{background-image:url('tunnel-tile.png')}
   .switch::before{content:"";position:absolute;z-index:2;left:18%;right:18%;bottom:19%;height:28%;border-radius:8px;background:linear-gradient(180deg,#75787a,#434548);border:2px solid #9c9fa1;box-shadow:inset 0 -4px 0 #2e3032,0 2px 4px #0008}
   .switch::after{content:"";position:absolute;z-index:3;width:24%;height:24%;left:38%;top:26%;border-radius:50%;background:radial-gradient(circle at 35% 30%,#f4d49a,#bb7d29 58%,#6a4212 60%);box-shadow:0 0 10px rgba(240,180,61,.35)}
   .switch.active::before{background:linear-gradient(180deg,#526f59,#2f4c37);border-color:#7fac87}
   .switch.active::after{background:radial-gradient(circle at 35% 30%,#d7ffd9,#62c878 58%,#256335 60%);box-shadow:0 0 13px rgba(109,229,132,.45)}
-  .plate{background-image:url('tunnel-tile.png');filter:brightness(1.07) saturate(.82)}
+  .plate{background-image:url('tunnel-tile.png')}
   .plate::before{content:"";position:absolute;z-index:2;left:15%;right:15%;bottom:22%;height:20%;border-radius:999px;background:linear-gradient(180deg,#888b8f,#51545a);border:2px solid #a2a5a8;box-shadow:inset 0 -3px 0 rgba(31,33,36,.85),0 2px 4px rgba(0,0,0,.6)}
   .plate::after{content:"";position:absolute;z-index:2;left:32%;right:32%;top:20%;height:18%;border-radius:999px;background:linear-gradient(180deg,#46484d,#24262a);opacity:.6}
   .plate.active::before{background:linear-gradient(180deg,#98a46e,#55683f);border-color:#c7d894;box-shadow:inset 0 -3px 0 rgba(41,58,30,.88),0 0 10px rgba(184,222,118,.22)}
-  .gate{background-image:url('tunnel-tile.png');filter:brightness(1.05) saturate(.80)}
+  .gate{background-image:url('tunnel-tile.png')}
   .gate::before{content:"";position:absolute;z-index:2;inset:7% 13%;border-left:5px solid #7e8185;border-right:5px solid #7e8185;background:repeating-linear-gradient(90deg,transparent 0 15%,#93979a 15% 26%,transparent 26% 41%);box-shadow:inset 0 0 0 2px #35373a,0 0 8px rgba(0,0,0,.45)}
   .gate.open::before{opacity:.18;transform:translateY(-70%);transition:transform .2s ease,opacity .2s ease}
   .brittle{background-image:url('wall-tile.png');filter:brightness(.78) saturate(.6)}
   .brittle::before{content:"";position:absolute;z-index:2;inset:8%;background:linear-gradient(62deg,transparent 45%,#27140d 46% 51%,transparent 52%) 48% 22%/55% 55% no-repeat,linear-gradient(118deg,transparent 45%,#27140d 46% 51%,transparent 52%) 56% 58%/64% 58% no-repeat,linear-gradient(20deg,transparent 44%,#160b08 45% 50%,transparent 51%) 38% 72%/55% 42% no-repeat;opacity:.92;filter:drop-shadow(0 1px 0 rgba(209,154,115,.25))}
-  .player{background-image:url('mole-tile.png');background-size:126% 126%;background-position:50% 53%;z-index:3;animation:playerStep .16s ease-out;filter:drop-shadow(0 2px 3px rgba(0,0,0,.55))}
-  .enemy{background-image:url('enemy-tile.png');background-size:145% 145%;background-position:50% 96%;filter:saturate(.60) brightness(.72)}
+  .player{background-image:url('mole-tile.png');background-size:118% 118%;background-position:50% 58%;z-index:3;animation:playerStep .16s ease-out;filter:drop-shadow(0 2px 3px rgba(0,0,0,.48))}
+  .enemy{background-image:url('enemy-tile.png');background-size:112% 112%;background-position:50% 72%;filter:saturate(.92) brightness(1.00)}
   .enemy.alert{background-size:100% 100%;background-position:center;filter:none;animation:enemyWiggle .48s ease-in-out infinite alternate;box-shadow:inset 0 0 12px rgba(199,108,108,.33);z-index:2}
-  .exit{background-image:url('exit-tile.png');background-size:122% 122%;filter:saturate(.92) brightness(.86) contrast(1.08);box-shadow:inset 0 0 0 2px rgba(247,223,161,.30),0 0 0 1px rgba(87,58,24,.50),0 0 12px rgba(255,202,92,.10);z-index:2}
+  .exit{background-image:url('exit-tile.png');background-size:110% 110%;background-position:center;filter:saturate(1.07) brightness(1.08) contrast(1.04);box-shadow:inset 0 0 0 2px rgba(255,235,184,.34),0 0 18px rgba(255,190,72,.28);z-index:2}
   .exit::before{content:"";position:absolute;inset:8%;border-radius:12px;box-shadow:inset 0 0 0 1px rgba(255,236,190,.20)}
   .exit.open{filter:saturate(1.12) brightness(1.12) contrast(1.08);box-shadow:inset 0 0 18px rgba(255,223,129,.56),0 0 18px rgba(255,206,88,.42),0 0 0 2px rgba(255,238,194,.28);z-index:2;animation:exitGlow .9s ease-in-out infinite alternate}
   @keyframes gemPulse{0%,100%{filter:brightness(.96);transform:scale(1)}50%{filter:brightness(1.15);transform:scale(1.035)}}
@@ -219,7 +220,7 @@
     <button id="testAddHints">+10 HINT</button>
   </div>
   <div class="economy-note">Prototype economy • 5 can • 20 dakikada 1 can • 3 başlangıç hinti</div>
-  <div class="build">v5.6.3 • Recovery Fix • Level 10 patrol</div>
+  <div class="build">v6.0 • Clean Warm Mine • Levels 1–10</div>
 </div>
 
 <div class="win" id="win">
@@ -261,7 +262,7 @@ const W=10,H=14;
 const MAX_LIVES=5;
 const REFILL_MS=20*60*1000;
 const START_HINTS=3;
-const STORAGE_PREFIX='mq_v563_';
+const STORAGE_PREFIX='mq_v60_';
 function readStore(key,fallback){try{const v=localStorage.getItem(STORAGE_PREFIX+key);return v===null?fallback:Number(v)}catch(e){return fallback}}
 function writeStore(key,value){try{localStorage.setItem(STORAGE_PREFIX+key,String(value))}catch(e){}}
 let lives=Math.max(0,Math.min(MAX_LIVES,readStore('lives',MAX_LIVES)));
@@ -498,30 +499,30 @@ const levels=[
   }
   ,{
     id:'1–10',
-    intro:'Level 10: Solda kristalleri toparla, şalteri aç ve tek kullanımlık çatlak köprüden geç. Sağ bölümde ise daha kapalı koridorlarda devriye böceği ve kaya düşüşlerini birlikte yönet.',
-    hint:'Level 10: Soldaki kristalleri geçmeden köprüye girme. Şalter kapıyı açar; çatlak köprü ise dönüşü kapatır.',
-    hints:['Önce soldaki kristalleri ve şalteri tamamla. Çatlak köprüden geçince geri dönüş neredeyse kapanır.','Sağ taraf artık tamamen açık başlamıyor; devriye böceğinin koridorunu adım adım okuyarak ilerle.','Kayaların altını açmadan önce kaçış yönünü düşün. Son kristaller sağ alanda ama hepsi köşede değil.'],
+    intro:'Level 10: Sol bölgedeki kristalleri ve şalteri tamamla. Sonra çatlak geçitten sağ devriye alanına geç ve çıkışa ulaş.',
+    hint:'Level 10: Önce sol tarafı temizle. Şalter kapıyı açar; sağ tarafta böcek açık bir halka üzerinde devriye gezer.',
+    hints:['Soldaki kristalleri ve şalteri tamamlamadan geçide girme.','Mor böcek her başarılı hamlede açık devriye halkasında bir kare ilerler.','Sağ bölümdeki kayaların altını açmadan önce kaçış yönünü hazırla.'],
     enemyMode:'loop',
     enemyEvery:1,
-    enemyPath:[[5,7],[6,7],[7,7],[8,7],[8,8],[8,9],[7,9],[6,9],[5,9],[5,8]],
+    enemyPath:[[6,7],[7,7],[8,7],[8,8],[8,9],[7,9],[6,9],[6,8]],
     requiresKey:false,
     requiresSwitch:true,
     requiresPlate:false,
     collapsingGround:true,
     map:[
       "##########",
-      "#PddG#ddd#",
-      "#dRdd#dGd#",
-      "#ddSd#ddd#",
-      "#Gddd#Gdd#",
-      "##cccDddd#",
-      "#dddd#dRd#",
-      "#dRdd#X..#",
-      "#dddd#...#",
-      "#dddd#...#",
-      "#dddd#dGd#",
-      "#dddd#ddE#",
-      "#dddd#Gdd#",
+      "#dGdR#d.G#",
+      "#dd.d#dd.#",
+      "#PddS#Gdd#",
+      "#dRdd#dd.#",
+      "#dGccD...#",
+      "#dd..#R..#",
+      "#Gd..#X..#",
+      "#ddR.#...#",
+      "#d..c#...#",
+      "#dG.c#dR.#",
+      "#dddc#..E#",
+      "#..d.#...#",
       "##########"
     ]
   }
@@ -685,7 +686,8 @@ function enemyTurn(){
 
   enemyTick++;
   enemyAlert=(md<=2);
-  if(enemyTick%2!==0){
+  const enemyEvery=Math.max(1,Number(level.enemyEvery||2));
+  if(enemyTick%enemyEvery!==0){
     if(enemyAlert) statusEl.textContent='Mor böcek yakında. Bir sonraki başarılı hamlede hareket edecek.';
     return false;
   }
@@ -694,9 +696,11 @@ function enemyTurn(){
     const path=level.enemyPath;
     let idx=path.findIndex(([x,y])=>x===e.x&&y===e.y);
     if(idx<0){
-      idx=path.findIndex(([x,y])=>Math.abs(x-e.x)+Math.abs(y-e.y)===1);
-      if(idx<0) idx=path.length-1;
-      else idx=(idx-1+path.length)%path.length;
+      // Harita ile rota bir an uyumsuzlaşırsa en yakın rota karesinden devam et.
+      idx=path.reduce((best,p,i)=>{
+        const d=Math.abs(p[0]-e.x)+Math.abs(p[1]-e.y);
+        return d<best.d?{i,d}:best;
+      },{i:0,d:Infinity}).i;
     }
     const [nx,ny]=path[(idx+1)%path.length];
     if(nx===px&&ny===py){
@@ -704,7 +708,8 @@ function enemyTurn(){
       hurt('Devriye böceği sana çarptı!');
       return true;
     }
-    if(map[ny] && (map[ny][nx]==='.' || map[ny][nx]==='d')){
+    const nextCell=map[ny] && map[ny][nx];
+    if(nextCell==='.' || nextCell==='d'){
       map[e.y][e.x]='.';map[ny][nx]='X';
       const newMd=Math.abs(px-nx)+Math.abs(py-ny);enemyAlert=(newMd<=2);
       statusEl.textContent=enemyAlert?'Devriye böceği yaklaşıyor.':'Böcek devriye turuna devam ediyor.';
@@ -721,7 +726,7 @@ function enemyTurn(){
       hurt('Hareket eden mor böcek sana çarptı!');
       return true;
     }
-    if(map[ny] && (map[ny][nx]==='.' || map[ny][nx]==='d')){
+    if(map[ny] && map[ny][nx]==='.'){
       map[e.y][e.x]='.';map[ny][nx]='X';enemyDir=dir;
       const newMd=Math.abs(px-nx)+Math.abs(py-ny);enemyAlert=(newMd<=2);
       statusEl.textContent=enemyAlert?'Mor böcek yaklaşıyor.':'Mor böcek devriye geziyor.';
@@ -748,7 +753,7 @@ function completeLevel(){
   else if(currentLevel===6) winText.textContent='Devriye hattını zamanlayıp riskli kristalleri topladın ve yedinci bölümü tamamladın.';
   else if(currentLevel===7) winText.textContent='Şalteri açtın, anahtarı buldun ve devriye bölgesini geçerek sekizinci bölümü tamamladın.';
   else if(currentLevel===8) winText.textContent='Çöken topraklarda doğru rotayı seçip dokuzuncu bölümü tamamladın.';
-  else winText.textContent='Çatlak köprüyü geçip kaya koridorlarını ve devriyeyi aşarak onuncu bölümü tamamladın.';
+  else winText.textContent='Şalteri açıp devriye halkasını geçerek onuncu bölümü tamamladın.';
   nextBtn.textContent=isLast?'Baştan Oyna':'Sonraki Bölüm →';
   if(currentLevel===1) nextBtn.textContent='Sonraki Bölüm →';
   winEl.style.display='flex';
@@ -1008,7 +1013,7 @@ document.querySelectorAll('[data-test-level]').forEach(btn=>{
 });
 
 syncRefill();
-// İstersen adresin sonuna ?level=10 yazarak direkt Level 10 açılabilir.
+// İstersen adresin sonuna ?level=9 yazarak direkt Level 7 açılabilir.
 const params=new URLSearchParams(location.search);
 const requestedLevel=Number(params.get('level'));
 if(Number.isInteger(requestedLevel) && requestedLevel>=1 && requestedLevel<=levels.length){
