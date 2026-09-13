@@ -1,3 +1,5 @@
-Mole Quest v5.2
+Mole Quest v5.2.1
 
-Sonuç ekranı Türkçeleştirildi, karakter yüzü düzeltildi, basılı tutarak hareket eklendi ve Level 7 uzun devriye rotasıyla eklendi.
+- Level 7 yeniden dengelendi: açılışta boşlukta kaya yok, kristaller daha dağınık ve asimetrik yerleşti.
+- Basılı tutma hareketi hızlandırıldı.
+- Sağ oda, devriye böceği ve düşen kaya riski daha belirgin olacak şekilde ayarlandı.

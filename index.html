@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
 <meta name="theme-color" content="#24130d" />
-<title>Mole Quest — v5.2 Level 7</title>
+<title>Mole Quest — v5.2.1 Level 7 Tuning</title>
 <style>
   :root{
     --cream:#efe4d3;
@@ -212,7 +212,7 @@
     <button id="testAddHints">+10 HINT</button>
   </div>
   <div class="economy-note">Prototype economy • 5 can • 20 dakikada 1 can • 3 başlangıç hinti</div>
-  <div class="build">v5.2 • Levels 1–7 • Hold Controls + Patrol Loop</div>
+  <div class="build">v5.2.1 • Levels 1–7 • Faster Hold + Level 7 Tuning</div>
 </div>
 
 <div class="win" id="win">
@@ -254,7 +254,7 @@ const W=10,H=14;
 const MAX_LIVES=5;
 const REFILL_MS=20*60*1000;
 const START_HINTS=3;
-const STORAGE_PREFIX='mq_v52_';
+const STORAGE_PREFIX='mq_v521_';
 function readStore(key,fallback){try{const v=localStorage.getItem(STORAGE_PREFIX+key);return v===null?fallback:Number(v)}catch(e){return fallback}}
 function writeStore(key,value){try{localStorage.setItem(STORAGE_PREFIX+key,String(value))}catch(e){}}
 let lives=Math.max(0,Math.min(MAX_LIVES,readStore('lives',MAX_LIVES)));
@@ -413,28 +413,28 @@ const levels=[
   }
   ,{
     id:'1–7',
-    intro:'Level 7: Bu kez böcek kısa bir hatta değil, tam bir devriye turunda geziyor. Şalteri aç, rotayı zamanla ve riskli kristalleri topla.',
-    hint:'Level 7: Sağ taraftaki böcek çevrimsel bir rota izler. Geçitten ne zaman çıkacağını onun konumuna göre seç.',
-    hints:['Önce soldaki şalteri etkinleştir. Sağ bölgeye geçmek için orta kapıyı kullan.','Böcek sağ odanın çevresinde tam tur atar. Kapı ağzına yaklaşırken beklemek yerine bir sonraki güvenli boşluğu hesapla.','Ortadaki iki kayanın altındaki kristaller risklidir; kristali aldıktan sonra kayanın düşüş hattından hemen çık.'],
+    intro:'Level 7: Şalteri aç, merkez geçitten sağ bölgeye sız ve devriye böceği ile düşen kayalar arasında dağınık kristalleri topla.',
+    hint:'Level 7: İlk hedef şalter. Sonra sağ odada böceğin turunu ve kayaların düşüş hattını birlikte okuyarak ilerle.',
+    hints:['Şalteri açmadan sağ taraf kapalı. Önce sol bölgeyi temizleyip metal geçidi kullan.','Sağ odadaki mor böcek çevrimsel bir rota izler; dar geçitten çıkarken onun sadece mevcut yerini değil, bir sonraki adımını da düşün.','İki kayanın altındaki kristaller alınınca düşüş başlar. Kristali aldıktan sonra aynı hatta kalma.'],
     enemyMode:'loop',
-    enemyPath:[[5,4],[6,4],[7,4],[8,4],[8,5],[8,6],[8,7],[8,8],[8,9],[7,9],[6,9],[5,9],[5,8],[5,7],[5,6],[5,5]],
+    enemyPath:[[5,4],[6,4],[7,4],[8,4],[8,5],[8,6],[8,7],[7,7],[6,7],[5,7],[5,6],[5,5]],
     requiresKey:false,
     requiresSwitch:true,
     requiresPlate:false,
     map:[
       "##########",
-      "#GdR#dGdG#",
-      "#ddd#dddd#",
-      "#PdS#dddd#",
-      "#dR.#X...#",
-      "#...#.GG.#",
+      "#dGd#d..G#",
+      "#ddR#..d.#",
+      "#PSd#Gdd.#",
+      "#d.d#X...#",
+      "#dR.#....#",
       "#Gd.D....#",
-      "#ddd#.RR.#",
-      "#dG.#.GG.#",
-      "#...#....#",
-      "#Gdd#dddE#",
-      "#ddd#dddd#",
-      "#ddd#dddd#",
+      "#.d.#....#",
+      "#dG.#.RR.#",
+      "#..d#.GG.#",
+      "#G..#..dE#",
+      "#ddG#dd..#",
+      "#d.R#..G.#",
       "##########"
     ]
   }
@@ -827,11 +827,11 @@ function go(d){
   if(d==='down')moved=move(0,1);
   if(d==='left')moved=move(-1,0);
   if(d==='right')moved=move(1,0);
-  setTimeout(()=>{if(!locked)moveLock=false},moved?120:70);
+  setTimeout(()=>{if(!locked)moveLock=false},moved?90:50);
 }
 
-const HOLD_DELAY=260;
-const HOLD_INTERVAL=165;
+const HOLD_DELAY=170;
+const HOLD_INTERVAL=105;
 let holdTimer=null, holdInterval=null, heldButton=null;
 
 function stopHold(){
