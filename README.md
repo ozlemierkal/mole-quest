@@ -1,8 +1,7 @@
-# Mole Quest v6.1 — Mockup Art
+# Mole Quest v6.2 – Alignment + Enemy Fix
 
-This build uses tile art cropped directly from the approved warm mockup, with versioned asset filenames to avoid Safari/GitHub Pages image caching.
-
-- Warm mine background from the approved mockup
-- Mockup-derived wall, dirt, tunnel, rock, gem, mole, enemy and exit assets
-- Gems centered in their cells
-- Level 10 enemy uses deterministic authored patrol path and moves every successful player step
+- Mole, enemy, gem and rock use clean centered assets.
+- Alert animation no longer wiggles the bug inside one cell.
+- Loop enemies now move exactly one grid cell per enemy turn.
+- Level 10 still uses enemyEvery:1.
+- New asset filenames avoid browser cache confusion.
